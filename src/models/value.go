@@ -8,5 +8,5 @@ type Value struct {
 	CreatedAt time.Time `gorm:"index"`
 
 	FieldID uint
-	Field   Field `gorm:"constraint:OnDelete:CASCADE;"`
+	Field   Field
 }

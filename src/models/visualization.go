@@ -9,5 +9,5 @@ type Visualization struct {
 	CreatedAt time.Time
 
 	ProjectID uint
-	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`
+	Project   Project
 }
