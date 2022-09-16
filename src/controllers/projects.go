@@ -18,6 +18,12 @@ const (
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	if len(projects)+1 > int(user.MaxProjects) {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "You cannot create a new project as you have reached your project limit."})
+		return
+	}
+
 	apiKey, err := generateAPIKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate API key."})
@@ -147,7 +153,7 @@ func updateProjectRoute(c *gin.Context) {
 func initProjectsController(router *gin.Engine, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/projects")
+	routerGroup := router.Group("/api/projects")
 	routerGroup.Use(sessionMiddleware)
 
 	routerGroup.POST("/", addProjectRoute)

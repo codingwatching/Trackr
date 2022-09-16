@@ -11,5 +11,5 @@ type Project struct {
 	CreatedAt   time.Time
 
 	UserID uint
-	User   User
+	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 }
