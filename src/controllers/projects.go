@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -128,12 +129,16 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
+	wasModified := false
+
 	if json.Name != "" {
 		project.Name = json.Name
+		wasModified = true
 	}
 
 	if json.Description != "" {
 		project.Description = json.Name
+		wasModified = true
 	}
 
 	if json.ResetAPIKey {
@@ -144,6 +149,11 @@ func updateProjectRoute(c *gin.Context) {
 		}
 
 		project.APIKey = apiKey
+		wasModified = true
+	}
+
+	if wasModified {
+		project.UpdatedAt = time.Now()
 	}
 
 	err = serviceProvider.GetProjectService().UpdateProject(*project)

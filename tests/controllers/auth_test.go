@@ -18,7 +18,7 @@ import (
 
 func TestRegisterRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "POST", "/auth/register"
+	method, path := "POST", "/api/auth/register"
 
 	//
 	// Test already logged in path.
@@ -181,7 +181,7 @@ func TestRegisterRoute(t *testing.T) {
 
 func TestLogoutRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "GET", "/auth/logout"
+	method, path := "GET", "/api/auth/logout"
 
 	//
 	// Test no cookie path.
@@ -253,7 +253,7 @@ func TestLogoutRoute(t *testing.T) {
 
 func TestLoginRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "POST", "/auth/login"
+	method, path := "POST", "/api/auth/login"
 
 	//
 	// Test already logged in path.

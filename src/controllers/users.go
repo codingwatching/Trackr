@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -31,12 +31,16 @@ func updateUserRoute(c *gin.Context) {
 		return
 	}
 
+	wasModified := false
+
 	if json.FirstName != "" {
 		user.FirstName = json.FirstName
+		wasModified = true
 	}
 
 	if json.LastName != "" {
 		user.LastName = json.LastName
+		wasModified = true
 	}
 
 	if json.CurrentPassword != "" && json.NewPassword != "" {
@@ -52,6 +56,11 @@ func updateUserRoute(c *gin.Context) {
 		}
 
 		user.Password = newHashedPassword
+		wasModified = true
+	}
+
+	if wasModified {
+		user.UpdatedAt = time.Now()
 	}
 
 	if err := serviceProvider.GetUserService().UpdateUser(*user); err != nil {
