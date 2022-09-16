@@ -7,4 +7,5 @@ type UserService interface {
 	GetNumberOfUsersByEmail(email string) (int64, error)
 	AddUser(user models.User) error
 	UpdateUser(user models.User) error
+	DeleteUser(user models.User) error
 }

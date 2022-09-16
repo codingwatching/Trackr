@@ -14,7 +14,12 @@ import (
 func getUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.User{
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		MaxValues:   user.MaxValues,
+		MaxProjects: user.MaxProjects,
+	})
 }
 
 func updateUserRoute(c *gin.Context) {
@@ -59,6 +64,11 @@ func updateUserRoute(c *gin.Context) {
 
 func deleteUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if err := serviceProvider.GetUserService().DeleteUser(*user); err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete user."})
+		return
+	}
 
 	c.JSON(http.StatusOK, responses.Empty{})
 }

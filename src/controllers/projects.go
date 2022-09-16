@@ -19,8 +19,13 @@ func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to fetch current project count."})
+		return
+	}
+
 	if len(projects)+1 > int(user.MaxProjects) {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "You cannot create a new project as you have reached your project limit."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "You cannot create a new project as you have reached your project limit."})
 		return
 	}
 

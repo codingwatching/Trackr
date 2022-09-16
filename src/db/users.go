@@ -36,6 +36,14 @@ func (service *UserServiceDB) AddUser(user models.User) error {
 	return nil
 }
 
+func (service *UserServiceDB) DeleteUser(user models.User) error {
+	if result := service.database.Delete(&user); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 func (service *UserServiceDB) UpdateUser(user models.User) error {
 	if result := service.database.Save(&user); result.Error != nil {
 		return result.Error
