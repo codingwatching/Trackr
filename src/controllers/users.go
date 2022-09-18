@@ -82,13 +82,13 @@ func deleteUserRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-func initUsersController(router *gin.Engine, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
+func initUsersController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/api/users")
-	routerGroup.Use(sessionMiddleware)
+	usersRouterGroup := routerGroup.Group("/users")
+	usersRouterGroup.Use(sessionMiddleware)
 
-	routerGroup.GET("/", getUserRoute)
-	routerGroup.PUT("/", updateUserRoute)
-	routerGroup.DELETE("/", deleteUserRoute)
+	usersRouterGroup.GET("/", getUserRoute)
+	usersRouterGroup.PUT("/", updateUserRoute)
+	usersRouterGroup.DELETE("/", deleteUserRoute)
 }

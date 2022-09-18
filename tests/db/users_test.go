@@ -1,9 +1,8 @@
 package db_test
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 
 	"trackr/src/models"
 	"trackr/tests"
@@ -109,5 +108,4 @@ func TestUpdateUser(t *testing.T) {
 	assert.NotNil(t, user)
 
 	assert.Equal(t, user.FirstName, newUser.FirstName)
-
 }

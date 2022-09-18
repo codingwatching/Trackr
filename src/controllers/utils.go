@@ -18,6 +18,10 @@ func generateHashedPassword(password string) (string, error) {
 	return string(hashedPassword), err
 }
 
+func generateShareURL() (string, error) {
+	return common.RandomString(shareURLLength)
+}
+
 func generateAPIKey() (string, error) {
 	return common.RandomString(apiKeyLength)
 }

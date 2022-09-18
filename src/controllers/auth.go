@@ -110,7 +110,7 @@ func logoutRoute(c *gin.Context) {
 
 	err = serviceProvider.GetSessionService().DeleteExpiredSessionsByUser(*user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to clean sessions."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete expired sessions."})
 		return
 	}
 
@@ -213,11 +213,11 @@ func initAuthMiddleware(serviceProviderInput services.ServiceProvider) gin.Handl
 	}
 }
 
-func initAuthController(router *gin.Engine, serviceProviderInput services.ServiceProvider) {
+func initAuthController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/api/auth")
-	routerGroup.POST("/login", loginRoute)
-	routerGroup.GET("/logout", logoutRoute)
-	routerGroup.POST("/register", registerRoute)
+	authRouterGroup := routerGroup.Group("/auth")
+	authRouterGroup.POST("/login", loginRoute)
+	authRouterGroup.GET("/logout", logoutRoute)
+	authRouterGroup.POST("/register", registerRoute)
 }

@@ -7,8 +7,11 @@ type Project struct {
 	Name        string
 	Description string
 	APIKey      string `gorm:"uniqueIndex"`
-	UpdatedAt   time.Time
-	CreatedAt   time.Time
+
+	ShareURL *string `gorm:"uniqueIndex"`
+
+	UpdatedAt time.Time
+	CreatedAt time.Time
 
 	UserID uint
 	User   User `gorm:"constraint:OnDelete:CASCADE;"`

@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	apiKeyLength = 64
+	apiKeyLength   = 64
+	shareURLLength = 32
 )
 
 func addProjectRoute(c *gin.Context) {
@@ -26,7 +27,9 @@ func addProjectRoute(c *gin.Context) {
 	}
 
 	if len(projects)+1 > int(user.MaxProjects) {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "You cannot create a new project as you have reached your project limit."})
+		c.JSON(http.StatusBadRequest, responses.Error{
+			Error: "You cannot create a new project as you have reached your project limit.",
+		})
 		return
 	}
 
@@ -41,6 +44,7 @@ func addProjectRoute(c *gin.Context) {
 		Description: "",
 		APIKey:      apiKey,
 		User:        *user,
+		ShareURL:    nil,
 	}
 
 	if err := serviceProvider.GetProjectService().AddProject(project); err != nil {
@@ -67,10 +71,12 @@ func getProjectRoute(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, responses.Project{
+		ID:          project.ID,
 		Name:        project.Name,
 		Description: project.Description,
 		APIKey:      project.APIKey,
 		CreatedAt:   project.CreatedAt,
+		ShareURL:    project.ShareURL,
 	})
 }
 
@@ -86,10 +92,12 @@ func getProjectsRoute(c *gin.Context) {
 	projectList := make([]responses.Project, len(projects))
 	for index, project := range projects {
 		projectList[index] = responses.Project{
+			ID:          project.ID,
 			Name:        project.Name,
 			Description: project.Description,
 			APIKey:      project.APIKey,
 			CreatedAt:   project.CreatedAt,
+			ShareURL:    project.ShareURL,
 		}
 	}
 
@@ -129,16 +137,12 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	wasModified := false
-
 	if json.Name != "" {
 		project.Name = json.Name
-		wasModified = true
 	}
 
 	if json.Description != "" {
-		project.Description = json.Name
-		wasModified = true
+		project.Description = json.Description
 	}
 
 	if json.ResetAPIKey {
@@ -149,12 +153,21 @@ func updateProjectRoute(c *gin.Context) {
 		}
 
 		project.APIKey = apiKey
-		wasModified = true
 	}
 
-	if wasModified {
-		project.UpdatedAt = time.Now()
+	if json.Share {
+		shareURL, err := generateShareURL()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate share URL."})
+			return
+		}
+
+		project.ShareURL = &shareURL
+	} else {
+		project.ShareURL = nil
 	}
+
+	project.UpdatedAt = time.Now()
 
 	err = serviceProvider.GetProjectService().UpdateProject(*project)
 	if err != nil {
@@ -165,15 +178,15 @@ func updateProjectRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-func initProjectsController(router *gin.Engine, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
+func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/api/projects")
-	routerGroup.Use(sessionMiddleware)
+	projectsRouterGroup := routerGroup.Group("/projects")
+	projectsRouterGroup.Use(sessionMiddleware)
 
-	routerGroup.POST("/", addProjectRoute)
-	routerGroup.GET("/:id", getProjectRoute)
-	routerGroup.GET("/", getProjectsRoute)
-	routerGroup.PUT("/:id", updateProjectRoute)
-	routerGroup.DELETE("/:id", deleteProjectRoute)
+	projectsRouterGroup.POST("/", addProjectRoute)
+	projectsRouterGroup.GET("/:id", getProjectRoute)
+	projectsRouterGroup.GET("/", getProjectsRoute)
+	projectsRouterGroup.PUT("/:id", updateProjectRoute)
+	projectsRouterGroup.DELETE("/:id", deleteProjectRoute)
 }

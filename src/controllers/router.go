@@ -14,11 +14,12 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 	serviceProvider = serviceProviderInput
 
 	router := gin.Default()
+	routerGroup := router.Group("/api")
 	sessionMiddleware := initAuthMiddleware(serviceProvider)
 
-	initAuthController(router, serviceProvider)
-	initProjectsController(router, serviceProvider, sessionMiddleware)
-	initUsersController(router, serviceProvider, sessionMiddleware)
+	initAuthController(routerGroup, serviceProvider)
+	initProjectsController(routerGroup, serviceProvider, sessionMiddleware)
+	initUsersController(routerGroup, serviceProvider, sessionMiddleware)
 
 	return router
 }
