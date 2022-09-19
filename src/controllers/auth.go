@@ -110,7 +110,7 @@ func logoutRoute(c *gin.Context) {
 
 	err = serviceProvider.GetSessionService().DeleteExpiredSessionsByUser(*user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to clean sessions."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete expired sessions."})
 		return
 	}
 
@@ -171,7 +171,7 @@ func registerRoute(c *gin.Context) {
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(json.Password), bcrypt.DefaultCost)
+	hashedPassword, err := generateHashedPassword(json.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate password."})
 		return
@@ -179,7 +179,7 @@ func registerRoute(c *gin.Context) {
 
 	user := models.User{
 		Email:      json.Email,
-		Password:   string(hashedPassword),
+		Password:   hashedPassword,
 		FirstName:  json.FirstName,
 		LastName:   json.LastName,
 		IsVerified: false,
@@ -213,11 +213,11 @@ func initAuthMiddleware(serviceProviderInput services.ServiceProvider) gin.Handl
 	}
 }
 
-func initAuthController(router *gin.Engine, serviceProviderInput services.ServiceProvider) {
+func initAuthController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/auth")
-	routerGroup.POST("/login", loginRoute)
-	routerGroup.GET("/logout", logoutRoute)
-	routerGroup.POST("/register", registerRoute)
+	authRouterGroup := routerGroup.Group("/auth")
+	authRouterGroup.POST("/login", loginRoute)
+	authRouterGroup.GET("/logout", logoutRoute)
+	authRouterGroup.POST("/register", registerRoute)
 }

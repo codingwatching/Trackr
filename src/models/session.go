@@ -11,5 +11,5 @@ type Session struct {
 	ExpiresAt time.Time
 
 	UserID uint
-	User   User
+	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 }

@@ -28,12 +28,16 @@ func Startup() *Suite {
 	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:"))
 	suite.Time = time.Now()
 	suite.User = models.User{
-		ID:        1,
-		Email:     "Email@email",
-		Password:  "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
-		FirstName: "FirstName",
-		LastName:  "LastName",
-		CreatedAt: suite.Time,
+		ID:          1,
+		Email:       "Email@email",
+		Password:    "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
+		FirstName:   "FirstName",
+		LastName:    "LastName",
+		UpdatedAt:   suite.Time,
+		CreatedAt:   suite.Time,
+		IsVerified:  true,
+		MaxValues:   1,
+		MaxProjects: 2,
 	}
 	suite.Service.GetUserService().AddUser(suite.User)
 
@@ -42,7 +46,9 @@ func Startup() *Suite {
 		Name:        "Name",
 		Description: "Description",
 		APIKey:      "APIKey",
+		ShareURL:    nil,
 		CreatedAt:   suite.Time,
+		UpdatedAt:   suite.Time,
 
 		UserID: suite.User.ID,
 		User:   suite.User,
@@ -73,6 +79,8 @@ func Startup() *Suite {
 }
 
 func StartupWithRouter() *Suite {
+	gin.SetMode(gin.ReleaseMode)
+
 	suite := Startup()
 	suite.Router = controllers.InitRouter(suite.Service)
 
