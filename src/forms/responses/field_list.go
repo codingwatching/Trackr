@@ -1,5 +1,5 @@
 package responses
 
 type FeildList struct {
-	Fields []Field `json:"feilds"`
+	Fields []Field `json:"fields"`
 }

@@ -21,14 +21,14 @@ func addFieldRoute(c *gin.Context) {
 		return
 	}
 
-	if json.Name == "" {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "The name of a field cannot be empty."})
-		return
-	}
-
 	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ProjectID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
+		return
+	}
+
+	if json.Name == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The name of a field cannot be empty."})
 		return
 	}
 
@@ -53,15 +53,21 @@ func addFieldRoute(c *gin.Context) {
 func getFieldsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
-	fields, err := serviceProvider.GetFieldService().GetFieldsByProjectIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get fields."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
+		return
+	}
+
+	fields, err := serviceProvider.GetFieldService().GetFieldsByProjectAndUser(*project, *user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get fields."})
 		return
 	}
 
@@ -115,7 +121,7 @@ func deleteFieldRoute(c *gin.Context) {
 
 	fieldId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
 		return
 	}
 
@@ -128,14 +134,14 @@ func deleteFieldRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-func initFieldController(router *gin.Engine, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
+func initFieldsController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
 	serviceProvider = serviceProviderInput
 
-	routerGroup := router.Group("/fields")
-	routerGroup.Use(sessionMiddleware)
+	fieldsRouterGroup := routerGroup.Group("/fields")
+	fieldsRouterGroup.Use(sessionMiddleware)
 
-	routerGroup.POST("/", addFieldRoute)
-	routerGroup.GET("/:id", getFieldsRoute)
-	routerGroup.PUT("/", updateFieldRoute)
-	routerGroup.DELETE("/:id", deleteFieldRoute)
+	fieldsRouterGroup.POST("/", addFieldRoute)
+	fieldsRouterGroup.GET("/:projectId", getFieldsRoute)
+	fieldsRouterGroup.PUT("/", updateFieldRoute)
+	fieldsRouterGroup.DELETE("/:id", deleteFieldRoute)
 }

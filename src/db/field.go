@@ -11,9 +11,9 @@ type FieldServiceDB struct {
 	database *gorm.DB
 }
 
-func (service *FieldServiceDB) GetFieldsByProjectIdAndUser(projectId uint, user models.User) ([]models.Field, error) {
+func (service *FieldServiceDB) GetFieldsByProjectAndUser(project models.Project, user models.User) ([]models.Field, error) {
 	var fields []models.Field
-	if result := service.database.Find(&fields, "project_id = ?", projectId).Joins("LEFT JOIN projects ON projects.user_id = ?", user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects", user.ID).Find(&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -22,7 +22,7 @@ func (service *FieldServiceDB) GetFieldsByProjectIdAndUser(projectId uint, user 
 
 func (service *FieldServiceDB) GetFieldByIdAndUser(id uint, user models.User) (*models.Field, error) {
 	var field models.Field
-	if result := service.database.First(&field, "id = ?", id).Joins("LEFT JOIN projects ON projects.user_id = ?", user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").First(&field, "fields.id = ? AND projects.user_id = ?", id, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -45,13 +45,13 @@ func (service *FieldServiceDB) UpdateField(field models.Field) error {
 }
 
 func (service *FieldServiceDB) DeleteFieldByIdAndUser(id uint, user models.User) error {
-	result := service.database.Model(&models.Field{}).Where("id = ?", id).Joins("LEFT JOIN projects ON projects.user_id = ?", user.ID).Delete(&models.Field{})
+	result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").Delete(&models.Field{}, "fields.id = ? AND projects.user_id = ?", id, user.ID)
 	if result.Error != nil {
 		return result.Error
 	}
 
 	if result.RowsAffected < 1 {
-		return fmt.Errorf("no field was deleted")
+		return fmt.Errorf("no rows affected")
 	}
 
 	return nil
