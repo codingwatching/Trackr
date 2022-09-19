@@ -3,8 +3,7 @@ build: bin/
 
 clean: bin/
 	go mod tidy
-	rm -rf bin/test.db
-	rm -rf bin/trackr
+	rm -rf bin/*
 
 run: bin/
 	go run src/main.go
