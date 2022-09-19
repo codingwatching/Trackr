@@ -3,13 +3,12 @@ package controllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"golang.org/x/crypto/bcrypt"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
