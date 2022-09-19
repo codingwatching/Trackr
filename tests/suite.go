@@ -37,7 +37,7 @@ func Startup() *Suite {
 		CreatedAt:   suite.Time,
 		IsVerified:  true,
 		MaxValues:   1,
-		MaxProjects: 1,
+		MaxProjects: 2,
 	}
 	suite.Service.GetUserService().AddUser(suite.User)
 
@@ -46,7 +46,9 @@ func Startup() *Suite {
 		Name:        "Name",
 		Description: "Description",
 		APIKey:      "APIKey",
+		ShareURL:    nil,
 		CreatedAt:   suite.Time,
+		UpdatedAt:   suite.Time,
 
 		UserID: suite.User.ID,
 		User:   suite.User,
@@ -77,6 +79,8 @@ func Startup() *Suite {
 }
 
 func StartupWithRouter() *Suite {
+	gin.SetMode(gin.ReleaseMode)
+
 	suite := Startup()
 	suite.Router = controllers.InitRouter(suite.Service)
 
