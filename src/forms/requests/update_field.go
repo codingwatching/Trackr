@@ -1,7 +1,6 @@
 package requests
 
 type UpdateField struct {
-	FieldId		uint  `json:"field_id"`
-	ProjectId	uint	 `json:"project_id"`
-	Name        string `json:"name"`	
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }

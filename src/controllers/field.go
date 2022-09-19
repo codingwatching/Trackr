@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -11,45 +12,35 @@ import (
 	"trackr/src/services"
 )
 
-var fieldType = map[int]string{1: "bool", 2: "int", 3: "float", 4: "string"}
-
-
-func getValidProject (c *gin.Context, projectId uint)(*models.Project,error){
-	user := getLoggedInUser(c)
-	if project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(projectId, *user); err !=nil {
-		return nil, err
-	}else{
-		return project, nil
-	}			
-}
-
-
 func addFieldRoute(c *gin.Context) {
-	
+	user := getLoggedInUser(c)
+
 	var json requests.AddField
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	project, err := getValidProject(c,json.ProjectId)
+	if json.Name == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The name of a field cannot be empty."})
+		return
+	}
+
+	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ProjectID, *user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Project does not exist or does not belong to you."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
 		return
 	}
 
-	t := json.Type
-	if _, validField := fieldType[t]; !validField{
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request provided; Not a valid field type."})
-		return
-	}
+	createdAt := time.Now()
 
-	field  := models.Field{
-		Name: 	`json."name"`,
-		Type: 	t,
+	field := models.Field{
+		Name:      json.Name,
+		UpdatedAt: createdAt,
+		CreatedAt: createdAt,
+
 		Project: *project,
 	}
-		
 
 	if err := serviceProvider.GetFieldService().AddField(field); err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new field."})
@@ -59,21 +50,16 @@ func addFieldRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-
 func getFieldsRoute(c *gin.Context) {
+	user := getLoggedInUser(c)
 
 	projectId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :project_id parameter provided."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :id parameter provided."})
 		return
 	}
 
-	if _, err := getValidProject(c,uint(projectId));err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Project does not exist or does not belong to you."})
-		return
-	}
-
-	fields, err := serviceProvider.GetFieldService().GetFieldsByProjectId(uint(projectId))
+	fields, err := serviceProvider.GetFieldService().GetFieldsByProjectIdAndUser(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get fields."})
 		return
@@ -84,83 +70,63 @@ func getFieldsRoute(c *gin.Context) {
 		fieldList[index] = responses.Field{
 			ID:   field.ID,
 			Name: field.Name,
-			Type: field.Type,	
 		}
 	}
 
 	c.JSON(http.StatusOK, responses.FeildList{Fields: fieldList})
 }
 
+func updateFieldRoute(c *gin.Context) {
+	user := getLoggedInUser(c)
 
-func updateFieldRoute(c *gin.Context){
-	
-
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :id parameter provided."})
+	var json requests.UpdateField
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	projectId, err := strconv.Atoi(c.Param("project_id"))
+	field, err := serviceProvider.GetFieldService().GetFieldByIdAndUser(json.ID, *user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :project_id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	if _, err := getValidProject(c,uint(projectId));err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Project access Denied."})
-		return
+	wasModified := false
+
+	if json.Name != "" {
+		field.Name = json.Name
+		wasModified = true
 	}
 
-	field, err := serviceProvider.GetFieldService().GetFieldByIdAndProject(uint(id), uint(projectId))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to find field."})
-		return
+	if wasModified {
+		field.UpdatedAt = time.Now()
 	}
 
-	
-	if c.Param("name") != ""{
-		field.Name = c.Param("name")
-	}
-
-	err = serviceProvider.GetFieldService().UpdateField(*field)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update project."})
+	if err := serviceProvider.GetFieldService().UpdateField(*field); err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update field."})
 		return
 	}
 
 	c.JSON(http.StatusOK, responses.Empty{})
 }
-
-
 
 func deleteFieldRoute(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	user := getLoggedInUser(c)
+
+	fieldId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :id parameter provided."})
 		return
 	}
 
-	projectId, err := strconv.Atoi(c.Param("project_id"))
+	err = serviceProvider.GetFieldService().DeleteFieldByIdAndUser(uint(fieldId), *user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Invalid :project_id parameter provided."})
-		return
-	}
-
-	if _, err := getValidProject(c,uint(projectId));err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Project access Denied."})
-		return
-	}
-
-	err = serviceProvider.GetFieldService().DeleteFieldByIdAndProject(uint(id), uint(projectId))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete project."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete field."})
 		return
 	}
 
 	c.JSON(http.StatusOK, responses.Empty{})
 }
-
 
 func initFieldController(router *gin.Engine, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
 	serviceProvider = serviceProviderInput
@@ -169,7 +135,7 @@ func initFieldController(router *gin.Engine, serviceProviderInput services.Servi
 	routerGroup.Use(sessionMiddleware)
 
 	routerGroup.POST("/", addFieldRoute)
-	routerGroup.GET("/", getFieldsRoute)
-	routerGroup.PUT("/:project_id", updateFieldRoute)
-	routerGroup.DELETE("/:project_id", deleteFieldRoute)
+	routerGroup.GET("/:id", getFieldsRoute)
+	routerGroup.PUT("/", updateFieldRoute)
+	routerGroup.DELETE("/:id", deleteFieldRoute)
 }
