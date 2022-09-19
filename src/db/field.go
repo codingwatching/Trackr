@@ -13,7 +13,7 @@ type FieldServiceDB struct {
 
 func (service *FieldServiceDB) GetFieldsByProjectAndUser(project models.Project, user models.User) ([]models.Field, error) {
 	var fields []models.Field
-	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects", user.ID).Find(&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").Find(&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
