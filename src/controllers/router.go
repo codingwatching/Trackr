@@ -18,6 +18,7 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 
 	initAuthController(router, serviceProvider)
 	initProjectsController(router, serviceProvider, sessionMiddleware)
+	initFieldController(router, serviceProvider, sessionMiddleware)
 
 	return router
 }

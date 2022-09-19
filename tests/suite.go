@@ -36,7 +36,7 @@ func Startup() *Suite {
 		CreatedAt: suite.Time,
 	}
 	suite.Service.GetUserService().AddUser(suite.User)
-
+	
 	suite.Project = models.Project{
 		ID:          1,
 		Name:        "Name",
