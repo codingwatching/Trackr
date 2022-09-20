@@ -65,7 +65,7 @@ func getFieldsRoute(c *gin.Context) {
 		return
 	}
 
-	fields, err := serviceProvider.GetFieldService().GetFieldsByProjectAndUser(*project, *user)
+	fields, err := serviceProvider.GetFieldService().GetFields(*project, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get fields."})
 		return
@@ -91,7 +91,7 @@ func updateFieldRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetFieldByIdAndUser(json.ID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -125,7 +125,7 @@ func deleteFieldRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetFieldService().DeleteFieldByIdAndUser(uint(fieldId), *user)
+	err = serviceProvider.GetFieldService().DeleteField(uint(fieldId), *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete field."})
 		return
