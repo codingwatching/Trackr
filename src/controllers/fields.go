@@ -79,7 +79,7 @@ func getFieldsRoute(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, responses.FeildList{Fields: fieldList})
+	c.JSON(http.StatusOK, responses.FieldList{Fields: fieldList})
 }
 
 func updateFieldRoute(c *gin.Context) {
