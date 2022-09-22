@@ -11,11 +11,11 @@ import (
 func TestGetUserByEmail(t *testing.T) {
 	suite := tests.Startup()
 
-	user, err := suite.Service.GetUserService().GetUserByEmail("invalid@email")
+	user, err := suite.Service.GetUserService().GetUser("invalid@email")
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 
@@ -25,11 +25,11 @@ func TestGetUserByEmail(t *testing.T) {
 func TestGetNumberOfUsersByEmail(t *testing.T) {
 	suite := tests.Startup()
 
-	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsersByEmail("invalid@email")
+	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsers("invalid@email")
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(0))
 
-	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsersByEmail(suite.User.Email)
+	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsers(suite.User.Email)
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(1))
 }
@@ -37,11 +37,11 @@ func TestGetNumberOfUsersByEmail(t *testing.T) {
 func TestAddUser(t *testing.T) {
 	suite := tests.Startup()
 
-	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsersByEmail("new@email")
+	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsers("new@email")
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(0))
 
-	user, err := suite.Service.GetUserService().GetUserByEmail("new@email")
+	user, err := suite.Service.GetUserService().GetUser("new@email")
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 
@@ -55,11 +55,11 @@ func TestAddUser(t *testing.T) {
 	err = suite.Service.GetUserService().AddUser(newUser)
 	assert.Nil(t, err)
 
-	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsersByEmail(newUser.Email)
+	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsers(newUser.Email)
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(1))
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(newUser.Email)
+	user, err = suite.Service.GetUserService().GetUser(newUser.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 
@@ -69,7 +69,7 @@ func TestAddUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	suite := tests.Startup()
 
-	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsersByEmail(suite.User.Email)
+	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsers(suite.User.Email)
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(1))
 
@@ -79,11 +79,11 @@ func TestDeleteUser(t *testing.T) {
 	err = suite.Service.GetUserService().DeleteUser(suite.User)
 	assert.Nil(t, err)
 
-	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsersByEmail(suite.User.Email)
+	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsers(suite.User.Email)
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(0))
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 }
@@ -91,7 +91,7 @@ func TestDeleteUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	suite := tests.Startup()
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 
@@ -103,7 +103,7 @@ func TestUpdateUser(t *testing.T) {
 	err = suite.Service.GetUserService().UpdateUser(newUser)
 	assert.Nil(t, err)
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 

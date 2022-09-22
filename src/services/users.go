@@ -3,8 +3,8 @@ package services
 import "trackr/src/models"
 
 type UserService interface {
-	GetUserByEmail(email string) (*models.User, error)
-	GetNumberOfUsersByEmail(email string) (int64, error)
+	GetUser(email string) (*models.User, error)
+	GetNumberOfUsers(email string) (int64, error)
 	AddUser(user models.User) error
 	UpdateUser(user models.User) error
 	DeleteUser(user models.User) error

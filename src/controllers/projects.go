@@ -21,7 +21,7 @@ const (
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to fetch current project count."})
 		return
@@ -65,7 +65,7 @@ func getProjectRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
@@ -84,7 +84,7 @@ func getProjectRoute(c *gin.Context) {
 func getProjectsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get projects."})
 		return
@@ -114,7 +114,7 @@ func deleteProjectRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetProjectService().DeleteProjectByIdAndUser(uint(projectId), *user)
+	err = serviceProvider.GetProjectService().DeleteProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to delete project."})
 		return
@@ -132,7 +132,7 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ID, *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return

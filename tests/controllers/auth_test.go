@@ -167,7 +167,7 @@ func TestRegisterRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err := suite.Service.GetUserService().GetUserByEmail("email@email.com")
+	user, err := suite.Service.GetUserService().GetUser("email@email.com")
 	assert.NotNil(t, user)
 	assert.Nil(t, err)
 
@@ -224,11 +224,11 @@ func TestLogoutRoute(t *testing.T) {
 	// Test successful logout path.
 	//
 
-	session, _, err := suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	session, _, err := suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("SessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("SessionID")
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 
@@ -241,11 +241,11 @@ func TestLogoutRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.NotNil(t, err)
 	assert.Nil(t, session)
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("SessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("SessionID")
 	assert.NotNil(t, err)
 	assert.Nil(t, session)
 }
@@ -349,7 +349,7 @@ func TestLoginRoute(t *testing.T) {
 	// the next test removes expired sessions.
 	//
 
-	_, _, err := suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	_, _, err := suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.Nil(t, err)
 
 	//
@@ -373,7 +373,7 @@ func TestLoginRoute(t *testing.T) {
 		assert.Equal(t, http.StatusOK, httpRecorder.Code)
 		assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-		session, user, err := suite.Service.GetSessionService().GetSessionAndUserById(sessionId)
+		session, user, err := suite.Service.GetSessionService().GetSessionAndUser(sessionId)
 		assert.Equal(t, user.ID, suite.User.ID)
 		assert.Equal(t, session.ID, sessionId)
 
@@ -385,7 +385,7 @@ func TestLoginRoute(t *testing.T) {
 
 		assert.Nil(t, err)
 
-		_, _, err = suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+		_, _, err = suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 		assert.NotNil(t, err)
 	}
 }

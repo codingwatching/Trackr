@@ -10,7 +10,7 @@ type UserServiceDB struct {
 	database *gorm.DB
 }
 
-func (service *UserServiceDB) GetUserByEmail(email string) (*models.User, error) {
+func (service *UserServiceDB) GetUser(email string) (*models.User, error) {
 	var user models.User
 	if result := service.database.First(&user, "email = ?", email); result.Error != nil {
 		return nil, result.Error
@@ -19,7 +19,7 @@ func (service *UserServiceDB) GetUserByEmail(email string) (*models.User, error)
 	return &user, nil
 }
 
-func (service *UserServiceDB) GetNumberOfUsersByEmail(email string) (int64, error) {
+func (service *UserServiceDB) GetNumberOfUsers(email string) (int64, error) {
 	var count int64
 	if result := service.database.Model(&models.User{}).Where("email = ?", email).Count(&count); result.Error != nil {
 		return 0, result.Error

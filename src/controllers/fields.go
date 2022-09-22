@@ -21,7 +21,7 @@ func addFieldRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ProjectID, *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ProjectID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
 		return
@@ -59,7 +59,7 @@ func getFieldsRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return

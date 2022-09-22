@@ -35,7 +35,7 @@ func TestAddProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
@@ -48,7 +48,7 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
@@ -246,7 +246,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(1), project.ID)
@@ -261,7 +261,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 }
@@ -333,7 +333,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, suite.Project.Name, project.Name)
@@ -358,7 +358,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -383,7 +383,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -408,7 +408,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -435,7 +435,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -462,7 +462,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -488,7 +488,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		assert.Equal(t, http.StatusOK, httpRecorder.Code)
 		assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-		project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+		project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 		assert.Nil(t, err)
 		assert.NotNil(t, project)
 		assert.Equal(t, "New Project Name", project.Name)
