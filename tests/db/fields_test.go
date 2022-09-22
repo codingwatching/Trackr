@@ -14,12 +14,12 @@ func TestGetFields(t *testing.T) {
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
-	assert.Equal(t, len(fields), 1)
-	assert.Equal(t, fields[0].ID, suite.Field.ID)
+	assert.Equal(t, 1, len(fields))
+	assert.Equal(t, suite.Field.ID, fields[0].ID)
 
 	fields, err = suite.Service.GetFieldService().GetFields(models.Project{}, models.User{})
 	assert.Nil(t, err)
-	assert.Equal(t, len(fields), 0)
+	assert.Equal(t, 0, len(fields))
 }
 
 func TestGetField(t *testing.T) {
@@ -28,7 +28,7 @@ func TestGetField(t *testing.T) {
 	field, err := suite.Service.GetFieldService().GetField(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
-	assert.Equal(t, field.ID, suite.Field.ID)
+	assert.Equal(t, suite.Field.ID, field.ID)
 
 	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
 	assert.NotNil(t, err)
@@ -55,8 +55,8 @@ func TestAddField(t *testing.T) {
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(fields), 2)
-	assert.Equal(t, fields[1].ID, uint(2))
-	assert.Equal(t, fields[1].ProjectID, suite.Project.ID)
+	assert.Equal(t, uint(2), fields[1].ID)
+	assert.Equal(t, suite.Project.ID, fields[1].ProjectID)
 }
 
 func TestUpdateField(t *testing.T) {
@@ -70,13 +70,12 @@ func TestUpdateField(t *testing.T) {
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
-	assert.Equal(t, len(fields), 1)
-	assert.Equal(t, fields[0].ID, suite.Field.ID)
-	assert.Equal(t, fields[0].Name, newField.Name)
+	assert.Equal(t, 1, len(fields))
+	assert.Equal(t, suite.Field.ID, fields[0].ID)
+	assert.Equal(t, newField.Name, fields[0].Name)
 }
 
-/*
-Func TestDeleteField(t *testing.T) {
+func TestDeleteField(t *testing.T) {
 	suite := tests.Startup()
 
 	err := suite.Service.GetFieldService().DeleteField(2, suite.User)
@@ -90,6 +89,5 @@ Func TestDeleteField(t *testing.T) {
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
-	assert.Equal(t, len(fields), 0)
+	assert.Equal(t, 0, len(fields))
 }
-*/

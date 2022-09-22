@@ -259,9 +259,9 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, "New Field Name", field.Name)
 }
 
-/*func TestDeleteFieldRoute(t *testing.T) {
+func TestDeleteFieldRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "DELETE", "/api/field/"
+	method, path := "DELETE", "/api/fields/"
 
 	//
 	// Test not logged in path.
@@ -303,7 +303,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, http.StatusInternalServerError, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
@@ -328,4 +328,4 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 
-}*/
+}
