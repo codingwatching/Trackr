@@ -3,11 +3,10 @@ package controllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -18,20 +17,16 @@ func TestAddFieldRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
 	method, path := "POST", "/api/fields/"
 
-	request, _ := json.Marshal(requests.AddField{
-		ProjectID: 1,
-		Name:      "Field2",
-	})
-
 	//
 	// Test not logged in path.
 	//
+
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
 
 	httpRecorder := httptest.NewRecorder()
-	httpRequest, _ := http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ := http.NewRequest(method, path, nil)
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusForbidden, httpRecorder.Code)
@@ -42,26 +37,10 @@ func TestAddFieldRoute(t *testing.T) {
 	assert.Nil(t, field)
 
 	//
-	// Test successful path.
+	// Test invalid project id paramater.
 	//
-	response, _ = json.Marshal(responses.Empty{})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, uint(2), field.ID)
-
-	//
-	// Test invalid projectId paramater.
-	//
-	request, _ = json.Marshal(requests.AddField{
+	request, _ := json.Marshal(requests.AddField{
 		ProjectID: 0,
 		Name:      "Field2",
 	})
@@ -81,6 +60,7 @@ func TestAddFieldRoute(t *testing.T) {
 	//
 	// Test missing name paramater.
 	//
+
 	request, _ = json.Marshal(requests.AddField{
 		ProjectID: 1,
 		Name:      "",
@@ -97,6 +77,28 @@ func TestAddFieldRoute(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test successful path.
+	//
+
+	request, _ = json.Marshal(requests.AddField{
+		ProjectID: 1,
+		Name:      "Field2",
+	})
+	response, _ = json.Marshal(responses.Empty{})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, field)
+	assert.Equal(t, uint(2), field.ID)
 }
 
 func TestGetFieldsRoute(t *testing.T) {
@@ -106,6 +108,7 @@ func TestGetFieldsRoute(t *testing.T) {
 	//
 	// Test not logged in path.
 	//
+
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
@@ -120,9 +123,11 @@ func TestGetFieldsRoute(t *testing.T) {
 	//
 	// Test non-existant project id path.
 	//
+
 	response, _ = json.Marshal(responses.Error{
 		Error: "Failed to find project.",
 	})
+
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"0", nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -134,6 +139,7 @@ func TestGetFieldsRoute(t *testing.T) {
 	//
 	// Test successful path.
 	//
+
 	newField := suite.Field
 	newField.ID = 2
 	newField.Name = "Field2"
@@ -173,6 +179,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test not logged in path.
 	//
+
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
@@ -187,6 +194,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test invalid request parameters path.
 	//
+
 	response, _ = json.Marshal(responses.Error{
 		Error: "Invalid request parameters provided.",
 	})
@@ -201,6 +209,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test invalid project id path.
 	//
+
 	request, _ := json.Marshal(requests.UpdateField{
 		ID: 0,
 	})
@@ -218,6 +227,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test no modification path.
 	//
+
 	request, _ = json.Marshal(requests.UpdateField{
 		ID: 1,
 	})
@@ -231,7 +241,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err := suite.Service.GetFieldService().GetField(1, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, suite.Field.Name, field.Name)
@@ -239,6 +249,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test updating name path.
 	//
+
 	request, _ = json.Marshal(requests.UpdateProject{
 		ID:   1,
 		Name: "New Field Name",
@@ -253,7 +264,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetField(1, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, "New Field Name", field.Name)
@@ -266,6 +277,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test not logged in path.
 	//
+
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
@@ -279,6 +291,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test invalid id parameter path.
 	//
+
 	response, _ = json.Marshal(responses.Error{
 		Error: "Invalid :id parameter provided.",
 	})
@@ -294,6 +307,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test non-existant field id path.
 	//
+
 	response, _ = json.Marshal(responses.Error{
 		Error: "Failed to delete field.",
 	})
@@ -309,7 +323,8 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test successful path.
 	//
-	field, err := suite.Service.GetFieldService().GetField(1, suite.User)
+
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, uint(1), field.ID)
@@ -324,8 +339,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetField(1, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
-
 }

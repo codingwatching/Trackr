@@ -12,31 +12,40 @@ import (
 func TestGetFields(t *testing.T) {
 	suite := tests.Startup()
 
-	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
+	fields, err := suite.Service.GetFieldService().GetFields(models.Project{}, models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(fields))
+
+	fields, err = suite.Service.GetFieldService().GetFields(suite.Project, models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(fields))
+
+	fields, err = suite.Service.GetFieldService().GetFields(models.Project{}, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(fields))
+
+	fields, err = suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(fields))
 	assert.Equal(t, suite.Field.ID, fields[0].ID)
-
-	fields, err = suite.Service.GetFieldService().GetFields(models.Project{}, models.User{})
-	assert.Nil(t, err)
-	assert.Equal(t, 0, len(fields))
 }
 
 func TestGetField(t *testing.T) {
 	suite := tests.Startup()
 
-	field, err := suite.Service.GetFieldService().GetField(1, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(models.Field{}.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, field)
+
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, models.User{})
+	assert.NotNil(t, err)
+	assert.Nil(t, field)
+
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, suite.Field.ID, field.ID)
 
-	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
-	assert.NotNil(t, err)
-	assert.Nil(t, field)
-
-	field, err = suite.Service.GetFieldService().GetField(1, models.User{})
-	assert.NotNil(t, err)
-	assert.Nil(t, field)
 }
 
 func TestAddField(t *testing.T) {
@@ -78,13 +87,13 @@ func TestUpdateField(t *testing.T) {
 func TestDeleteField(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetFieldService().DeleteField(2, suite.User)
+	err := suite.Service.GetFieldService().DeleteField(models.Field{}.ID, suite.User)
 	assert.NotNil(t, err)
 
 	err = suite.Service.GetFieldService().DeleteField(suite.Field.ID, models.User{})
 	assert.NotNil(t, err)
 
-	err = suite.Service.GetFieldService().DeleteField(1, suite.User)
+	err = suite.Service.GetFieldService().DeleteField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)

@@ -44,9 +44,9 @@ func (service *FieldServiceDB) UpdateField(field models.Field) error {
 }
 
 func (service *FieldServiceDB) DeleteField(id uint, user models.User) error {
-	var field models.Field
-	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").First(&field, "fields.id = ? AND projects.user_id = ?", id, user.ID); result.Error != nil {
-		return result.Error
+	field, err := service.GetField(id, user)
+	if err != nil {
+		return err
 	}
 
 	if result := service.database.Delete(field); result.Error != nil {
