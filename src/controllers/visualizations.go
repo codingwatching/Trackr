@@ -12,7 +12,7 @@ import (
 )
 
 
-func addVisualization(c *gin.Context) {
+func addVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	var json requests.Visualization
@@ -56,7 +56,7 @@ func addVisualization(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-func getVisualizations(c *gin.Context) {
+func getVisualizationsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	projectId, err := strconv.Atoi(c.Param("projectId"))
@@ -89,7 +89,7 @@ func getVisualizations(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.VisualizationList{Visualizations: visualizationList})
 }
 
-func updateVisualization(c *gin.Context) {
+func updateVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	visulizationId, err := strconv.Atoi(c.Param("visulizationId"))
@@ -121,7 +121,7 @@ func updateVisualization(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
-func deleteVisualization(c *gin.Context) {
+func deleteVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	visualizationId, err := strconv.Atoi(c.Param("visualizationId"))
@@ -145,8 +145,8 @@ func initVisualizationsController(routerGroup *gin.RouterGroup, serviceProviderI
 	usersRouterGroup := routerGroup.Group("/visualizations")
 	usersRouterGroup.Use(sessionMiddleware)
 
-	usersRouterGroup.GET("/:projectId", getVisualizations)
-	usersRouterGroup.POST("/:projectId", addVisualization)
+	usersRouterGroup.GET("/:projectId", getVisualizationsRoute)
+	usersRouterGroup.POST("/:projectId", addVisualizationRoute)
 	usersRouterGroup.PUT("/:visualizationId", updateUserRoute)
 	usersRouterGroup.DELETE("/:visualizationId", deleteUserRoute)
 }
