@@ -91,7 +91,7 @@ func updateFieldRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetFieldByUser(json.ID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return

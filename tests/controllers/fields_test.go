@@ -32,7 +32,7 @@ func TestAddFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusForbidden, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err := suite.Service.GetFieldService().GetFieldByUser(2, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(2, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 
@@ -95,7 +95,7 @@ func TestAddFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetFieldByUser(2, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, uint(2), field.ID)
@@ -241,7 +241,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err := suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, suite.Field.Name, field.Name)
@@ -264,7 +264,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, "New Field Name", field.Name)
@@ -324,7 +324,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	field, err := suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, uint(1), field.ID)
@@ -339,7 +339,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 }

@@ -33,15 +33,15 @@ func TestGetFields(t *testing.T) {
 func TestGetField(t *testing.T) {
 	suite := tests.Startup()
 
-	field, err := suite.Service.GetFieldService().GetFieldByUser(models.Field{}.ID, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(models.Field{}.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 
-	field, err = suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, models.User{})
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, models.User{})
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 
-	field, err = suite.Service.GetFieldService().GetFieldByUser(suite.Field.ID, suite.User)
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, suite.Field.ID, field.ID)
