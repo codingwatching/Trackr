@@ -19,9 +19,18 @@ func (service *FieldServiceDB) GetFields(project models.Project, user models.Use
 	return fields, nil
 }
 
-func (service *FieldServiceDB) GetField(id uint, user models.User) (*models.Field, error) {
+func (service *FieldServiceDB) GetFieldByUser(id uint, user models.User) (*models.Field, error) {
 	var field models.Field
 	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").First(&field, "fields.id = ? AND projects.user_id = ?", id, user.ID); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &field, nil
+}
+
+func (service *FieldServiceDB) GetFieldByAPIKey(id uint, apiKey string) (*models.Field, error) {
+	var field models.Field
+	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").First(&field, "fields.id = ? AND projects.api_key = ?", id, apiKey); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -44,7 +53,7 @@ func (service *FieldServiceDB) UpdateField(field models.Field) error {
 }
 
 func (service *FieldServiceDB) DeleteField(id uint, user models.User) error {
-	field, err := service.GetField(id, user)
+	field, err := service.GetFieldByUser(id, user)
 	if err != nil {
 		return err
 	}
