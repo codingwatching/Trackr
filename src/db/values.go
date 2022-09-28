@@ -20,9 +20,9 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 	result = result.Joins("LEFT JOIN projects")
 
 	if order == "asc" {
-		result = result.Order("created_at ASC")
+		result = result.Order("`values`.`created_at` ASC")
 	} else if order == "desc" {
-		result = result.Order("created_at DESC")
+		result = result.Order("`values`.`created_at` DESC")
 	} else {
 		return nil, fmt.Errorf("invalid order")
 	}
@@ -35,7 +35,7 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 		result = result.Limit(limit)
 	}
 
-	result = result.Find(&values, "values.field_id = ? AND projects.user_id = ?", field.ID, user.ID)
+	result = result.Find(&values, "`values`.`field_id` = ? AND `projects`.`user_id` = ?", field.ID, user.ID)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -50,7 +50,7 @@ func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Valu
 	result := service.database.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields")
 	result = result.Joins("LEFT JOIN projects")
-	result = result.First(&value, "values.id = ? AND projects.user_id = ?", id, user.ID)
+	result = result.First(&value, "`values`.`id` = ? AND `projects`.`user_id` = ?", id, user.ID)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -68,8 +68,13 @@ func (service *ValueServiceDB) AddValue(value models.Value) error {
 }
 
 func (service *ValueServiceDB) DeleteValue(value models.Value) error {
-	if result := service.database.Delete(&value); result.Error != nil {
+	result := service.database.Delete(&value)
+	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("no rows affected")
 	}
 
 	return nil

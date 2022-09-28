@@ -22,6 +22,7 @@ type Suite struct {
 	ExpiredSession models.Session
 	Time           time.Time
 	Field          models.Field
+	Value          models.Value
 }
 
 func Startup() *Suite {
@@ -87,6 +88,16 @@ func Startup() *Suite {
 		Project:   suite.Project,
 	}
 	suite.Service.GetFieldService().AddField(suite.Field)
+
+	suite.Value = models.Value{
+		ID:        1,
+		Value:     "1.00",
+		CreatedAt: suite.Time,
+
+		FieldID: suite.Field.ID,
+		Field:   suite.Field,
+	}
+	suite.Service.GetValueService().AddValue(suite.Value)
 
 	return &suite
 }
