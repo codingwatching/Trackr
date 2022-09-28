@@ -38,6 +38,10 @@ func TestGetValues(t *testing.T) {
 		err := suite.Service.GetValueService().AddValue(newValue)
 		assert.Nil(t, err)
 
+		numberOfValues, err := suite.Service.GetValueService().GetNumberOfValues(suite.User)
+		assert.Nil(t, err)
+		assert.Equal(t, int64(i), numberOfValues)
+
 		expectedValues = append(expectedValues, newValue)
 	}
 
@@ -125,33 +129,59 @@ func TestAddValue(t *testing.T) {
 	assert.Equal(t, newValue.Value, value.Value)
 }
 
-func TestDeleteValue(t *testing.T) {
+func TestDeleteValues(t *testing.T) {
 	suite := tests.Startup()
 
 	newValue := suite.Value
 	newValue.ID = 2
 	newValue.Value = "2.00"
 
-	value, err := suite.Service.GetValueService().GetValue(newValue.ID, suite.User)
-	assert.NotNil(t, err)
-	assert.Nil(t, value)
-
-	err = suite.Service.GetValueService().DeleteValue(newValue)
-	assert.NotNil(t, err)
-
-	err = suite.Service.GetValueService().AddValue(newValue)
+	err := suite.Service.GetValueService().AddValue(newValue)
 	assert.Nil(t, err)
 
-	value, err = suite.Service.GetValueService().GetValue(newValue.ID, suite.User)
+	err = suite.Service.GetValueService().DeleteValues(models.Field{})
+	assert.NotNil(t, err)
+
+	value, err := suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, value)
-	assert.Equal(t, newValue.ID, value.ID)
-	assert.Equal(t, newValue.Value, value.Value)
+	assert.Equal(t, suite.Value.ID, value.ID)
 
-	err = suite.Service.GetValueService().DeleteValue(newValue)
+	value, err = suite.Service.GetValueService().GetValue(newValue.ID, suite.User)
 	assert.Nil(t, err)
+	assert.NotNil(t, newValue)
+	assert.Equal(t, newValue.ID, value.ID)
+
+	err = suite.Service.GetValueService().DeleteValues(suite.Field)
+	assert.Nil(t, err)
+
+	value, err = suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
 
 	value, err = suite.Service.GetValueService().GetValue(newValue.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, value)
+}
+
+func TestGetNumberOfValues(t *testing.T) {
+	suite := tests.Startup()
+
+	newValue := suite.Value
+	newValue.ID = 2
+	newValue.Value = "2.00"
+
+	err := suite.Service.GetValueService().AddValue(newValue)
+	assert.Nil(t, err)
+
+	numberOfValues, err := suite.Service.GetValueService().GetNumberOfValues(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(2), numberOfValues)
+
+	err = suite.Service.GetValueService().DeleteValues(suite.Field)
+	assert.Nil(t, err)
+
+	numberOfValues, err = suite.Service.GetValueService().GetNumberOfValues(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(0), numberOfValues)
 }

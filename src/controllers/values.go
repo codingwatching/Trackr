@@ -37,7 +37,7 @@ func getValuesRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetFieldByUser(json.FieldID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -61,24 +61,24 @@ func getValuesRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.ValueList{Values: valueList})
 }
 
-func deleteValueRoute(c *gin.Context) {
+func deleteValuesRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	valueId, err := strconv.Atoi(c.Param("valueId"))
+	fieldId, err := strconv.Atoi(c.Param("fieldId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :valueId parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :fieldId parameter provided."})
 		return
 	}
 
-	value, err := serviceProvider.GetValueService().GetValue(uint(valueId), *user)
+	field, err := serviceProvider.GetFieldService().GetField(uint(fieldId), *user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find value."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	err = serviceProvider.GetValueService().DeleteValue(*value)
+	err = serviceProvider.GetValueService().DeleteValues(*field)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete value."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete values."})
 		return
 	}
 
@@ -97,7 +97,24 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetFieldByAPIKey(json.FieldID, json.APIKey)
+	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(json.APIKey)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
+		return
+	}
+
+	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValues(project.User)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get number of values."})
+		return
+	}
+
+	if numberOfValues >= int64(project.User.MaxValues) {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "You have exceeded your max values limit."})
+		return
+	}
+
+	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -125,7 +142,7 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 	valuesRouterGroup := routerGroup.Group("/values")
 	valuesRouterGroup.Use(sessionMiddleware)
 	valuesRouterGroup.GET("/", getValuesRoute)
-	valuesRouterGroup.DELETE("/:valueId", deleteValueRoute)
+	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
 	apiValuesRouterGroup := routerGroup.Group("/values")
 	apiValuesRouterGroup.POST("/", addValueRoute)

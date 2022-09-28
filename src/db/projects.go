@@ -29,6 +29,15 @@ func (service *ProjectServiceDB) GetProject(id uint, user models.User) (*models.
 	return &project, nil
 }
 
+func (service *ProjectServiceDB) GetProjectByAPIKey(apiKey string) (*models.Project, error) {
+	var project models.Project
+	if result := service.database.Preload("users").First(&project, "api_key = ?", apiKey); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &project, nil
+}
+
 func (service *ProjectServiceDB) AddProject(project models.Project) error {
 	if result := service.database.Create(&project); result.Error != nil {
 		return result.Error

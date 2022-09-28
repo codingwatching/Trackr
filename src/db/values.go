@@ -44,6 +44,24 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 	return values, nil
 }
 
+func (service *ValueServiceDB) GetNumberOfValues(user models.User) (int64, error) {
+	var count int64
+
+	result := service.database.Model(&models.User{})
+	result = result.Model(&models.Value{})
+	result = result.Joins("LEFT JOIN fields")
+	result = result.Joins("LEFT JOIN projects")
+	result = result.Joins("LEFT JOIN users")
+	result = result.Where("`users`.`id` = ?", user.ID)
+	result = result.Count(&count)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return count, nil
+}
+
 func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Value, error) {
 	var value models.Value
 
@@ -67,8 +85,8 @@ func (service *ValueServiceDB) AddValue(value models.Value) error {
 	return nil
 }
 
-func (service *ValueServiceDB) DeleteValue(value models.Value) error {
-	result := service.database.Delete(&value)
+func (service *ValueServiceDB) DeleteValues(field models.Field) error {
+	result := service.database.Delete(&models.Value{}, "field_id = ?", field.ID)
 	if result.Error != nil {
 		return result.Error
 	}
