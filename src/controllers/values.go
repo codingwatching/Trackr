@@ -49,6 +49,12 @@ func getValuesRoute(c *gin.Context) {
 		return
 	}
 
+	totalValues, err := serviceProvider.GetValueService().GetNumberOfValuesByField(*field)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get total number of values."})
+		return
+	}
+
 	valueList := make([]responses.Value, len(values))
 	for index, value := range values {
 		valueList[index] = responses.Value{
@@ -58,7 +64,10 @@ func getValuesRoute(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, responses.ValueList{Values: valueList})
+	c.JSON(http.StatusOK, responses.ValueList{
+		Values:      valueList,
+		TotalValues: totalValues,
+	})
 }
 
 func deleteValuesRoute(c *gin.Context) {
@@ -99,11 +108,11 @@ func addValueRoute(c *gin.Context) {
 
 	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(json.APIKey)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
 
-	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValues(project.User)
+	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get number of values."})
 		return
@@ -144,6 +153,6 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 	valuesRouterGroup.GET("/", getValuesRoute)
 	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
-	apiValuesRouterGroup := routerGroup.Group("/values")
-	apiValuesRouterGroup.POST("/", addValueRoute)
+	externalValuesRouterGroup := routerGroup.Group("/values")
+	externalValuesRouterGroup.POST("/", addValueRoute)
 }

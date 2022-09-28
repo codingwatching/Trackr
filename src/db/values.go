@@ -44,7 +44,7 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 	return values, nil
 }
 
-func (service *ValueServiceDB) GetNumberOfValues(user models.User) (int64, error) {
+func (service *ValueServiceDB) GetNumberOfValuesByUser(user models.User) (int64, error) {
 	var count int64
 
 	result := service.database.Model(&models.User{})
@@ -53,6 +53,22 @@ func (service *ValueServiceDB) GetNumberOfValues(user models.User) (int64, error
 	result = result.Joins("LEFT JOIN projects")
 	result = result.Joins("LEFT JOIN users")
 	result = result.Where("`users`.`id` = ?", user.ID)
+	result = result.Count(&count)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return count, nil
+}
+
+func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int64, error) {
+	var count int64
+
+	result := service.database.Model(&models.User{})
+	result = result.Model(&models.Value{})
+	result = result.Joins("LEFT JOIN fields")
+	result = result.Where("`field`.`id` = ?", field.ID)
 	result = result.Count(&count)
 
 	if result.Error != nil {

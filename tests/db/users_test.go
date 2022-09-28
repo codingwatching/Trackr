@@ -86,6 +86,9 @@ func TestDeleteUser(t *testing.T) {
 	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
+
+	err = suite.Service.GetUserService().DeleteUser(suite.User)
+	assert.NotNil(t, err)
 }
 
 func TestUpdateUser(t *testing.T) {

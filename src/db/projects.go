@@ -60,8 +60,8 @@ func (service *ProjectServiceDB) DeleteProject(id uint, user models.User) error 
 		return result.Error
 	}
 
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("can't find a corresponding project")
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("no rows affected")
 	}
 
 	return nil

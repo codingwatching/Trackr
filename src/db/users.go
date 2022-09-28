@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 
 	"trackr/src/models"
@@ -37,8 +38,13 @@ func (service *UserServiceDB) AddUser(user models.User) error {
 }
 
 func (service *UserServiceDB) DeleteUser(user models.User) error {
-	if result := service.database.Delete(&user); result.Error != nil {
+	result := service.database.Delete(&user)
+	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("no rows affected")
 	}
 
 	return nil

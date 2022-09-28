@@ -96,4 +96,7 @@ func TestDeleteField(t *testing.T) {
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(fields))
+
+	err = suite.Service.GetFieldService().DeleteField(suite.Field)
+	assert.NotNil(t, err)
 }

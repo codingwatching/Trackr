@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 
 	"trackr/src/models"
@@ -44,8 +45,13 @@ func (service *FieldServiceDB) UpdateField(field models.Field) error {
 }
 
 func (service *FieldServiceDB) DeleteField(field models.Field) error {
-	if result := service.database.Delete(field); result.Error != nil {
+	result := service.database.Delete(field)
+	if result.Error != nil {
 		return result.Error
+	}
+
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("no rows affected")
 	}
 
 	return nil

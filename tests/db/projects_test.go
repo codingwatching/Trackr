@@ -87,4 +87,7 @@ func TestDeleteProjectByIdAndUser(t *testing.T) {
 	projects, err := suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(projects), 0)
+
+	err = suite.Service.GetProjectService().DeleteProject(suite.Project.ID, suite.User)
+	assert.NotNil(t, err)
 }
