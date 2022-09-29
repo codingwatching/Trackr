@@ -21,19 +21,6 @@ const (
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to fetch current project count."})
-		return
-	}
-
-	if len(projects) >= int(user.MaxProjects) {
-		c.JSON(http.StatusBadRequest, responses.Error{
-			Error: "You cannot create a new project as you have reached your project limit.",
-		})
-		return
-	}
-
 	apiKey, err := generateAPIKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate API key."})

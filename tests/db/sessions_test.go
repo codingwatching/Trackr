@@ -8,7 +8,7 @@ import (
 	"trackr/tests"
 )
 
-func TestGetSessionAndUserById(t *testing.T) {
+func TestGetSessionAndUser(t *testing.T) {
 	suite := tests.Startup()
 
 	session, user, err := suite.Service.GetSessionService().GetSessionAndUser("InvalidSessionID")
@@ -51,7 +51,7 @@ func TestAddSession(t *testing.T) {
 	assert.Equal(t, session.ID, newSession.ID)
 }
 
-func TestDeleteSessionByIdAndUser(t *testing.T) {
+func TestDeleteSession(t *testing.T) {
 	suite := tests.Startup()
 
 	session, _, err := suite.Service.GetSessionService().GetSessionAndUser(suite.Session.ID)
@@ -76,7 +76,7 @@ func TestDeleteSessionByIdAndUser(t *testing.T) {
 	assert.Nil(t, session)
 }
 
-func TestDeleteExpiredSessionsByUser(t *testing.T) {
+func TestDeleteExpiredSessions(t *testing.T) {
 	suite := tests.Startup()
 
 	session, _, err := suite.Service.GetSessionService().GetSessionAndUser(suite.ExpiredSession.ID)

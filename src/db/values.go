@@ -68,7 +68,7 @@ func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int
 	result := service.database.Model(&models.User{})
 	result = result.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields")
-	result = result.Where("`field`.`id` = ?", field.ID)
+	result = result.Where("`fields`.`id` = ?", field.ID)
 	result = result.Count(&count)
 
 	if result.Error != nil {

@@ -8,7 +8,7 @@ import (
 	"trackr/tests"
 )
 
-func TestGetProjectsByUser(t *testing.T) {
+func TestGetProjects(t *testing.T) {
 	suite := tests.Startup()
 
 	projects, err := suite.Service.GetProjectService().GetProjects(suite.User)
@@ -21,7 +21,7 @@ func TestGetProjectsByUser(t *testing.T) {
 	assert.Equal(t, len(projects), 0)
 }
 
-func TestGetProjectByIdAndUser(t *testing.T) {
+func TestGetProject(t *testing.T) {
 	suite := tests.Startup()
 
 	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
@@ -34,6 +34,19 @@ func TestGetProjectByIdAndUser(t *testing.T) {
 	assert.Nil(t, project)
 
 	project, err = suite.Service.GetProjectService().GetProject(1, models.User{})
+	assert.NotNil(t, err)
+	assert.Nil(t, project)
+}
+
+func TestGetProjectByAPIKey(t *testing.T) {
+	suite := tests.Startup()
+
+	project, err := suite.Service.GetProjectService().GetProjectByAPIKey(suite.Project.APIKey)
+	assert.Nil(t, err)
+	assert.NotNil(t, project)
+	assert.Equal(t, project.ID, suite.Project.ID)
+
+	project, err = suite.Service.GetProjectService().GetProjectByAPIKey(models.Project{}.APIKey)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 }
@@ -72,7 +85,7 @@ func TestUpdateProject(t *testing.T) {
 	assert.Equal(t, projects[0].APIKey, newProject.APIKey)
 }
 
-func TestDeleteProjectByIdAndUser(t *testing.T) {
+func TestDeleteProject(t *testing.T) {
 	suite := tests.Startup()
 
 	err := suite.Service.GetProjectService().DeleteProject(suite.Project.ID, models.User{})

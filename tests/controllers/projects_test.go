@@ -52,21 +52,6 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
-
-	//
-	// Test project limit reached path.
-	//
-
-	response, _ = json.Marshal(responses.Error{
-		Error: "You cannot create a new project as you have reached your project limit.",
-	})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, nil)
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
 }
 
 func TestGetProjectsRoute(t *testing.T) {

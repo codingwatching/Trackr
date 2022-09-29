@@ -8,7 +8,7 @@ import (
 	"trackr/tests"
 )
 
-func TestGetUserByEmail(t *testing.T) {
+func TestGetUser(t *testing.T) {
 	suite := tests.Startup()
 
 	user, err := suite.Service.GetUserService().GetUser("invalid@email")
@@ -22,7 +22,7 @@ func TestGetUserByEmail(t *testing.T) {
 	assert.Equal(t, user.ID, suite.User.ID)
 }
 
-func TestGetNumberOfUsersByEmail(t *testing.T) {
+func TestGetNumberOfUsers(t *testing.T) {
 	suite := tests.Startup()
 
 	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsers("invalid@email")

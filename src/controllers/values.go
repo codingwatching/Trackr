@@ -81,7 +81,7 @@ func deleteValuesRoute(c *gin.Context) {
 
 	field, err := serviceProvider.GetFieldService().GetField(uint(fieldId), *user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to find field."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
@@ -118,14 +118,14 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	if numberOfValues >= int64(project.User.MaxValues) {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "You have exceeded your max values limit."})
-		return
-	}
-
 	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
+		return
+	}
+
+	if project.User.MaxValues > 0 && numberOfValues >= int64(project.User.MaxValues) {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "You have exceeded your max values limit."})
 		return
 	}
 

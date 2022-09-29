@@ -37,10 +37,9 @@ func TestGetUserRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.User{
-		FirstName:   suite.User.FirstName,
-		LastName:    suite.User.LastName,
-		MaxValues:   suite.User.MaxValues,
-		MaxProjects: suite.User.MaxProjects,
+		FirstName: suite.User.FirstName,
+		LastName:  suite.User.LastName,
+		MaxValues: suite.User.MaxValues,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)
