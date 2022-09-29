@@ -46,9 +46,9 @@ func addProjectRoute(c *gin.Context) {
 func getProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
@@ -95,9 +95,9 @@ func getProjectsRoute(c *gin.Context) {
 func deleteProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
@@ -182,8 +182,8 @@ func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput s
 	projectsRouterGroup.Use(sessionMiddleware)
 
 	projectsRouterGroup.POST("/", addProjectRoute)
-	projectsRouterGroup.GET("/:id", getProjectRoute)
+	projectsRouterGroup.GET("/:projectId", getProjectRoute)
 	projectsRouterGroup.GET("/", getProjectsRoute)
 	projectsRouterGroup.PUT("/", updateProjectRoute)
-	projectsRouterGroup.DELETE("/:id", deleteProjectRoute)
+	projectsRouterGroup.DELETE("/:projectId", deleteProjectRoute)
 }

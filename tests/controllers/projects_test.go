@@ -129,11 +129,11 @@ func TestGetProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
@@ -198,11 +198,11 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
