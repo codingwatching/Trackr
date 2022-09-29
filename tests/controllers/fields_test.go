@@ -293,7 +293,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :fieldId parameter provided.",
 	})
 
 	httpRecorder = httptest.NewRecorder()
@@ -309,7 +309,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Failed to delete field.",
+		Error: "Failed to get field.",
 	})
 
 	httpRecorder = httptest.NewRecorder()
@@ -317,7 +317,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusInternalServerError, httpRecorder.Code)
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//

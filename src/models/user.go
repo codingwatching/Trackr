@@ -14,6 +14,5 @@ type User struct {
 	UpdatedAt  time.Time
 	CreatedAt  time.Time
 
-	MaxValues   uint
-	MaxProjects uint
+	MaxValues uint
 }

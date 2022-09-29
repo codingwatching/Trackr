@@ -7,5 +7,5 @@ type FieldService interface {
 	GetField(id uint, user models.User) (*models.Field, error)
 	AddField(field models.Field) error
 	UpdateField(field models.Field) error
-	DeleteField(id uint, user models.User) error
+	DeleteField(field models.Field) error
 }

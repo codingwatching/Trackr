@@ -21,7 +21,7 @@ func addFieldRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ProjectID, *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ProjectID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
 		return
@@ -59,7 +59,7 @@ func getFieldsRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
@@ -119,13 +119,19 @@ func updateFieldRoute(c *gin.Context) {
 func deleteFieldRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	fieldId, err := strconv.Atoi(c.Param("id"))
+	fieldId, err := strconv.Atoi(c.Param("fieldId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :fieldId parameter provided."})
 		return
 	}
 
-	err = serviceProvider.GetFieldService().DeleteField(uint(fieldId), *user)
+	field, err := serviceProvider.GetFieldService().GetField(uint(fieldId), *user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get field."})
+		return
+	}
+
+	err = serviceProvider.GetFieldService().DeleteField(*field)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete field."})
 		return
@@ -143,5 +149,5 @@ func initFieldsController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 	fieldsRouterGroup.POST("/", addFieldRoute)
 	fieldsRouterGroup.GET("/:projectId", getFieldsRoute)
 	fieldsRouterGroup.PUT("/", updateFieldRoute)
-	fieldsRouterGroup.DELETE("/:id", deleteFieldRoute)
+	fieldsRouterGroup.DELETE("/:fieldId", deleteFieldRoute)
 }

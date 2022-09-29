@@ -35,7 +35,7 @@ func TestAddProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
@@ -48,25 +48,10 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
-
-	//
-	// Test project limit reached path.
-	//
-
-	response, _ = json.Marshal(responses.Error{
-		Error: "You cannot create a new project as you have reached your project limit.",
-	})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, nil)
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
 }
 
 func TestGetProjectsRoute(t *testing.T) {
@@ -144,11 +129,11 @@ func TestGetProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
@@ -213,11 +198,11 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
@@ -246,7 +231,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(1), project.ID)
@@ -261,7 +246,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 }
@@ -333,7 +318,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, suite.Project.Name, project.Name)
@@ -358,7 +343,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -383,7 +368,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -408,7 +393,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -435,7 +420,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -462,7 +447,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
@@ -488,7 +473,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		assert.Equal(t, http.StatusOK, httpRecorder.Code)
 		assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-		project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+		project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 		assert.Nil(t, err)
 		assert.NotNil(t, project)
 		assert.Equal(t, "New Project Name", project.Name)

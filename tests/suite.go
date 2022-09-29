@@ -22,6 +22,7 @@ type Suite struct {
 	ExpiredSession models.Session
 	Time           time.Time
 	Field          models.Field
+	Value          models.Value
 }
 
 func Startup() *Suite {
@@ -30,16 +31,15 @@ func Startup() *Suite {
 	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:"))
 	suite.Time = time.Now()
 	suite.User = models.User{
-		ID:          1,
-		Email:       "Email@email",
-		Password:    "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
-		FirstName:   "FirstName",
-		LastName:    "LastName",
-		UpdatedAt:   suite.Time,
-		CreatedAt:   suite.Time,
-		IsVerified:  true,
-		MaxValues:   1,
-		MaxProjects: 2,
+		ID:         1,
+		Email:      "Email@email",
+		Password:   "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
+		FirstName:  "FirstName",
+		LastName:   "LastName",
+		UpdatedAt:  suite.Time,
+		CreatedAt:  suite.Time,
+		IsVerified: true,
+		MaxValues:  1,
 	}
 	suite.Service.GetUserService().AddUser(suite.User)
 
@@ -87,6 +87,16 @@ func Startup() *Suite {
 		Project:   suite.Project,
 	}
 	suite.Service.GetFieldService().AddField(suite.Field)
+
+	suite.Value = models.Value{
+		ID:        1,
+		Value:     "1.00",
+		CreatedAt: suite.Time,
+
+		FieldID: suite.Field.ID,
+		Field:   suite.Field,
+	}
+	suite.Service.GetValueService().AddValue(suite.Value)
 
 	return &suite
 }

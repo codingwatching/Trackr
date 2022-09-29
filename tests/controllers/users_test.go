@@ -37,10 +37,9 @@ func TestGetUserRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.User{
-		FirstName:   suite.User.FirstName,
-		LastName:    suite.User.LastName,
-		MaxValues:   suite.User.MaxValues,
-		MaxProjects: suite.User.MaxProjects,
+		FirstName: suite.User.FirstName,
+		LastName:  suite.User.LastName,
+		MaxValues: suite.User.MaxValues,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)
@@ -98,7 +97,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, suite.User.FirstName, user.FirstName)
@@ -121,7 +120,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -144,7 +143,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -167,7 +166,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -190,7 +189,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -231,7 +230,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -261,12 +260,12 @@ func TestDeleteUserRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, suite.User.ID, user.ID)
 
-	projects, err := suite.Service.GetProjectService().GetProjectsByUser(suite.User)
+	projects, err := suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(projects))
 
@@ -279,11 +278,11 @@ func TestDeleteUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 
-	projects, err = suite.Service.GetProjectService().GetProjectsByUser(suite.User)
+	projects, err = suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(projects))
 }

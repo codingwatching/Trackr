@@ -87,16 +87,16 @@ func TestUpdateField(t *testing.T) {
 func TestDeleteField(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetFieldService().DeleteField(models.Field{}.ID, suite.User)
+	err := suite.Service.GetFieldService().DeleteField(models.Field{})
 	assert.NotNil(t, err)
 
-	err = suite.Service.GetFieldService().DeleteField(suite.Field.ID, models.User{})
-	assert.NotNil(t, err)
-
-	err = suite.Service.GetFieldService().DeleteField(suite.Field.ID, suite.User)
+	err = suite.Service.GetFieldService().DeleteField(suite.Field)
 	assert.Nil(t, err)
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(fields))
+
+	err = suite.Service.GetFieldService().DeleteField(suite.Field)
+	assert.NotNil(t, err)
 }
