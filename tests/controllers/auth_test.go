@@ -15,6 +15,36 @@ import (
 	"trackr/tests"
 )
 
+func TestIsLoggedInRoute(t *testing.T) {
+	suite := tests.StartupWithRouter()
+	method, path := "GET", "/api/auth/"
+
+	//
+	// Test logged in path.
+	//
+
+	response, _ := json.Marshal(responses.Empty{})
+	httpRecorder := httptest.NewRecorder()
+	httpRequest, _ := http.NewRequest(method, path, nil)
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test not logged in path.
+	//
+
+	response, _ = json.Marshal(responses.Error{Error: "Not logged in."})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, nil)
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusUnauthorized, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+}
+
 func TestRegisterRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
 	method, path := "POST", "/api/auth/register"
