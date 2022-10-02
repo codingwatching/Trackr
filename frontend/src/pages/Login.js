@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Fade from "@mui/material/Fade";
@@ -35,7 +35,12 @@ const Login = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setError(error.response.data.error);
+
+        if (error?.response?.data?.error) {
+          setError(error.response.data.error);
+        } else {
+          setError("Failed to sign in: " + error.message);
+        }
       });
 
     setLoading(true);
@@ -77,7 +82,6 @@ const Login = () => {
             name="email"
             type="email"
             autoComplete="email"
-            autoFocus
           />
           <TextField
             error={error ? true : false}
@@ -121,4 +125,5 @@ const Login = () => {
     </Container>
   );
 };
+
 export default Login;

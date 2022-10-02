@@ -14,5 +14,13 @@ class AuthAPI {
       { withCredentials: true }
     );
   }
+
+  static register(email, password, firstName, lastName) {
+    return axios.post(
+      this.#BASE_URL + "/register",
+      { email, password, firstName, lastName },
+      { withCredentials: true }
+    );
+  }
 }
 export default AuthAPI;
