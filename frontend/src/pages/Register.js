@@ -52,10 +52,16 @@ const Register = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth={false} sx={{ maxWidth: "550px" }}>
       <Box
         sx={{
-          my: 10,
+          my: 13,
+          backgroundColor: "white",
+          pb: 5,
+          pt: 3,
+          px: 6,
+          borderRadius: "6px",
+          boxShadow: "0px 4px 7px -1px #dbd6d6",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

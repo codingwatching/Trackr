@@ -9,8 +9,12 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 let theme = createTheme({
   palette: {
+    background: {
+      default: "whitesmoke",
+    },
     primary: {
       main: "#0052cc",
+      contrastText: "#fff",
     },
     secondary: {
       main: "#edf2ff",
@@ -21,8 +25,9 @@ let theme = createTheme({
 const App = () => {
   return (
     <BrowserRouter>
-      <CssBaseline />
       <ThemeProvider theme={theme}>
+        <CssBaseline />
+
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
