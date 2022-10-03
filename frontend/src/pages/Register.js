@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
 import AuthAPI from "../api/AuthAPI";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -52,19 +53,17 @@ const Register = () => {
   };
 
   return (
-    <Container component="main" maxWidth={false} sx={{ maxWidth: "550px" }}>
-      <Box
+    <Container component="main" maxWidth={false} sx={{ maxWidth: "540px" }}>
+      <Paper
         sx={{
           my: 13,
-          backgroundColor: "white",
-          pb: 5,
-          pt: 3,
+          pb: 5.5,
+          pt: 4,
           px: 6,
-          borderRadius: "6px",
-          boxShadow: "0px 4px 7px -1px #dbd6d6",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          boxShadow: "0px 2px 5px -1px #dbd6d6",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
@@ -158,7 +157,7 @@ const Register = () => {
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 };
