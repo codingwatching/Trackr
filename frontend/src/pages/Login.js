@@ -30,8 +30,7 @@ const Login = () => {
       data.get("rememberMe") ? true : false
     )
       .then(() => {
-        setError();
-        setLoading(false);
+        navigate("/");
       })
       .catch((error) => {
         setLoading(false);
@@ -64,12 +63,10 @@ const Login = () => {
           Sign in
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
           {error && (
             <Fade in={error ? true : false}>
-              <Alert severity="error" sx={{ my: 1 }}>
-                {error}
-              </Alert>
+              <Alert severity="error">{error}</Alert>
             </Fade>
           )}
 

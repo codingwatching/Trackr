@@ -29,8 +29,6 @@ const Register = () => {
       return;
     }
 
-    data.forEach((v, i) => console.log(v, i));
-
     AuthAPI.register(
       data.get("email"),
       data.get("password"),

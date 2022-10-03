@@ -2,21 +2,15 @@ import { useState, useEffect } from "react";
 import AuthAPI from "../api/AuthAPI";
 
 export const useAuth = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
     AuthAPI.isLoggedIn()
-      .then(() => {
-        setIsLoggedIn(true);
-      })
-      .catch((error) => {
-        setIsLoggedIn(false);
-
-        console.log(error);
-      });
+      .then(() => setLoggedIn(true))
+      .catch(() => setLoggedIn(false));
 
     return () => {};
   }, []);
 
-  return [isLoggedIn];
+  return loggedIn;
 };
