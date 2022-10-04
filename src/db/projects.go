@@ -38,12 +38,12 @@ func (service *ProjectServiceDB) GetProjectByAPIKey(apiKey string) (*models.Proj
 	return &project, nil
 }
 
-func (service *ProjectServiceDB) AddProject(project models.Project) error {
+func (service *ProjectServiceDB) AddProject(project models.Project) (uint, error) {
 	if result := service.database.Create(&project); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
-	return nil
+	return project.ID, nil
 }
 
 func (service *ProjectServiceDB) UpdateProject(project models.Project) error {

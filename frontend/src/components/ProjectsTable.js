@@ -14,13 +14,13 @@ import IconButton from "@mui/material/IconButton";
 import MoreVert from "@mui/icons-material/MoreVert";
 import Link from "@mui/material/Link";
 import CenteredBox from "./CenteredBox";
-import LoadingButton from "@mui/lab/LoadingButton";
 import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
 import ErrorIcon from "@mui/icons-material/Error";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
+import CreateProjectButton from "./CreateProjectButton";
 
 const ProjectsTable = () => {
   const [projects, loading, error] = useProjects();
@@ -29,6 +29,17 @@ const ProjectsTable = () => {
     return (
       <CenteredBox>
         <CircularProgress />
+      </CenteredBox>
+    );
+  }
+
+  if (error) {
+    return (
+      <CenteredBox>
+        <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
+        <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+          {error}
+        </Typography>
       </CenteredBox>
     );
   }
@@ -46,19 +57,12 @@ const ProjectsTable = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Projects
           </Typography>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            disableElevation
-          >
-            Create Project
-          </LoadingButton>
+          <CreateProjectButton />
         </Box>
 
         <Divider />
 
-        {projects.length && !error ? (
+        {projects.length ? (
           <Table>
             <TableHead>
               <TableRow>
@@ -115,21 +119,10 @@ const ProjectsTable = () => {
               color: "darkgray",
             }}
           >
-            {error ? (
-              <>
-                <ErrorIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-                <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
-                  {error}
-                </Typography>
-              </>
-            ) : (
-              <>
-                <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-                <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
-                  You currently have no projects.
-                </Typography>
-              </>
-            )}
+            <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
+            <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+              You currently have no projects.
+            </Typography>
           </Box>
         )}
       </Paper>

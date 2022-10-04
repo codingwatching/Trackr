@@ -39,7 +39,9 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.NewProject{
+		ID: uint(2),
+	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -79,7 +81,10 @@ func TestGetProjectsRoute(t *testing.T) {
 	newProject := suite.Project
 	newProject.ID = 2
 	newProject.APIKey = "APIKey2"
-	assert.Nil(t, suite.Service.GetProjectService().AddProject(newProject))
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
 
 	response, _ = json.Marshal(responses.ProjectList{
 		Projects: []responses.Project{

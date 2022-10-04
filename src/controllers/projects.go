@@ -35,12 +35,15 @@ func addProjectRoute(c *gin.Context) {
 		ShareURL:    nil,
 	}
 
-	if err := serviceProvider.GetProjectService().AddProject(project); err != nil {
+	projectId, err := serviceProvider.GetProjectService().AddProject(project)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new project."})
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.NewProject{
+		ID: projectId,
+	})
 }
 
 func getProjectRoute(c *gin.Context) {

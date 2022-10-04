@@ -294,7 +294,7 @@ func TestLoginRoute(t *testing.T) {
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, http.StatusTemporaryRedirect, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//

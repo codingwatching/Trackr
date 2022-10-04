@@ -8,6 +8,7 @@ const CenteredBox = ({ children, ...props }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        flexDirection: "column",
         flex: "1",
       }}
     >
