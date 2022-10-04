@@ -32,7 +32,7 @@ func isLoggedIn(c *gin.Context) *models.User {
 		return nil
 	}
 
-	session, user, err := serviceProvider.GetSessionService().GetSessionAndUserById(sessionId)
+	session, user, err := serviceProvider.GetSessionService().GetSessionAndUser(sessionId)
 	if err != nil {
 		return nil
 	}

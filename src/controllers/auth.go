@@ -19,8 +19,7 @@ const (
 	sessionIdLength = 64
 	sessionCookie   = "Session"
 
-	maxValues   = 1000
-	maxProjects = 10
+	maxValues = 10000
 )
 
 func loginRoute(c *gin.Context) {
@@ -45,7 +44,7 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
-	user, err := serviceProvider.GetUserService().GetUserByEmail(json.Email)
+	user, err := serviceProvider.GetUserService().GetUser(json.Email)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, responses.Error{Error: "Invalid email or password combination."})
 		return
@@ -56,7 +55,7 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetSessionService().DeleteExpiredSessionsByUser(*user)
+	err = serviceProvider.GetSessionService().DeleteExpiredSessions(*user)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, responses.Error{Error: "Failed to clean up sessions."})
 		return
@@ -108,13 +107,13 @@ func logoutRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetSessionService().DeleteExpiredSessionsByUser(*user)
+	err = serviceProvider.GetSessionService().DeleteExpiredSessions(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete expired sessions."})
 		return
 	}
 
-	err = serviceProvider.GetSessionService().DeleteSessionByIdAndUser(sessionId, *user)
+	err = serviceProvider.GetSessionService().DeleteSession(sessionId, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete session."})
 		return
@@ -160,7 +159,7 @@ func registerRoute(c *gin.Context) {
 		return
 	}
 
-	count, err := serviceProvider.GetUserService().GetNumberOfUsersByEmail(json.Email)
+	count, err := serviceProvider.GetUserService().GetNumberOfUsers(json.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get user count."})
 		return
@@ -186,8 +185,7 @@ func registerRoute(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 
-		MaxValues:   maxValues,
-		MaxProjects: maxProjects,
+		MaxValues: maxValues,
 	}
 
 	err = serviceProvider.GetUserService().AddUser(user)

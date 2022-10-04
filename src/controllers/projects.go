@@ -21,19 +21,6 @@ const (
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to fetch current project count."})
-		return
-	}
-
-	if len(projects) >= int(user.MaxProjects) {
-		c.JSON(http.StatusBadRequest, responses.Error{
-			Error: "You cannot create a new project as you have reached your project limit.",
-		})
-		return
-	}
-
 	apiKey, err := generateAPIKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate API key."})
@@ -59,13 +46,13 @@ func addProjectRoute(c *gin.Context) {
 func getProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
@@ -84,7 +71,7 @@ func getProjectRoute(c *gin.Context) {
 func getProjectsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get projects."})
 		return
@@ -108,13 +95,13 @@ func getProjectsRoute(c *gin.Context) {
 func deleteProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
-	err = serviceProvider.GetProjectService().DeleteProjectByIdAndUser(uint(projectId), *user)
+	err = serviceProvider.GetProjectService().DeleteProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to delete project."})
 		return
@@ -132,7 +119,7 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ID, *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
@@ -195,8 +182,8 @@ func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput s
 	projectsRouterGroup.Use(sessionMiddleware)
 
 	projectsRouterGroup.POST("/", addProjectRoute)
-	projectsRouterGroup.GET("/:id", getProjectRoute)
+	projectsRouterGroup.GET("/:projectId", getProjectRoute)
 	projectsRouterGroup.GET("/", getProjectsRoute)
 	projectsRouterGroup.PUT("/", updateProjectRoute)
-	projectsRouterGroup.DELETE("/:id", deleteProjectRoute)
+	projectsRouterGroup.DELETE("/:projectId", deleteProjectRoute)
 }
