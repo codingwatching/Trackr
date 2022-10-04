@@ -1,4 +1,5 @@
 import { useProjects } from "../contexts/ProjectContext";
+import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -11,10 +12,15 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import IconButton from "@mui/material/IconButton";
 import MoreVert from "@mui/icons-material/MoreVert";
+import Link from "@mui/material/Link";
 import CenteredBox from "./CenteredBox";
 import LoadingButton from "@mui/lab/LoadingButton";
 import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
+import ErrorIcon from "@mui/icons-material/Error";
 import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
+import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
+import Moment from "react-moment";
 
 const ProjectsTable = () => {
   const [projects, loading, error] = useProjects();
@@ -25,10 +31,6 @@ const ProjectsTable = () => {
         <CircularProgress />
       </CenteredBox>
     );
-  }
-
-  if (error) {
-  } else {
   }
 
   return (
@@ -56,12 +58,12 @@ const ProjectsTable = () => {
 
         <Divider />
 
-        {projects.length ? (
-          <Table aria-label="simple table">
+        {projects.length && !error ? (
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Created At</TableCell>
+                <TableCell align="left">Created</TableCell>
                 <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
@@ -71,8 +73,30 @@ const ProjectsTable = () => {
                   key={project.id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell align="left">{project.name}</TableCell>
-                  <TableCell align="left">{project.createdAt}</TableCell>
+                  <TableCell align="left">
+                    <Link
+                      component={NavLink}
+                      to={"/projects/" + project.id}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <AccountTreeRoundedIcon sx={{ mr: 3 }} />
+                      {project.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Tooltip title={project.createdAt}>
+                      <Box>
+                        <Moment fromNow ago>
+                          {project.createdAt}
+                        </Moment>{" "}
+                        ago
+                      </Box>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell align="right">
                     <IconButton>
                       <MoreVert />
@@ -91,10 +115,21 @@ const ProjectsTable = () => {
               color: "darkgray",
             }}
           >
-            <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-            <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
-              You currently have no projects.
-            </Typography>
+            {error ? (
+              <>
+                <ErrorIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
+                <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+                  {error}
+                </Typography>
+              </>
+            ) : (
+              <>
+                <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
+                <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+                  You currently have no projects.
+                </Typography>
+              </>
+            )}
           </Box>
         )}
       </Paper>
