@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useLocation, matchPath, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -6,14 +7,17 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
-import { useLocation, matchPath } from "react-router-dom";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
+import Logo from "./Logo";
+import AuthAPI from "../api/AuthAPI";
 
 const pages = [
   { name: "Dashboard", href: "/", match: "/" },
@@ -24,12 +28,12 @@ const pages = [
     listable: <p>hi</p>,
   },
 ];
-const settings = ["Settings", "Logout"];
 
-const NavigationBar = () => {
+const NavBar = () => {
   const location = useLocation();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -46,6 +50,12 @@ const NavigationBar = () => {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    AuthAPI.logout().then(() => {
+      navigate("/login");
+    });
+  };
+
   return (
     <AppBar
       position="static"
@@ -53,7 +63,6 @@ const NavigationBar = () => {
     >
       <Container>
         <Toolbar disableGutters>
-          {/* Hamburger Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton size="large" onClick={handleOpenNavMenu}>
               <MenuIcon />
@@ -84,39 +93,19 @@ const NavigationBar = () => {
             </Menu>
           </Box>
 
-          {/* Logo */}
           <Box sx={{ display: "flex" }}>
             <Button
+              onClick={() => navigate("/")}
               sx={{
                 color: "black",
                 mr: 1,
                 textTransform: "lowercase",
               }}
             >
-              <InsertChartIcon
-                sx={{
-                  color: "primary.main",
-                  mr: 1,
-                }}
-              />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                sx={{
-                  ml: -0.5,
-                  fontWeight: 500,
-                  color: "black",
-                  userSelect: "none",
-                  textDecoration: "none",
-                }}
-              >
-                trackr
-              </Typography>
+              <Logo />
             </Button>
           </Box>
 
-          {/* Navlinks */}
           <Box
             sx={{
               justifyContent: "left",
@@ -141,7 +130,7 @@ const NavigationBar = () => {
                 }}
               >
                 <Button
-                  onClick={handleCloseNavMenu}
+                  onClick={() => navigate(page.href)}
                   endIcon={page.listable && <KeyboardArrowDownIcon />}
                   sx={{
                     my: 2,
@@ -155,7 +144,6 @@ const NavigationBar = () => {
             ))}
           </Box>
 
-          {/* Settings button */}
           <Box sx={{ display: "flex", flexGrow: 1, justifyContent: "right" }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -178,11 +166,18 @@ const NavigationBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem>
+                <ListItemIcon>
+                  <Settings fontSize="small" />
+                </ListItemIcon>
+                Settings
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <ListItemIcon>
+                  <Logout fontSize="small" />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
@@ -191,4 +186,4 @@ const NavigationBar = () => {
   );
 };
 
-export default NavigationBar;
+export default NavBar;

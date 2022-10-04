@@ -1,11 +1,12 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import AuthorizedRoute from "./components/AuthorizedRoute";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Projects from "./pages/Projects";
 
 let theme = createTheme({
   palette: {
@@ -30,6 +31,11 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route
+            path="/projects/"
+            element={<AuthorizedRoute element={<Projects />} />}
+          />
           <Route
             path="/"
             element={<AuthorizedRoute element={<Dashboard />} />}

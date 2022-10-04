@@ -24,7 +24,7 @@ const (
 
 func loginRoute(c *gin.Context) {
 	if isLoggedIn(c) != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "You are currently logged in."})
+		c.JSON(http.StatusTemporaryRedirect, responses.Error{Error: "You are currently logged in."})
 		return
 	}
 

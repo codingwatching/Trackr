@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Fade from "@mui/material/Fade";
@@ -11,10 +13,8 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
 import AuthAPI from "../api/AuthAPI";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import FormBox from "../components/FormBox";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -54,18 +54,7 @@ const Register = () => {
 
   return (
     <Container component="main" maxWidth={false} sx={{ maxWidth: "540px" }}>
-      <Paper
-        sx={{
-          my: 13,
-          pb: 5.5,
-          pt: 4,
-          px: 6,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxShadow: "0px 2px 5px -1px #dbd6d6",
-        }}
-      >
+      <FormBox>
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
@@ -141,7 +130,7 @@ const Register = () => {
             fullWidth
             variant="contained"
             disableElevation
-            sx={{ mt: 2, mb: 2 }}
+            sx={{ mt: 2, mb: 2, textTransform: "none" }}
           >
             Sign Up
           </LoadingButton>
@@ -157,7 +146,7 @@ const Register = () => {
             </Grid>
           </Grid>
         </Box>
-      </Paper>
+      </FormBox>
     </Container>
   );
 };

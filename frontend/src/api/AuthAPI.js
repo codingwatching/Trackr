@@ -22,5 +22,9 @@ class AuthAPI {
       { withCredentials: true }
     );
   }
+
+  static logout() {
+    return axios.get(this.#BASE_URL + "/logout", { withCredentials: true });
+  }
 }
 export default AuthAPI;
