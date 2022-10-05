@@ -191,7 +191,11 @@ const EditProject = () => {
             disabled
             label="API Key"
             value={project.apiKey}
-            sx={{ flexGrow: 1 }}
+            sx={{
+              flexGrow: 1,
+              textDecoration: alignment ? "line-through" : "none",
+              color: "gray",
+            }}
           />
         </Box>
 

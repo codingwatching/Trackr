@@ -20,7 +20,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const EditProjectButton = ({ project, projects, setProjects }) => {
+const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -153,4 +153,4 @@ const EditProjectButton = ({ project, projects, setProjects }) => {
   );
 };
 
-export default EditProjectButton;
+export default ProjectContextMenuButton;

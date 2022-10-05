@@ -59,7 +59,7 @@ const NavBar = () => {
   return (
     <AppBar
       position="static"
-      sx={{ background: "white", boxShadow: "0px 2px 5px -1px #dbd6d6" }}
+      sx={{ background: "#fafbfc", boxShadow: "0px 0px 4px -1px #9d9d9d" }}
     >
       <Container>
         <Toolbar disableGutters sx={{ height: 0 }}>
