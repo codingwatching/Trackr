@@ -1,8 +1,8 @@
-import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 
 const FormBox = ({ children, ...props }) => {
   return (
-    <Paper
+    <Box
       {...props}
       sx={{
         my: 13,
@@ -12,11 +12,10 @@ const FormBox = ({ children, ...props }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        boxShadow: "0px 2px 5px -1px #dbd6d6",
       }}
     >
       {children}
-    </Paper>
+    </Box>
   );
 };
 

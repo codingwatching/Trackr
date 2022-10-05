@@ -11,9 +11,6 @@ import EditProject from "./pages/EditProject";
 
 let theme = createTheme({
   palette: {
-    background: {
-      default: "whitesmoke",
-    },
     primary: {
       main: "#0052cc",
     },

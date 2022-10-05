@@ -7,6 +7,5 @@ type Project struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	APIKey      string    `json:"apiKey"`
-	ShareURL    *string   `json:"shareURL"`
 	CreatedAt   time.Time `json:"createdAt"`
 }

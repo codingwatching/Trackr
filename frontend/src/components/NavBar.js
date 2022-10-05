@@ -62,7 +62,7 @@ const NavBar = () => {
       sx={{ background: "white", boxShadow: "0px 2px 5px -1px #dbd6d6" }}
     >
       <Container>
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ height: 0 }}>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton size="large" onClick={handleOpenNavMenu}>
               <MenuIcon />
@@ -176,7 +176,7 @@ const NavBar = () => {
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>
-                Logout
+                Sign out
               </MenuItem>
             </Menu>
           </Box>

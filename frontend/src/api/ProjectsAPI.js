@@ -17,6 +17,14 @@ class ProjectsAPI {
     return axios.post(this.#BASE_URL + "/", {}, { withCredentials: true });
   }
 
+  static updateProject(id, name, description, resetAPIKey) {
+    return axios.put(
+      this.#BASE_URL + "/",
+      { id, name, description, resetAPIKey },
+      { withCredentials: true }
+    );
+  }
+
   static deleteProject(projectId) {
     return axios.delete(this.#BASE_URL + "/" + projectId, {
       withCredentials: true,
