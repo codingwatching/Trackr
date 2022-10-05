@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import AuthorizedRoute from "./components/AuthorizedRoute";
 import Projects from "./pages/Projects";
+import EditProject from "./pages/EditProject";
 
 let theme = createTheme({
   palette: {
@@ -35,6 +36,10 @@ const App = () => {
           <Route
             path="/projects/"
             element={<AuthorizedRoute element={<Projects />} />}
+          />
+          <Route
+            path="/projects/edit/:projectId"
+            element={<AuthorizedRoute element={<EditProject />} />}
           />
           <Route
             path="/"

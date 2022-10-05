@@ -7,6 +7,12 @@ class ProjectsAPI {
     return axios.get(this.#BASE_URL + "/", { withCredentials: true });
   }
 
+  static getProject(projectId) {
+    return axios.get(this.#BASE_URL + "/" + projectId, {
+      withCredentials: true,
+    });
+  }
+
   static createProject() {
     return axios.post(this.#BASE_URL + "/", {}, { withCredentials: true });
   }

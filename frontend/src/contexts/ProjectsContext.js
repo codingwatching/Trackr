@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import ProjectsAPI from "../api/ProjectsAPI";
 
-export const useProject = (projectId) => {
-  const [project, setProject] = useState();
+export const useProjects = () => {
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
   useEffect(() => {
-    ProjectsAPI.getProject(projectId)
+    ProjectsAPI.getProjects()
       .then((result) => {
         setLoading(false);
         setError();
-        setProject(result.data);
+        setProjects(result.data.projects);
       })
       .catch((error) => {
         if (error?.response?.data?.error) {
@@ -21,11 +21,11 @@ export const useProject = (projectId) => {
         }
 
         setLoading(false);
-        setProject();
+        setProjects([]);
       });
 
     return () => {};
   }, []);
 
-  return [project, setProject, loading, error];
+  return [projects, setProjects, loading, error];
 };

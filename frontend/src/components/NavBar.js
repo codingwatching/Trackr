@@ -121,7 +121,7 @@ const NavBar = () => {
                     {
                       path: page.match,
                       exact: true,
-                      strict: true,
+                      strict: false,
                     },
                     location.pathname
                   )

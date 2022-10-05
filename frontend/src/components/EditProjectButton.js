@@ -9,6 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -17,6 +18,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const EditProjectButton = ({ project, projects, setProjects }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -67,6 +69,11 @@ const EditProjectButton = ({ project, projects, setProjects }) => {
     setLoading(true);
   };
 
+  const handleCopyAPIKey = () => {
+    navigator.clipboard.writeText(project.apiKey);
+    setAnchorEl(null);
+  };
+
   const handleEditProject = () => {
     navigate("/projects/edit/" + project.id);
   };
@@ -87,6 +94,13 @@ const EditProjectButton = ({ project, projects, setProjects }) => {
           </ListItemIcon>
           <ListItemText>Edit</ListItemText>
         </MenuItem>
+        <MenuItem onClick={handleCopyAPIKey}>
+          <ListItemIcon>
+            <ContentCopyIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Copy API Key</ListItemText>
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={openDeleteDialog}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" color="error" />
