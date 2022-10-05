@@ -102,7 +102,8 @@ const ProjectsTable = () => {
                   </TableCell>
                   <TableCell align="right">
                     <EditProjectButton
-                      projectId={project.id}
+                      project={project}
+                      projects={projects}
                       setProjects={setProjects}
                     />
                   </TableCell>

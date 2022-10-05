@@ -10,6 +10,12 @@ class ProjectsAPI {
   static createProject() {
     return axios.post(this.#BASE_URL + "/", {}, { withCredentials: true });
   }
+
+  static deleteProject(projectId) {
+    return axios.delete(this.#BASE_URL + "/" + projectId, {
+      withCredentials: true,
+    });
+  }
 }
 
 export default ProjectsAPI;
