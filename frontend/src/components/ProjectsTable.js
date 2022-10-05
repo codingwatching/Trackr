@@ -10,8 +10,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
-import MoreVert from "@mui/icons-material/MoreVert";
 import Link from "@mui/material/Link";
 import CenteredBox from "./CenteredBox";
 import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
@@ -21,9 +19,10 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
 import CreateProjectButton from "./CreateProjectButton";
+import EditProjectButton from "./EditProjectButton";
 
 const ProjectsTable = () => {
-  const [projects, loading, error] = useProjects();
+  const [projects, setProjects, loading, error] = useProjects();
 
   if (loading) {
     return (
@@ -102,9 +101,10 @@ const ProjectsTable = () => {
                     </Tooltip>
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton>
-                      <MoreVert />
-                    </IconButton>
+                    <EditProjectButton
+                      projectId={project.id}
+                      setProjects={setProjects}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

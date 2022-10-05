@@ -27,5 +27,5 @@ export const useProjects = () => {
     return () => {};
   }, []);
 
-  return [projects, loading, error];
+  return [projects, setProjects, loading, error];
 };
