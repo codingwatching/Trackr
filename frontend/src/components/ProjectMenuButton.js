@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
 import MoreVert from "@mui/icons-material/MoreVert";
+import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -20,7 +20,13 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
+const ProjectMenuButton = ({
+  project,
+  projects,
+  setProjects,
+  noSettings,
+  disabled,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -81,6 +87,14 @@ const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
   const handleSettingsProject = () => {
     navigate("/projects/settings/" + project.id);
   };
+
+  if (disabled) {
+    return (
+      <IconButton disabled>
+        <MoreVert />
+      </IconButton>
+    );
+  }
 
   return (
     <>

@@ -7,13 +7,14 @@ import Typography from "@mui/material/Typography";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
+import Skeleton from "@mui/material/Skeleton";
 import HomeIcon from "@mui/icons-material/Home";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ProjectMenuButton from "./ProjectMenuButton";
 
-const ProjectNavBar = ({ project }) => {
+const ProjectNavBar = ({ project, loading }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,27 +22,27 @@ const ProjectNavBar = ({ project }) => {
     {
       name: "Home",
       icon: <HomeIcon />,
-      href: "/projects/" + project.id,
-      match: "/projects/" + project.id,
+      href: "/projects/",
+      match: "/projects/:projectId",
     },
     {
       name: "Fields",
       icon: <TableChartIcon />,
-      href: "/projects/fields/" + project.id,
-      match: "/projects/fields/" + project.id,
+      href: "/projects/fields/",
+      match: "/projects/fields/:projectId",
     },
     {
       name: "API",
       icon: <VpnKeyIcon />,
-      href: "/projects/api/" + project.id,
-      match: "/projects/api/" + project.id,
+      href: "/projects/api/",
+      match: "/projects/api/:projectId",
     },
     {
       name: "Settings",
       icon: <SettingsIcon />,
       right: true,
-      href: "/projects/settings/" + project.id,
-      match: "/projects/settings/*",
+      href: "/projects/settings/",
+      match: "/projects/settings/:projectId",
     },
   ];
 
@@ -63,8 +64,8 @@ const ProjectNavBar = ({ project }) => {
           <Box
             sx={{
               display: "flex",
-              mb: project.description && "auto",
-              pt: project.description && "2px",
+              mb: (loading || project.description) && "auto",
+              pt: (loading || project.description) && "2px",
             }}
           >
             <AccountTreeRoundedIcon
@@ -80,24 +81,44 @@ const ProjectNavBar = ({ project }) => {
               flexGrow: 1,
             }}
           >
-            <Typography
-              variant="h5"
-              sx={{ color: "black", flexGrow: 1, wordBreak: "break-all" }}
-            >
-              {project.name}
-            </Typography>
-            <Typography
-              variant="h7"
-              sx={{ color: "gray", flexGrow: 1, wordBreak: "break-all" }}
-            >
-              {project.description}
-            </Typography>
+            {loading ? (
+              <>
+                <Skeleton
+                  variant="text"
+                  width={200}
+                  height={46}
+                  sx={{ mt: -1 }}
+                />
+                <Skeleton
+                  variant="text"
+                  width={280}
+                  height={30}
+                  sx={{ mt: -1, mb: -0.4 }}
+                />
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="h5"
+                  sx={{ color: "black", flexGrow: 1, wordBreak: "break-all" }}
+                >
+                  {project.name}
+                </Typography>
+                <Typography
+                  variant="h7"
+                  sx={{ color: "gray", flexGrow: 1, wordBreak: "break-all" }}
+                >
+                  {project.description}
+                </Typography>
+              </>
+            )}
           </Box>
 
-          <ProjectMenuButton project={project} noSettings />
+          <ProjectMenuButton project={project} noSettings disabled={loading} />
         </Box>
 
         <Divider />
+
         <Toolbar disableGutters>
           <Box
             sx={{
@@ -113,8 +134,9 @@ const ProjectNavBar = ({ project }) => {
                 sx={{ marginLeft: page.right ? "auto" : "none" }}
               >
                 <Button
-                  onClick={() => navigate(page.href)}
+                  onClick={() => navigate(page.href + project.id)}
                   startIcon={page.icon}
+                  disabled={loading}
                   sx={{
                     my: 2,
                     mr: 1,

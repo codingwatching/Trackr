@@ -22,18 +22,16 @@ const ProjectRoute = ({ element }) => {
     );
   }
 
-  if (loading) {
-    return (
-      <CenteredBox>
-        <CircularProgress />
-      </CenteredBox>
-    );
-  }
-
   return (
     <>
-      <ProjectNavBar project={project} />
-      {cloneElement(element, { project, setProject })}
+      <ProjectNavBar loading={loading} project={project} />
+      {loading ? (
+        <CenteredBox>
+          <CircularProgress />
+        </CenteredBox>
+      ) : (
+        cloneElement(element, { project, setProject })
+      )}
     </>
   );
 };

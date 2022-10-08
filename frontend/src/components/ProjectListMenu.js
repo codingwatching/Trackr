@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
 
 const ProjectListMenu = ({ closeSubMenu }) => {
-  const [projects, setProjects, loading, error] = useProjects();
+  const [projects, , loading, error] = useProjects();
   const navigate = useNavigate();
   const MAX_PROJECTS = 3;
 
@@ -119,7 +119,13 @@ const ProjectListMenu = ({ closeSubMenu }) => {
         onClick={handleViewAllProjects}
         sx={{ py: 1, pr: 8, alignItems: "start" }}
       >
-        View all projects
+        <Typography
+          variant="subtitle2"
+          color="#2a2a2a"
+          sx={{ fontWeight: 400 }}
+        >
+          View all projects
+        </Typography>
       </MenuItem>
     </>
   );
