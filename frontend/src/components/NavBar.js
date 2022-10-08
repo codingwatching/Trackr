@@ -50,6 +50,11 @@ const NavBar = () => {
     setAnchorElUser(null);
   };
 
+  const handleOpenUserSettings = () => {
+    navigate("/settings");
+    handleCloseUserMenu();
+  };
+
   const handleLogout = () => {
     AuthAPI.logout().then(() => {
       navigate("/login");
@@ -144,7 +149,13 @@ const NavBar = () => {
             ))}
           </Box>
 
-          <Box sx={{ display: "flex", flexGrow: 1, justifyContent: "right" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: 1,
+              justifyContent: "right",
+            }}
+          >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar />
@@ -166,7 +177,7 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem>
+              <MenuItem onClick={handleOpenUserSettings}>
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>

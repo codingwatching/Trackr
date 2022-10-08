@@ -54,7 +54,7 @@ const EditProject = ({ project, setProject }) => {
         if (error?.response?.data?.error) {
           setError(error.response.data.error);
         } else {
-          setError("Failed to sign in: " + error.message);
+          setError("Failed to update project settings: " + error.message);
         }
       });
 

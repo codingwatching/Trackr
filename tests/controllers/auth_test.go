@@ -408,7 +408,7 @@ func TestLoginRoute(t *testing.T) {
 		assert.Equal(t, session.ID, sessionId)
 
 		if shouldRememberMe {
-			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 1, 0)))
+			assert.GreaterOrEqual(t, session.ExpiresAt, session.CreatedAt.AddDate(0, 1, 0))
 		} else {
 			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 0, 7)))
 		}
