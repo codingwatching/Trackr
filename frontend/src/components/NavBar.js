@@ -1,5 +1,5 @@
 import { useLocation, matchPath, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, cloneElement } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,17 +7,20 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Logo from "./Logo";
 import AuthAPI from "../api/AuthAPI";
+import ProjectListMenu from "./ProjectListMenu";
 
 const pages = [
   { name: "Dashboard", href: "/", match: "/" },
@@ -25,7 +28,7 @@ const pages = [
     name: "Projects",
     href: "/projects",
     match: "/projects/*",
-    listable: <p>hi</p>,
+    subMenu: <ProjectListMenu />,
   },
 ];
 
@@ -34,12 +37,18 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElSubMenu, setAnchorElSubMenu] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
+  };
+
+  const handleOpenSubMenu = (event) => {
+    setAnchorElSubMenu(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
@@ -50,8 +59,17 @@ const NavBar = () => {
     setAnchorElUser(null);
   };
 
+  const handleCloseSubMenu = () => {
+    setAnchorElSubMenu(null);
+  };
+
   const handleOpenUserSettings = () => {
     navigate("/settings");
+    handleCloseUserMenu();
+  };
+
+  const handleOpenLogs = () => {
+    navigate("/logs");
     handleCloseUserMenu();
   };
 
@@ -91,7 +109,13 @@ const NavBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page.name}
+                  onClick={() => {
+                    navigate(page.href);
+                    handleCloseNavMenu();
+                  }}
+                >
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
@@ -135,8 +159,10 @@ const NavBar = () => {
                 }}
               >
                 <Button
-                  onClick={() => navigate(page.href)}
-                  endIcon={page.listable && <KeyboardArrowDownIcon />}
+                  onClick={(e) =>
+                    page.subMenu ? handleOpenSubMenu(e) : navigate(page.href)
+                  }
+                  endIcon={page.subMenu && <KeyboardArrowDownIcon />}
                   sx={{
                     my: 2,
                     color: "black",
@@ -145,6 +171,27 @@ const NavBar = () => {
                 >
                   {page.name}
                 </Button>
+
+                {page.subMenu && (
+                  <Menu
+                    sx={{ mt: "40px" }}
+                    anchorEl={anchorElSubMenu}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                    open={Boolean(anchorElSubMenu)}
+                    onClose={handleCloseSubMenu}
+                  >
+                    {cloneElement(page.subMenu, {
+                      closeSubMenu: handleCloseSubMenu,
+                    })}
+                  </Menu>
+                )}
               </Box>
             ))}
           </Box>
@@ -163,7 +210,6 @@ const NavBar = () => {
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: "top",
@@ -183,6 +229,13 @@ const NavBar = () => {
                 </ListItemIcon>
                 Settings
               </MenuItem>
+              <MenuItem onClick={handleOpenLogs}>
+                <ListItemIcon>
+                  <FormatListNumberedIcon fontSize="small" />
+                </ListItemIcon>
+                Logs
+              </MenuItem>
+              <Divider />
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />

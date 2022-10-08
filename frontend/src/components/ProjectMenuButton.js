@@ -87,6 +87,7 @@ const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
       <IconButton onClick={openDropdownMenu}>
         <MoreVert />
       </IconButton>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -116,6 +117,7 @@ const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
           </ListItemText>
         </MenuItem>
       </Menu>
+
       <Dialog open={dialogOpen} onClose={closeDialog}>
         {error ? (
           <>
@@ -131,7 +133,7 @@ const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
           </>
         ) : (
           <>
-            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogTitle>Delete Project</DialogTitle>
             <DialogContent>
               <DialogContentText variant="h7">
                 Are you sure you want to delete the "{project.name}" project?

@@ -12,6 +12,8 @@ import ProjectRoute from "./components/ProjectRoute";
 import ProjectFields from "./pages/ProjectFields";
 import UserSettings from "./pages/UserSettings";
 import UserRoute from "./components/UserRoute";
+import ProjectHome from "./pages/ProjectHome";
+import ProjectAPI from "./pages/ProjectAPI";
 
 let theme = createTheme({
   palette: {
@@ -20,6 +22,11 @@ let theme = createTheme({
     },
     secondary: {
       main: "#edf2ff",
+    },
+  },
+  transitions: {
+    duration: {
+      standard: 300,
     },
   },
 });
@@ -58,7 +65,7 @@ const App = () => {
             path="/projects/:projectId"
             element={
               <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectFields />} />}
+                element={<ProjectRoute element={<ProjectHome />} />}
               />
             }
           />
@@ -66,7 +73,7 @@ const App = () => {
             path="/projects/api/:projectId"
             element={
               <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectFields />} />}
+                element={<ProjectRoute element={<ProjectAPI />} />}
               />
             }
           />

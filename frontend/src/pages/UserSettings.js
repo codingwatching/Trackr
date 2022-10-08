@@ -162,7 +162,7 @@ const UserSettings = ({ user, setUser }) => {
           label="Current Password"
           name="currentPassword"
           error={error ? true : false}
-          value={loading ? "" : null}
+          value={loading ? "" : undefined}
           required
           sx={{ mb: 2.5 }}
         />
@@ -171,7 +171,7 @@ const UserSettings = ({ user, setUser }) => {
           type="password"
           label="New Password"
           name="newPassword"
-          value={loading ? "" : null}
+          value={loading ? "" : undefined}
           error={error ? true : false}
           required
           sx={{ mb: 2.5 }}
@@ -181,7 +181,7 @@ const UserSettings = ({ user, setUser }) => {
           type="password"
           label="Repeat New Password"
           name="repeatNewPassword"
-          value={loading ? "" : null}
+          value={loading ? "" : undefined}
           error={error ? true : false}
           required
           sx={{ mb: 2.5 }}

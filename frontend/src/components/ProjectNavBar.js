@@ -11,8 +11,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import SettingsIcon from "@mui/icons-material/Settings";
-
 import ProjectMenuButton from "./ProjectMenuButton";
+
 const ProjectNavBar = ({ project }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,9 +44,6 @@ const ProjectNavBar = ({ project }) => {
       match: "/projects/settings/*",
     },
   ];
-
-  /*    margin-bottom: auto;
-    padding-top: 4px;*/
 
   return (
     <AppBar
