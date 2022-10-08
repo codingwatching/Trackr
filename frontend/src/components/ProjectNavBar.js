@@ -45,6 +45,9 @@ const ProjectNavBar = ({ project }) => {
     },
   ];
 
+  /*    margin-bottom: auto;
+    padding-top: 4px;*/
+
   return (
     <AppBar
       position="static"
@@ -56,17 +59,43 @@ const ProjectNavBar = ({ project }) => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "start",
             py: 3,
           }}
         >
-          <AccountTreeRoundedIcon
-            sx={{ fontSize: 30, mr: 2, color: "primary.main" }}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              mb: project.description && "auto",
+              pt: project.description && "2px",
+            }}
+          >
+            <AccountTreeRoundedIcon
+              sx={{ fontSize: 30, mr: 2, color: "primary.main" }}
+            />
+          </Box>
 
-          <Typography variant="h5" sx={{ color: "black", flexGrow: 1 }}>
-            {project.name}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+              flexGrow: 1,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ color: "black", flexGrow: 1, wordBreak: "break-all" }}
+            >
+              {project.name}
+            </Typography>
+            <Typography
+              variant="h7"
+              sx={{ color: "gray", flexGrow: 1, wordBreak: "break-all" }}
+            >
+              {project.description}
+            </Typography>
+          </Box>
 
           <ProjectMenuButton project={project} noSettings />
         </Box>

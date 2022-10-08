@@ -41,6 +41,7 @@ const EditProject = ({ project, setProject }) => {
           apiKey: result.data.apiKey,
           updatedAt: new Date(),
         });
+
         setLoading(false);
         setSuccess("Project settings updated successfully.");
         setError();
