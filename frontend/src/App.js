@@ -7,7 +7,9 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import AuthorizedRoute from "./components/AuthorizedRoute";
 import Projects from "./pages/Projects";
-import EditProject from "./pages/EditProject";
+import ProjectSettings from "./pages/ProjectSettings";
+import ProjectRoute from "./components/ProjectRoute";
+import ProjectFields from "./pages/ProjectFields";
 
 let theme = createTheme({
   palette: {
@@ -35,8 +37,36 @@ const App = () => {
             element={<AuthorizedRoute element={<Projects />} />}
           />
           <Route
-            path="/projects/edit/:projectId"
-            element={<AuthorizedRoute element={<EditProject />} />}
+            path="/projects/settings/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectSettings />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectFields />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/api/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectFields />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/fields/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectFields />} />}
+              />
+            }
           />
           <Route
             path="/"

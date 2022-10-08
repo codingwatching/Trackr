@@ -25,7 +25,7 @@ export const useProject = (projectId) => {
       });
 
     return () => {};
-  }, []);
+  }, [projectId]);
 
   return [project, setProject, loading, error];
 };

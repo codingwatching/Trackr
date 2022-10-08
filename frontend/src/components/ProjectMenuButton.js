@@ -7,8 +7,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -20,7 +20,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
+const ProjectMenuButton = ({ project, projects, setProjects, noSettings }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,11 @@ const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
     ProjectsAPI.deleteProject(project.id)
       .then(() => {
         setDialogOpen(false);
-        setProjects(projects.filter((x) => x.id !== project.id));
+        navigate("/projects");
+
+        if (setProjects && projects) {
+          setProjects(projects.filter((x) => x.id !== project.id));
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -74,8 +78,8 @@ const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
     setAnchorEl(null);
   };
 
-  const handleEditProject = () => {
-    navigate("/projects/edit/" + project.id);
+  const handleSettingsProject = () => {
+    navigate("/projects/settings/" + project.id);
   };
 
   return (
@@ -88,12 +92,14 @@ const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
         open={Boolean(anchorEl)}
         onClose={closeDropdownMenu}
       >
-        <MenuItem onClick={handleEditProject}>
-          <ListItemIcon>
-            <CreateIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
-        </MenuItem>
+        {!noSettings && (
+          <MenuItem onClick={handleSettingsProject}>
+            <ListItemIcon>
+              <SettingsIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Settings</ListItemText>
+          </MenuItem>
+        )}
         <MenuItem onClick={handleCopyAPIKey}>
           <ListItemIcon>
             <ContentCopyIcon fontSize="small" />
@@ -153,4 +159,4 @@ const ProjectContextMenuButton = ({ project, projects, setProjects }) => {
   );
 };
 
-export default ProjectContextMenuButton;
+export default ProjectMenuButton;

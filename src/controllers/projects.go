@@ -66,6 +66,7 @@ func getProjectRoute(c *gin.Context) {
 		Description: project.Description,
 		APIKey:      project.APIKey,
 		CreatedAt:   project.CreatedAt,
+		UpdatedAt:   project.UpdatedAt,
 	})
 }
 
@@ -86,6 +87,7 @@ func getProjectsRoute(c *gin.Context) {
 			Description: project.Description,
 			APIKey:      project.APIKey,
 			CreatedAt:   project.CreatedAt,
+			UpdatedAt:   project.UpdatedAt,
 		}
 	}
 

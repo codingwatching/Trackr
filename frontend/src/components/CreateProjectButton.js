@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Button from "@mui/material/Button";
 import ProjectsAPI from "../api/ProjectsAPI";
 import Dialog from "@mui/material/Dialog";
@@ -18,7 +19,7 @@ const CreateProjectButton = () => {
   const handleOnClick = () => {
     ProjectsAPI.createProject()
       .then((result) => {
-        navigate("/projects/edit/" + result.data.id);
+        navigate("/projects/settings/" + result.data.id);
       })
       .catch((error) => {
         setLoading(false);
@@ -48,6 +49,7 @@ const CreateProjectButton = () => {
         onClick={handleOnClick}
         sx={{ textTransform: "none" }}
         disableElevation
+        startIcon={<AddRoundedIcon />}
       >
         Create Project
       </LoadingButton>

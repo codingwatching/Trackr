@@ -13,7 +13,7 @@ type ProjectServiceDB struct {
 
 func (service *ProjectServiceDB) GetProjects(user models.User) ([]models.Project, error) {
 	var projects []models.Project
-	if result := service.database.Find(&projects, "user_id = ?", user.ID); result.Error != nil {
+	if result := service.database.Order("created_at DESC").Find(&projects, "user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 

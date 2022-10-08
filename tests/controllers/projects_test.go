@@ -94,6 +94,7 @@ func TestGetProjectsRoute(t *testing.T) {
 				Description: suite.Project.Description,
 				APIKey:      suite.Project.APIKey,
 				CreatedAt:   suite.Project.CreatedAt,
+				UpdatedAt:   suite.Project.UpdatedAt,
 			},
 			{
 				ID:          newProject.ID,
@@ -101,6 +102,7 @@ func TestGetProjectsRoute(t *testing.T) {
 				Description: newProject.Description,
 				APIKey:      newProject.APIKey,
 				CreatedAt:   newProject.CreatedAt,
+				UpdatedAt:   newProject.UpdatedAt,
 			},
 		},
 	})
@@ -171,6 +173,7 @@ func TestGetProjectRoute(t *testing.T) {
 		Description: suite.Project.Description,
 		APIKey:      suite.Project.APIKey,
 		CreatedAt:   suite.Project.CreatedAt,
+		UpdatedAt:   suite.Project.UpdatedAt,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"1", nil)

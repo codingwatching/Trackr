@@ -18,7 +18,7 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
 import CreateProjectButton from "../components/CreateProjectButton";
-import ProjectContextMenuButton from "../components/ProjectContextMenuButton";
+import ProjectMenuButton from "../components/ProjectMenuButton";
 
 const Projects = () => {
   const [projects, setProjects, loading, error] = useProjects();
@@ -99,7 +99,7 @@ const Projects = () => {
                   </Tooltip>
                 </TableCell>
                 <TableCell align="right">
-                  <ProjectContextMenuButton
+                  <ProjectMenuButton
                     project={project}
                     projects={projects}
                     setProjects={setProjects}
