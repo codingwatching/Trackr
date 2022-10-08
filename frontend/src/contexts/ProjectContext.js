@@ -24,6 +24,8 @@ export const useProject = (projectId) => {
         setProject();
       });
 
+    setLoading(true);
+
     return () => {};
   }, [projectId]);
 
