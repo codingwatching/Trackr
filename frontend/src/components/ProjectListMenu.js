@@ -3,6 +3,7 @@ import { useProjects } from "../contexts/ProjectsContext";
 import MenuItem from "@mui/material/MenuItem";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ErrorIcon from "@mui/icons-material/Error";
+import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
@@ -22,63 +23,88 @@ const ProjectListMenu = ({ closeSubMenu }) => {
     closeSubMenu();
   };
 
+  const noProjectsElement = (
+    <MenuItem
+      disabled
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        color: "black",
+        p: 3,
+      }}
+    >
+      <NightsStayOutlinedIcon sx={{ fontSize: 50, mb: 2 }} />
+      <Typography variant="subtitle2" sx={{ userSelect: "none" }}>
+        You currently have no projects.
+      </Typography>
+    </MenuItem>
+  );
+
+  const errorElement = error && (
+    <MenuItem
+      disabled
+      sx={{
+        p: 3,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        color: "red",
+      }}
+    >
+      <ErrorIcon sx={{ fontSize: 30, mb: 1 }} />
+      <Typography
+        variant="subtitle2"
+        sx={{ userSelect: "none", color: "darkred" }}
+      >
+        {error}
+      </Typography>
+    </MenuItem>
+  );
+
+  const loadingElement = loading && (
+    <>
+      <MenuItem disabled sx={{ mb: -0.25 }}>
+        <Skeleton variant="text" width={60} height={30} />
+      </MenuItem>
+      <MenuItem disabled sx={{ mb: -0.25 }}>
+        <Skeleton
+          variant="rectangular"
+          width={25}
+          height={25}
+          sx={{ mr: 1.5, my: 0 }}
+        />
+        <Skeleton variant="text" width={100} height={25} />
+      </MenuItem>
+      <MenuItem disabled sx={{ mb: -0.25 }}>
+        <Skeleton
+          variant="rectangular"
+          width={25}
+          height={25}
+          sx={{ mr: 1.5, my: 0 }}
+        />
+        <Skeleton variant="text" width={130} height={25} />
+      </MenuItem>
+      <MenuItem disabled>
+        <Skeleton
+          variant="rectangular"
+          width={25}
+          height={25}
+          sx={{ mr: 1.5, my: 0 }}
+        />
+        <Skeleton variant="text" width={90} height={25} />
+      </MenuItem>
+    </>
+  );
+
   return (
     <>
-      {error && (
-        <MenuItem
-          disabled
-          sx={{
-            p: 3,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <ErrorIcon sx={{ fontSize: 30, mb: 1, color: "red" }} />
-          <Typography
-            variant="subtitle2"
-            sx={{ userSelect: "none", color: "darkred" }}
-          >
-            {error}
-          </Typography>
-        </MenuItem>
-      )}
+      {errorElement}
+      {loadingElement}
 
-      {loading ? (
-        <>
-          <MenuItem disabled sx={{ mb: -0.25 }}>
-            <Skeleton variant="text" width={60} height={30} />
-          </MenuItem>
-          <MenuItem disabled sx={{ mb: -0.25 }}>
-            <Skeleton
-              variant="rectangular"
-              width={25}
-              height={25}
-              sx={{ mr: 1.5, my: 0 }}
-            />
-            <Skeleton variant="text" width={100} height={25} />
-          </MenuItem>
-          <MenuItem disabled sx={{ mb: -0.25 }}>
-            <Skeleton
-              variant="rectangular"
-              width={25}
-              height={25}
-              sx={{ mr: 1.5, my: 0 }}
-            />
-            <Skeleton variant="text" width={130} height={25} />
-          </MenuItem>
-          <MenuItem disabled>
-            <Skeleton
-              variant="rectangular"
-              width={25}
-              height={25}
-              sx={{ mr: 1.5, my: 0 }}
-            />
-            <Skeleton variant="text" width={90} height={25} />
-          </MenuItem>
-        </>
-      ) : (
-        !error && (
+      {!error &&
+        !loading &&
+        (projects.length ? (
           <>
             <MenuItem disabled>
               <Typography variant="subtitle2">Recent</Typography>
@@ -110,11 +136,11 @@ const ProjectListMenu = ({ closeSubMenu }) => {
               </MenuItem>
             ))}
           </>
-        )
-      )}
+        ) : (
+          noProjectsElement
+        ))}
 
       <Divider />
-
       <MenuItem
         onClick={handleViewAllProjects}
         sx={{ py: 1, pr: 8, alignItems: "start" }}

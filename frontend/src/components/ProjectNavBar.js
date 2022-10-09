@@ -1,4 +1,9 @@
-import { useLocation, matchPath, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  matchPath,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -15,6 +20,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ProjectMenuButton from "./ProjectMenuButton";
 
 const ProjectNavBar = ({ project, loading }) => {
+  const { projectId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,26 +28,26 @@ const ProjectNavBar = ({ project, loading }) => {
     {
       name: "Home",
       icon: <HomeIcon />,
-      href: "/projects/",
+      href: "/projects/" + projectId,
       match: "/projects/:projectId",
     },
     {
       name: "Fields",
       icon: <TableChartIcon />,
-      href: "/projects/fields/",
+      href: "/projects/fields/" + projectId,
       match: "/projects/fields/:projectId",
     },
     {
       name: "API",
       icon: <VpnKeyIcon />,
-      href: "/projects/api/",
+      href: "/projects/api/" + projectId,
       match: "/projects/api/:projectId",
     },
     {
       name: "Settings",
       icon: <SettingsIcon />,
       right: true,
-      href: "/projects/settings/",
+      href: "/projects/settings/" + projectId,
       match: "/projects/settings/:projectId",
     },
   ];
@@ -134,9 +140,8 @@ const ProjectNavBar = ({ project, loading }) => {
                 sx={{ marginLeft: page.right ? "auto" : "none" }}
               >
                 <Button
-                  onClick={() => navigate(page.href + project.id)}
+                  onClick={() => navigate(page.href)}
                   startIcon={page.icon}
-                  disabled={loading}
                   sx={{
                     my: 2,
                     mr: 1,
