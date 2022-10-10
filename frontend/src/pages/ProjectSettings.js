@@ -100,7 +100,6 @@ const EditProject = ({ project, setProject }) => {
           name="name"
           error={error ? true : false}
           required
-          autoFocus
           defaultValue={project.name}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>

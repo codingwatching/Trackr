@@ -7,6 +7,7 @@ import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
+import CreateProjectButton from "./CreateProjectButton";
 
 const ProjectListMenu = ({ closeSubMenu }) => {
   const [projects, , loading, error] = useProjects();
@@ -22,24 +23,6 @@ const ProjectListMenu = ({ closeSubMenu }) => {
     navigate("/projects/" + project.id);
     closeSubMenu();
   };
-
-  const noProjectsElement = (
-    <MenuItem
-      disabled
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        color: "black",
-        p: 3,
-      }}
-    >
-      <NightsStayOutlinedIcon sx={{ fontSize: 50, mb: 2 }} />
-      <Typography variant="subtitle2" sx={{ userSelect: "none" }}>
-        You currently have no projects.
-      </Typography>
-    </MenuItem>
-  );
 
   const errorElement = error && (
     <MenuItem
@@ -101,46 +84,41 @@ const ProjectListMenu = ({ closeSubMenu }) => {
     <>
       {errorElement}
       {loadingElement}
+      {!error && !loading && projects.length > 0 && (
+        <>
+          <MenuItem disabled>
+            <Typography variant="subtitle2">Recent</Typography>
+          </MenuItem>
+          {projects.slice(0, MAX_PROJECTS).map((project) => (
+            <MenuItem
+              onClick={() => handleViewProject(project)}
+              sx={{ display: "flex", alignItems: "center" }}
+              key={project.id}
+            >
+              <AccountTreeRoundedIcon
+                sx={{
+                  fontSize: 25,
+                  color: "white",
+                  backgroundColor: "primary.main",
+                  mr: 1.5,
+                  p: 0.25,
+                  borderRadius: 1,
+                }}
+              />
 
-      {!error &&
-        !loading &&
-        (projects.length ? (
-          <>
-            <MenuItem disabled>
-              <Typography variant="subtitle2">Recent</Typography>
-            </MenuItem>
-            {projects.slice(0, MAX_PROJECTS).map((project) => (
-              <MenuItem
-                onClick={() => handleViewProject(project)}
-                sx={{ display: "flex", alignItems: "center" }}
-                key={project.id}
+              <Typography
+                variant="subtitle2"
+                color="#2a2a2a"
+                sx={{ fontWeight: 400 }}
               >
-                <AccountTreeRoundedIcon
-                  sx={{
-                    fontSize: 25,
-                    color: "white",
-                    backgroundColor: "primary.main",
-                    mr: 1.5,
-                    p: 0.25,
-                    borderRadius: 1,
-                  }}
-                />
+                {project.name}
+              </Typography>
+            </MenuItem>
+          ))}
+          <Divider />
+        </>
+      )}
 
-                <Typography
-                  variant="subtitle2"
-                  color="#2a2a2a"
-                  sx={{ fontWeight: 400 }}
-                >
-                  {project.name}
-                </Typography>
-              </MenuItem>
-            ))}
-          </>
-        ) : (
-          noProjectsElement
-        ))}
-
-      <Divider />
       <MenuItem
         onClick={handleViewAllProjects}
         sx={{ py: 1, pr: 8, alignItems: "start" }}
@@ -153,6 +131,7 @@ const ProjectListMenu = ({ closeSubMenu }) => {
           View all projects
         </Typography>
       </MenuItem>
+      <CreateProjectButton menuItem={closeSubMenu} />
     </>
   );
 };

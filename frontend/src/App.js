@@ -12,7 +12,7 @@ import ProjectRoute from "./components/ProjectRoute";
 import ProjectFields from "./pages/ProjectFields";
 import UserSettings from "./pages/UserSettings";
 import UserRoute from "./components/UserRoute";
-import ProjectHome from "./pages/ProjectHome";
+import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
 let theme = createTheme({
@@ -65,7 +65,7 @@ const App = () => {
             path="/projects/:projectId"
             element={
               <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectHome />} />}
+                element={<ProjectRoute element={<Project />} />}
               />
             }
           />
