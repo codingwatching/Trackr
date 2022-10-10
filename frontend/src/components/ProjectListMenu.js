@@ -3,7 +3,6 @@ import { useProjects } from "../contexts/ProjectsContext";
 import MenuItem from "@mui/material/MenuItem";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ErrorIcon from "@mui/icons-material/Error";
-import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
