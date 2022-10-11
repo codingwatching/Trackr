@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
 
-	"trackr/src/common"
+	"github.com/gin-gonic/gin"
+
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
 	"trackr/src/models"
@@ -32,15 +32,17 @@ func addProjectRoute(c *gin.Context) {
 		Description: "",
 		APIKey:      apiKey,
 		User:        *user,
-		ShareURL:    nil,
 	}
 
-	if err := serviceProvider.GetProjectService().AddProject(project); err != nil {
+	projectId, err := serviceProvider.GetProjectService().AddProject(project)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new project."})
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.NewProject{
+		ID: projectId,
+	})
 }
 
 func getProjectRoute(c *gin.Context) {
@@ -64,7 +66,7 @@ func getProjectRoute(c *gin.Context) {
 		Description: project.Description,
 		APIKey:      project.APIKey,
 		CreatedAt:   project.CreatedAt,
-		ShareURL:    project.ShareURL,
+		UpdatedAt:   project.UpdatedAt,
 	})
 }
 
@@ -85,7 +87,7 @@ func getProjectsRoute(c *gin.Context) {
 			Description: project.Description,
 			APIKey:      project.APIKey,
 			CreatedAt:   project.CreatedAt,
-			ShareURL:    project.ShareURL,
+			UpdatedAt:   project.UpdatedAt,
 		}
 	}
 
@@ -125,17 +127,13 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	wasModified := false
-
-	if json.Name != "" {
-		project.Name = json.Name
-		wasModified = true
+	if json.Name == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The project's name cannot be empty."})
+		return
 	}
 
-	if json.Description != "" {
-		project.Description = json.Description
-		wasModified = true
-	}
+	project.Name = json.Name
+	project.Description = json.Description
 
 	if json.ResetAPIKey {
 		apiKey, err := generateAPIKey()
@@ -145,26 +143,9 @@ func updateProjectRoute(c *gin.Context) {
 		}
 
 		project.APIKey = apiKey
-		wasModified = true
 	}
 
-	if json.Share && project.ShareURL == nil {
-		shareURL, err := common.RandomString(shareURLLength)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate share URL."})
-			return
-		}
-
-		project.ShareURL = &shareURL
-		wasModified = true
-	} else if !json.Share && project.ShareURL != nil {
-		project.ShareURL = nil
-		wasModified = true
-	}
-
-	if wasModified {
-		project.UpdatedAt = time.Now()
-	}
+	project.UpdatedAt = time.Now()
 
 	err = serviceProvider.GetProjectService().UpdateProject(*project)
 	if err != nil {
@@ -172,7 +153,9 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.UpdateProject{
+		APIKey: project.APIKey,
+	})
 }
 
 func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {

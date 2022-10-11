@@ -24,7 +24,7 @@ const (
 
 func loginRoute(c *gin.Context) {
 	if isLoggedIn(c) != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "You are currently logged in."})
+		c.JSON(http.StatusTemporaryRedirect, responses.Error{Error: "You are currently logged in."})
 		return
 	}
 
@@ -197,6 +197,15 @@ func registerRoute(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
+func isLoggedInRoute(c *gin.Context) {
+	if isLoggedIn(c) == nil {
+		c.JSON(http.StatusUnauthorized, responses.Error{Error: "Not logged in."})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.Empty{})
+}
+
 func initAuthMiddleware(serviceProviderInput services.ServiceProvider) gin.HandlerFunc {
 	serviceProvider = serviceProviderInput
 
@@ -216,6 +225,7 @@ func initAuthController(routerGroup *gin.RouterGroup, serviceProviderInput servi
 
 	authRouterGroup := routerGroup.Group("/auth")
 	authRouterGroup.POST("/login", loginRoute)
+	authRouterGroup.GET("/", isLoggedInRoute)
 	authRouterGroup.GET("/logout", logoutRoute)
 	authRouterGroup.POST("/register", registerRoute)
 }

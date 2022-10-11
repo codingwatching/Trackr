@@ -30,17 +30,18 @@ func updateUserRoute(c *gin.Context) {
 		return
 	}
 
-	wasModified := false
-
-	if json.FirstName != "" {
-		user.FirstName = json.FirstName
-		wasModified = true
+	if json.FirstName == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Your first name cannot be empty."})
+		return
 	}
 
-	if json.LastName != "" {
-		user.LastName = json.LastName
-		wasModified = true
+	if json.LastName == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Your last name cannot be empty."})
+		return
 	}
+
+	user.FirstName = json.FirstName
+	user.LastName = json.LastName
 
 	if json.CurrentPassword != "" && json.NewPassword != "" {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(json.CurrentPassword)); err != nil {
@@ -55,12 +56,9 @@ func updateUserRoute(c *gin.Context) {
 		}
 
 		user.Password = newHashedPassword
-		wasModified = true
 	}
 
-	if wasModified {
-		user.UpdatedAt = time.Now()
-	}
+	user.UpdatedAt = time.Now()
 
 	if err := serviceProvider.GetUserService().UpdateUser(*user); err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update user."})

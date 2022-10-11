@@ -15,6 +15,36 @@ import (
 	"trackr/tests"
 )
 
+func TestIsLoggedInRoute(t *testing.T) {
+	suite := tests.StartupWithRouter()
+	method, path := "GET", "/api/auth/"
+
+	//
+	// Test logged in path.
+	//
+
+	response, _ := json.Marshal(responses.Empty{})
+	httpRecorder := httptest.NewRecorder()
+	httpRequest, _ := http.NewRequest(method, path, nil)
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test not logged in path.
+	//
+
+	response, _ = json.Marshal(responses.Error{Error: "Not logged in."})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, nil)
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusUnauthorized, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+}
+
 func TestRegisterRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
 	method, path := "POST", "/api/auth/register"
@@ -264,7 +294,7 @@ func TestLoginRoute(t *testing.T) {
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, http.StatusTemporaryRedirect, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
@@ -378,7 +408,7 @@ func TestLoginRoute(t *testing.T) {
 		assert.Equal(t, session.ID, sessionId)
 
 		if shouldRememberMe {
-			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 1, 0)))
+			assert.GreaterOrEqual(t, session.ExpiresAt, session.CreatedAt.AddDate(0, 1, 0))
 		} else {
 			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 0, 7)))
 		}

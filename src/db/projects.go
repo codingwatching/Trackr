@@ -13,7 +13,7 @@ type ProjectServiceDB struct {
 
 func (service *ProjectServiceDB) GetProjects(user models.User) ([]models.Project, error) {
 	var projects []models.Project
-	if result := service.database.Find(&projects, "user_id = ?", user.ID); result.Error != nil {
+	if result := service.database.Order("created_at DESC").Find(&projects, "user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -38,12 +38,12 @@ func (service *ProjectServiceDB) GetProjectByAPIKey(apiKey string) (*models.Proj
 	return &project, nil
 }
 
-func (service *ProjectServiceDB) AddProject(project models.Project) error {
+func (service *ProjectServiceDB) AddProject(project models.Project) (uint, error) {
 	if result := service.database.Create(&project); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
-	return nil
+	return project.ID, nil
 }
 
 func (service *ProjectServiceDB) UpdateProject(project models.Project) error {

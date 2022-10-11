@@ -60,8 +60,9 @@ func TestAddProject(t *testing.T) {
 	newProject.UserID = suite.Project.UserID
 	newProject.User = suite.User
 
-	err := suite.Service.GetProjectService().AddProject(newProject)
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
 	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
 
 	projects, err := suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
