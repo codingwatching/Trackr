@@ -17,7 +17,7 @@ func (service *VisulizationServiceDB) GetVisualizations(project models.Project, 
 		return nil, result.Error
 	}
 
-	return fields, nil
+	return visualizations, nil
 }
 
 func (service *VisulizationServiceDB) GetVisualization(id uint, user models.User) (*models.Visualization, error) {
@@ -26,15 +26,15 @@ func (service *VisulizationServiceDB) GetVisualization(id uint, user models.User
 		return nil, result.Error
 	}
 
-	return &field, nil
+	return &visualization, nil
 }
 
-func (service *VisulizationServiceDB) AddVisualization(visualization models.Visualization) error {
+func (service *VisulizationServiceDB) AddVisualization(visualization models.Visualization) (uint, error) {
 	if result := service.database.Create(&visualization); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
-	return nil
+	return visualization.ID, nil
 }
 
 func (service *VisulizationServiceDB) UpdateVisualization(visualization models.Visualization) error {

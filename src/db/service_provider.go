@@ -8,11 +8,12 @@ import (
 )
 
 type ServiceProviderDB struct {
-	sessionService services.SessionService
-	userService    services.UserService
-	projectService services.ProjectService
-	fieldService   services.FieldService
-	valueService   services.ValueService
+	sessionService       services.SessionService
+	userService          services.UserService
+	projectService       services.ProjectService
+	fieldService         services.FieldService
+	visualizationService services.VisualizationService
+	valueService         services.ValueService
 }
 
 func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
@@ -54,6 +55,10 @@ func (serviceProviderDB *ServiceProviderDB) GetProjectService() services.Project
 
 func (serviceProviderDB *ServiceProviderDB) GetFieldService() services.FieldService {
 	return serviceProviderDB.fieldService
+}
+
+func (serviceProviderDB *ServiceProviderDB) GetVisualizationService() services.VisualizationService {
+	return serviceProviderDB.visualizationService
 }
 
 func (serviceProviderDB *ServiceProviderDB) GetValueService() services.ValueService {

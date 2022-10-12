@@ -3,6 +3,7 @@ package db_test
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 
 	"trackr/src/models"
 	"trackr/tests"
@@ -27,7 +28,7 @@ func TestGetVisualization(t *testing.T) {
 	visualization, err := suite.Service.GetVisualizationService().GetVisualization(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, visualization)
-	assert.Equal(t, suite.Visualization.ID, Visualization.ID)
+	assert.Equal(t, suite.Visualization.ID, visualization.ID)
 
 	visualization, err = suite.Service.GetVisualizationService().GetVisualization(2, suite.User)
 	assert.NotNil(t, err)
@@ -48,8 +49,9 @@ func TestAddVisualization(t *testing.T) {
 	newVisualization.UpdatedAt = suite.Time
 	newVisualization.Project = suite.Project
 
-	err := suite.Service.GetVisualizationService().AddVisualization(newVisualization)
+	visualizationId, err := suite.Service.GetVisualizationService().AddVisualization(newVisualization)
 	assert.Nil(t, err)
+	assert.Equal(t, 1, visualizationId)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
 	assert.Nil(t, err)

@@ -1,5 +1,5 @@
 package responses
 
-type ProjectList struct {
+type VisualizationList struct {
 	Visualizations []Visualization `json:"visualizations"`
 }

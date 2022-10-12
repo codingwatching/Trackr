@@ -15,7 +15,8 @@ import (
 
 func TestAddVisualizationRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "POST", "/api/visualizations/"
+	method := "POST"
+	path := "/api/visualizations/0"
 
 	//
 	// Test not logged in path.
@@ -32,46 +33,19 @@ func TestAddVisualizationRoute(t *testing.T) {
 	assert.Equal(t, http.StatusForbidden, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err := suite.Service.GetFieldService().GetField(2, suite.User)
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(2, suite.User)
 	assert.NotNil(t, err)
-	assert.Nil(t, field)
+	assert.Nil(t, visualization)
 
 	//
 	// Test invalid project id paramater.
 	//
-
-	request, _ := json.Marshal(requests.AddField{
-		ProjectID: 0,
-		Name:      "Field2",
-	})
-
 	response, _ = json.Marshal(responses.Error{
 		Error: "Cannot find project.",
 	})
 
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	//
-	// Test missing name paramater.
-	//
-
-	request, _ = json.Marshal(requests.AddField{
-		ProjectID: 1,
-		Name:      "",
-	})
-
-	response, _ = json.Marshal(responses.Error{
-		Error: "The name of a field cannot be empty.",
-	})
-
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -82,28 +56,27 @@ func TestAddVisualizationRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	request, _ = json.Marshal(requests.AddField{
-		ProjectID: 1,
-		Name:      "Field2",
-	})
-	response, _ = json.Marshal(responses.Empty{})
+	path = "/api/visualizations/1"
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetField(2, suite.User)
+	var body responses.NewVisualization
+	json.Unmarshal(httpRecorder.Body.Bytes(), &body)
+
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(body.ID, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, uint(2), field.ID)
+	assert.NotNil(t, visualization)
+	assert.Equal(t, uint(1), visualization.ProjectID)
 }
 
-func TestGetFieldsRoute(t *testing.T) {
+func TestGetVisualizationsRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "GET", "/api/fields/"
+	method, path := "GET", "/api/visualizations/"
 
 	//
 	// Test not logged in path.
@@ -140,25 +113,12 @@ func TestGetFieldsRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	newField := suite.Field
-	newField.ID = 2
-	newField.Name = "Field2"
-	newField.CreatedAt = suite.Time
-	newField.UpdatedAt = suite.Time
-	newField.Project = suite.Project
-
-	err := suite.Service.GetFieldService().AddField(newField)
-	assert.Nil(t, err)
-
-	response, _ = json.Marshal(responses.FieldList{
-		Fields: []responses.Field{
+	response, _ = json.Marshal(responses.VisualizationList{
+		Visualizations: []responses.Visualization{
 			{
-				ID:   suite.Field.ID,
-				Name: suite.Field.Name,
-			},
-			{
-				ID:   newField.ID,
-				Name: newField.Name,
+				Metadata:  "Metadata",
+				UpdatedAt: suite.Time,
+				CreatedAt: suite.Time,
 			},
 		},
 	})
@@ -172,18 +132,20 @@ func TestGetFieldsRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 }
 
-func TestUpdateFieldRoute(t *testing.T) {
+func TestUpdateVisualizationsRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "PUT", "/api/fields/"
+	method, path := "PUT", "/api/visualizations/"
+
+	request, _ := json.Marshal(requests.Visualization{
+		Metadata: "MetaData",
+	})
 
 	//
 	// Test not logged in path.
 	//
-
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
-
 	httpRecorder := httptest.NewRecorder()
 	httpRequest, _ := http.NewRequest(method, path, nil)
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
@@ -194,7 +156,6 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test invalid request parameters path.
 	//
-
 	response, _ = json.Marshal(responses.Error{
 		Error: "Invalid request parameters provided.",
 	})
@@ -209,15 +170,11 @@ func TestUpdateFieldRoute(t *testing.T) {
 	//
 	// Test invalid project id path.
 	//
-
-	request, _ := json.Marshal(requests.UpdateField{
-		ID: 0,
-	})
 	response, _ = json.Marshal(responses.Error{
-		Error: "Failed to find field.",
+		Error: "Failed to find visualization.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path+"1", bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -225,13 +182,8 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test no modification path.
+	// Test updating metadata path.
 	//
-
-	request, _ = json.Marshal(requests.UpdateField{
-		ID: 1,
-	})
-
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
@@ -241,43 +193,19 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, suite.Field.Name, field.Name)
-
-	//
-	// Test updating name path.
-	//
-
-	request, _ = json.Marshal(requests.UpdateProject{
-		ID:   1,
-		Name: "New Field Name",
-	})
-
-	response, _ = json.Marshal(responses.Empty{})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, "New Field Name", field.Name)
+	assert.NotNil(t, visualization)
+	assert.Equal(t, "MetaData", visualization.Metadata)
 }
 
-func TestDeleteFieldRoute(t *testing.T) {
+func TestDeleteVisualizationRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
-	method, path := "DELETE", "/api/fields/"
+	method, path := "DELETE", "/api/visualizations/"
 
 	//
 	// Test not logged in path.
 	//
-
 	response, _ := json.Marshal(responses.Error{
 		Error: "Not authorized to access this resource.",
 	})
@@ -291,11 +219,9 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test invalid id parameter path.
 	//
-
 	response, _ = json.Marshal(responses.Error{
 		Error: "Invalid :id parameter provided.",
 	})
-
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -307,11 +233,9 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test non-existant field id path.
 	//
-
 	response, _ = json.Marshal(responses.Error{
 		Error: "Failed to delete field.",
 	})
-
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"0", nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -323,12 +247,11 @@ func TestDeleteFieldRoute(t *testing.T) {
 	//
 	// Test successful path.
 	//
-
-	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, uint(1), field.ID)
-	assert.Equal(t, suite.Project.ID, field.ProjectID)
+	assert.NotNil(t, visualization)
+	assert.Equal(t, uint(1), visualization.ID)
+	assert.Equal(t, suite.Project.ID, visualization.ProjectID)
 
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
@@ -339,7 +262,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
 	assert.NotNil(t, err)
-	assert.Nil(t, field)
+	assert.Nil(t, visualization)
 }

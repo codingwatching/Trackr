@@ -23,6 +23,7 @@ type Suite struct {
 	Time           time.Time
 	Field          models.Field
 	Value          models.Value
+	Visualization  models.Visualization
 }
 
 func Startup() *Suite {
@@ -87,6 +88,17 @@ func Startup() *Suite {
 		Project:   suite.Project,
 	}
 	suite.Service.GetFieldService().AddField(suite.Field)
+
+	suite.Visualization = models.Visualization{
+		ID:        1,
+		Metadata:  "Metadata",
+		UpdatedAt: suite.Time,
+		CreatedAt: suite.Time,
+
+		ProjectID: suite.Project.ID,
+		Project:   suite.Project,
+	}
+	suite.Service.GetVisualizationService().AddVisualization(suite.Visualization)
 
 	suite.Value = models.Value{
 		ID:        1,
