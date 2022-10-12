@@ -2,15 +2,15 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
+	"trackr/src/models"
 	"trackr/src/services"
 )
-
 
 func addVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
@@ -27,33 +27,30 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
-		return
-	}
-
-	if json.Name == "" {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "The name of a field cannot be empty."})
 		return
 	}
 
 	createdAt := time.Now()
 
 	visualization := models.Visualization{
-		ID:       uint `gorm:"primarykey"`,
 		Metadata:  "",
 		UpdatedAt: createdAt,
 		CreatedAt: createdAt,
-		Project: *project,
+		Project:   *project,
 	}
 
-	if err := serviceProvider.GetVisualizationService().AddVisualization(visualization); err != nil {
+	visualizationId, err := serviceProvider.GetVisualizationService().AddVisualization(visualization)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new visualization."})
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.NewVisualization{
+		ID: visualizationId,
+	})
 }
 
 func getVisualizationsRoute(c *gin.Context) {
@@ -65,13 +62,13 @@ func getVisualizationsRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
 	}
 
-	visualizations, err := serviceProvider.GetVisulizationService().GetVisualizations(*project, *user)
+	visualizations, err := serviceProvider.GetVisualizationService().GetVisualizations(*project, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get visualizations."})
 		return
@@ -79,10 +76,10 @@ func getVisualizationsRoute(c *gin.Context) {
 
 	visualizationList := make([]responses.Visualization, len(visualizations))
 	for index, visualization := range visualizations {
-		visualizationList[index] = responses.Visualization {
+		visualizationList[index] = responses.Visualization{
 			Metadata:  visualization.Metadata,
-			UpdatedAt: visualization.createdAt,
-			CreatedAt: visualization.createdAt,
+			UpdatedAt: visualization.UpdatedAt,
+			CreatedAt: visualization.CreatedAt,
 		}
 	}
 
@@ -104,7 +101,7 @@ func updateVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	visualization, err := serviceProvider.GetVisualizationService().GetField(visulizationId, *user)
+	visualization, err := serviceProvider.GetVisualizationService().GetVisualization(uint(visulizationId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find visualization."})
 		return
