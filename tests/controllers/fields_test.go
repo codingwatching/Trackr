@@ -86,7 +86,9 @@ func TestAddFieldRoute(t *testing.T) {
 		ProjectID: 1,
 		Name:      "Field2",
 	})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.NewField{
+		ID: uint(2),
+	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -147,8 +149,9 @@ func TestGetFieldsRoute(t *testing.T) {
 	newField.UpdatedAt = suite.Time
 	newField.Project = suite.Project
 
-	err := suite.Service.GetFieldService().AddField(newField)
+	fieldId, err := suite.Service.GetFieldService().AddField(newField)
 	assert.Nil(t, err)
+	assert.Equal(t, newField.ID, fieldId)
 
 	response, _ = json.Marshal(responses.FieldList{
 		Fields: []responses.Field{

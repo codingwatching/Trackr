@@ -49,7 +49,6 @@ func Startup() *Suite {
 		Name:        "Name",
 		Description: "Description",
 		APIKey:      "APIKey",
-		ShareURL:    nil,
 		CreatedAt:   suite.Time,
 		UpdatedAt:   suite.Time,
 

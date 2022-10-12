@@ -1,68 +1,97 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/Inbox";
-import DraftsIcon from "@mui/icons-material/Drafts";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import React from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import AuthorizedRoute from "./components/AuthorizedRoute";
+import Projects from "./pages/Projects";
+import ProjectSettings from "./pages/ProjectSettings";
+import ProjectRoute from "./components/ProjectRoute";
+import ProjectFields from "./pages/ProjectFields";
+import UserSettings from "./pages/UserSettings";
+import UserRoute from "./components/UserRoute";
+import Project from "./pages/Project";
+import ProjectAPI from "./pages/ProjectAPI";
 
-const BasicList = () => {
-  return (
-    <Card
-      sx={{
-        width: "100%",
-        m: "0 auto",
-        maxWidth: 360,
-        bgcolor: "background.paper",
-      }}
-    >
-      <nav aria-label="main mailbox folders">
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary="Inbox" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <DraftsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Drafts" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </nav>
-      <Divider />
-      <nav aria-label="secondary mailbox folders">
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton>
-              <ListItemText primary="Trash" />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton component="a" href="#simple-list">
-              <ListItemText primary="Spam" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </nav>
-    </Card>
-  );
-};
+let theme = createTheme({
+  palette: {
+    primary: {
+      main: "#0052cc",
+    },
+    secondary: {
+      main: "#edf2ff",
+    },
+  },
+  transitions: {
+    duration: {
+      standard: 300,
+    },
+  },
+});
 
 const App = () => {
   return (
-    <>
-      <BasicList />
-    </>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route
+            path="/projects/"
+            element={<AuthorizedRoute element={<Projects />} />}
+          />
+          <Route
+            path="/settings/"
+            element={
+              <AuthorizedRoute
+                element={<UserRoute element={<UserSettings />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/settings/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectSettings />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<Project />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/api/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectAPI />} />}
+              />
+            }
+          />
+          <Route
+            path="/projects/fields/:projectId"
+            element={
+              <AuthorizedRoute
+                element={<ProjectRoute element={<ProjectFields />} />}
+              />
+            }
+          />
+          <Route
+            path="/"
+            element={<AuthorizedRoute element={<Dashboard />} />}
+          />
+        </Routes>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 };
 

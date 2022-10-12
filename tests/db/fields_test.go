@@ -58,8 +58,9 @@ func TestAddField(t *testing.T) {
 	newField.UpdatedAt = suite.Time
 	newField.Project = suite.Project
 
-	err := suite.Service.GetFieldService().AddField(newField)
+	fieldId, err := suite.Service.GetFieldService().AddField(newField)
 	assert.Nil(t, err)
+	assert.Equal(t, newField.ID, fieldId)
 
 	fields, err := suite.Service.GetFieldService().GetFields(suite.Project, suite.User)
 	assert.Nil(t, err)

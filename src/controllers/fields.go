@@ -42,12 +42,15 @@ func addFieldRoute(c *gin.Context) {
 		Project: *project,
 	}
 
-	if err := serviceProvider.GetFieldService().AddField(field); err != nil {
+	fieldId, err := serviceProvider.GetFieldService().AddField(field)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new field."})
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.NewField{
+		ID: fieldId,
+	})
 }
 
 func getFieldsRoute(c *gin.Context) {

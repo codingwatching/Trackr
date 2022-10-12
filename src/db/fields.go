@@ -29,12 +29,12 @@ func (service *FieldServiceDB) GetField(id uint, user models.User) (*models.Fiel
 	return &field, nil
 }
 
-func (service *FieldServiceDB) AddField(field models.Field) error {
+func (service *FieldServiceDB) AddField(field models.Field) (uint, error) {
 	if result := service.database.Create(&field); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
-	return nil
+	return field.ID, nil
 }
 
 func (service *FieldServiceDB) UpdateField(field models.Field) error {
