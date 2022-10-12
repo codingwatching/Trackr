@@ -35,11 +35,13 @@ func TestAddProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.NewProject{
+		ID: uint(2),
+	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -48,25 +50,10 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(2, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
-
-	//
-	// Test project limit reached path.
-	//
-
-	response, _ = json.Marshal(responses.Error{
-		Error: "You cannot create a new project as you have reached your project limit.",
-	})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, nil)
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
 }
 
 func TestGetProjectsRoute(t *testing.T) {
@@ -94,7 +81,10 @@ func TestGetProjectsRoute(t *testing.T) {
 	newProject := suite.Project
 	newProject.ID = 2
 	newProject.APIKey = "APIKey2"
-	assert.Nil(t, suite.Service.GetProjectService().AddProject(newProject))
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
 
 	response, _ = json.Marshal(responses.ProjectList{
 		Projects: []responses.Project{
@@ -104,7 +94,7 @@ func TestGetProjectsRoute(t *testing.T) {
 				Description: suite.Project.Description,
 				APIKey:      suite.Project.APIKey,
 				CreatedAt:   suite.Project.CreatedAt,
-				ShareURL:    suite.Project.ShareURL,
+				UpdatedAt:   suite.Project.UpdatedAt,
 			},
 			{
 				ID:          newProject.ID,
@@ -112,7 +102,7 @@ func TestGetProjectsRoute(t *testing.T) {
 				Description: newProject.Description,
 				APIKey:      newProject.APIKey,
 				CreatedAt:   newProject.CreatedAt,
-				ShareURL:    newProject.ShareURL,
+				UpdatedAt:   newProject.UpdatedAt,
 			},
 		},
 	})
@@ -144,11 +134,11 @@ func TestGetProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
@@ -183,7 +173,7 @@ func TestGetProjectRoute(t *testing.T) {
 		Description: suite.Project.Description,
 		APIKey:      suite.Project.APIKey,
 		CreatedAt:   suite.Project.CreatedAt,
-		ShareURL:    suite.Project.ShareURL,
+		UpdatedAt:   suite.Project.UpdatedAt,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"1", nil)
@@ -213,11 +203,11 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid id parameter path.
+	// Test invalid project id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid :id parameter provided.",
+		Error: "Invalid :projectId parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"invalid", nil)
@@ -246,7 +236,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(1), project.ID)
@@ -261,7 +251,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 }
@@ -318,38 +308,31 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test no modification path.
+	// Test empty name path.
 	//
 
 	request, _ = json.Marshal(requests.UpdateProject{
 		ID: 1,
 	})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.Error{Error: "The project's name cannot be empty."})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	project, err := suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, project)
-	assert.Equal(t, suite.Project.Name, project.Name)
-	assert.Equal(t, suite.Project.Description, project.Description)
-	assert.Equal(t, suite.Project.APIKey, project.APIKey)
-	assert.Equal(t, suite.Project.ShareURL, project.ShareURL)
 
 	//
 	// Test updating name path.
 	//
 
 	request, _ = json.Marshal(requests.UpdateProject{
-		ID:   1,
-		Name: "New Project Name",
+		ID:          1,
+		Name:        "New Project Name",
+		Description: suite.Project.Description,
 	})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -358,13 +341,12 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, suite.Project.Description, project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
-	assert.Equal(t, suite.Project.ShareURL, project.ShareURL)
 
 	//
 	// Test updating description path.
@@ -372,9 +354,10 @@ func TestUpdateProjectRoute(t *testing.T) {
 
 	request, _ = json.Marshal(requests.UpdateProject{
 		ID:          1,
+		Name:        project.Name,
 		Description: "New Description Name",
 	})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -383,13 +366,12 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
-	assert.Equal(t, suite.Project.ShareURL, project.ShareURL)
 
 	//
 	// Test resetting api key path.
@@ -397,103 +379,23 @@ func TestUpdateProjectRoute(t *testing.T) {
 
 	request, _ = json.Marshal(requests.UpdateProject{
 		ID:          1,
+		Name:        project.Name,
+		Description: project.Description,
 		ResetAPIKey: true,
 	})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
+	assert.NotEqual(t, response, httpRecorder.Body.Bytes())
 
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.NotEqual(t, suite.Project.APIKey, project.APIKey)
-	assert.Equal(t, suite.Project.ShareURL, project.ShareURL)
-
-	previousAPIKey := project.APIKey
-
-	//
-	// Test enabling sharing path.
-	//
-
-	request, _ = json.Marshal(requests.UpdateProject{
-		ID:    1,
-		Share: true,
-	})
-	response, _ = json.Marshal(responses.Empty{})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, project)
-	assert.Equal(t, "New Project Name", project.Name)
-	assert.Equal(t, "New Description Name", project.Description)
-	assert.Equal(t, previousAPIKey, project.APIKey)
-	assert.NotEqual(t, suite.Project.ShareURL, project.ShareURL)
-
-	previousShareURL := project.ShareURL
-
-	//
-	// Test enabling sharing again path.
-	//
-
-	request, _ = json.Marshal(requests.UpdateProject{
-		ID:    1,
-		Share: true,
-	})
-	response, _ = json.Marshal(responses.Empty{})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, project)
-	assert.Equal(t, "New Project Name", project.Name)
-	assert.Equal(t, "New Description Name", project.Description)
-	assert.Equal(t, previousAPIKey, project.APIKey)
-	assert.Equal(t, previousShareURL, project.ShareURL)
-
-	//
-	// Test disabling sharing twice path.
-	//
-
-	for i := 0; i < 2; i++ {
-		request, _ = json.Marshal(requests.UpdateProject{
-			ID:    1,
-			Share: false,
-		})
-		response, _ = json.Marshal(responses.Empty{})
-		httpRecorder = httptest.NewRecorder()
-		httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
-		httpRequest.Header.Add("Cookie", "Session=SessionID")
-		suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-		assert.Equal(t, http.StatusOK, httpRecorder.Code)
-		assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-		project, err = suite.Service.GetProjectService().GetProjectByIdAndUser(1, suite.User)
-		assert.Nil(t, err)
-		assert.NotNil(t, project)
-		assert.Equal(t, "New Project Name", project.Name)
-		assert.Equal(t, "New Description Name", project.Description)
-		assert.Equal(t, previousAPIKey, project.APIKey)
-		assert.Equal(t, suite.Project.ShareURL, project.ShareURL)
-	}
 }

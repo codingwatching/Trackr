@@ -15,6 +15,36 @@ import (
 	"trackr/tests"
 )
 
+func TestIsLoggedInRoute(t *testing.T) {
+	suite := tests.StartupWithRouter()
+	method, path := "GET", "/api/auth/"
+
+	//
+	// Test logged in path.
+	//
+
+	response, _ := json.Marshal(responses.Empty{})
+	httpRecorder := httptest.NewRecorder()
+	httpRequest, _ := http.NewRequest(method, path, nil)
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test not logged in path.
+	//
+
+	response, _ = json.Marshal(responses.Error{Error: "Not logged in."})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, nil)
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusUnauthorized, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+}
+
 func TestRegisterRoute(t *testing.T) {
 	suite := tests.StartupWithRouter()
 	method, path := "POST", "/api/auth/register"
@@ -167,7 +197,7 @@ func TestRegisterRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err := suite.Service.GetUserService().GetUserByEmail("email@email.com")
+	user, err := suite.Service.GetUserService().GetUser("email@email.com")
 	assert.NotNil(t, user)
 	assert.Nil(t, err)
 
@@ -224,11 +254,11 @@ func TestLogoutRoute(t *testing.T) {
 	// Test successful logout path.
 	//
 
-	session, _, err := suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	session, _, err := suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("SessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("SessionID")
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 
@@ -241,11 +271,11 @@ func TestLogoutRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.NotNil(t, err)
 	assert.Nil(t, session)
 
-	session, _, err = suite.Service.GetSessionService().GetSessionAndUserById("SessionID")
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("SessionID")
 	assert.NotNil(t, err)
 	assert.Nil(t, session)
 }
@@ -264,7 +294,7 @@ func TestLoginRoute(t *testing.T) {
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, http.StatusTemporaryRedirect, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
@@ -349,7 +379,7 @@ func TestLoginRoute(t *testing.T) {
 	// the next test removes expired sessions.
 	//
 
-	_, _, err := suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+	_, _, err := suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 	assert.Nil(t, err)
 
 	//
@@ -373,19 +403,19 @@ func TestLoginRoute(t *testing.T) {
 		assert.Equal(t, http.StatusOK, httpRecorder.Code)
 		assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-		session, user, err := suite.Service.GetSessionService().GetSessionAndUserById(sessionId)
+		session, user, err := suite.Service.GetSessionService().GetSessionAndUser(sessionId)
 		assert.Equal(t, user.ID, suite.User.ID)
 		assert.Equal(t, session.ID, sessionId)
 
 		if shouldRememberMe {
-			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 1, 0)))
+			assert.GreaterOrEqual(t, session.ExpiresAt, session.CreatedAt.AddDate(0, 1, 0))
 		} else {
 			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 0, 7)))
 		}
 
 		assert.Nil(t, err)
 
-		_, _, err = suite.Service.GetSessionService().GetSessionAndUserById("ExpiredSessionID")
+		_, _, err = suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 		assert.NotNil(t, err)
 	}
 }

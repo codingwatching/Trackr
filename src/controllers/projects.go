@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
 
-	"trackr/src/common"
+	"github.com/gin-gonic/gin"
+
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
 	"trackr/src/models"
@@ -21,19 +21,6 @@ const (
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to fetch current project count."})
-		return
-	}
-
-	if len(projects) >= int(user.MaxProjects) {
-		c.JSON(http.StatusBadRequest, responses.Error{
-			Error: "You cannot create a new project as you have reached your project limit.",
-		})
-		return
-	}
-
 	apiKey, err := generateAPIKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate API key."})
@@ -45,27 +32,29 @@ func addProjectRoute(c *gin.Context) {
 		Description: "",
 		APIKey:      apiKey,
 		User:        *user,
-		ShareURL:    nil,
 	}
 
-	if err := serviceProvider.GetProjectService().AddProject(project); err != nil {
+	projectId, err := serviceProvider.GetProjectService().AddProject(project)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new project."})
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.NewProject{
+		ID: projectId,
+	})
 }
 
 func getProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
@@ -77,14 +66,14 @@ func getProjectRoute(c *gin.Context) {
 		Description: project.Description,
 		APIKey:      project.APIKey,
 		CreatedAt:   project.CreatedAt,
-		ShareURL:    project.ShareURL,
+		UpdatedAt:   project.UpdatedAt,
 	})
 }
 
 func getProjectsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjectsByUser(*user)
+	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get projects."})
 		return
@@ -98,7 +87,7 @@ func getProjectsRoute(c *gin.Context) {
 			Description: project.Description,
 			APIKey:      project.APIKey,
 			CreatedAt:   project.CreatedAt,
-			ShareURL:    project.ShareURL,
+			UpdatedAt:   project.UpdatedAt,
 		}
 	}
 
@@ -108,13 +97,13 @@ func getProjectsRoute(c *gin.Context) {
 func deleteProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projectId, err := strconv.Atoi(c.Param("id"))
+	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :id parameter provided."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
 		return
 	}
 
-	err = serviceProvider.GetProjectService().DeleteProjectByIdAndUser(uint(projectId), *user)
+	err = serviceProvider.GetProjectService().DeleteProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to delete project."})
 		return
@@ -132,23 +121,19 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByIdAndUser(json.ID, *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
 	}
 
-	wasModified := false
-
-	if json.Name != "" {
-		project.Name = json.Name
-		wasModified = true
+	if json.Name == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The project's name cannot be empty."})
+		return
 	}
 
-	if json.Description != "" {
-		project.Description = json.Description
-		wasModified = true
-	}
+	project.Name = json.Name
+	project.Description = json.Description
 
 	if json.ResetAPIKey {
 		apiKey, err := generateAPIKey()
@@ -158,26 +143,9 @@ func updateProjectRoute(c *gin.Context) {
 		}
 
 		project.APIKey = apiKey
-		wasModified = true
 	}
 
-	if json.Share && project.ShareURL == nil {
-		shareURL, err := common.RandomString(shareURLLength)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate share URL."})
-			return
-		}
-
-		project.ShareURL = &shareURL
-		wasModified = true
-	} else if !json.Share && project.ShareURL != nil {
-		project.ShareURL = nil
-		wasModified = true
-	}
-
-	if wasModified {
-		project.UpdatedAt = time.Now()
-	}
+	project.UpdatedAt = time.Now()
 
 	err = serviceProvider.GetProjectService().UpdateProject(*project)
 	if err != nil {
@@ -185,7 +153,9 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Empty{})
+	c.JSON(http.StatusOK, responses.UpdateProject{
+		APIKey: project.APIKey,
+	})
 }
 
 func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput services.ServiceProvider, sessionMiddleware gin.HandlerFunc) {
@@ -195,8 +165,8 @@ func initProjectsController(routerGroup *gin.RouterGroup, serviceProviderInput s
 	projectsRouterGroup.Use(sessionMiddleware)
 
 	projectsRouterGroup.POST("/", addProjectRoute)
-	projectsRouterGroup.GET("/:id", getProjectRoute)
+	projectsRouterGroup.GET("/:projectId", getProjectRoute)
 	projectsRouterGroup.GET("/", getProjectsRoute)
 	projectsRouterGroup.PUT("/", updateProjectRoute)
-	projectsRouterGroup.DELETE("/:id", deleteProjectRoute)
+	projectsRouterGroup.DELETE("/:projectId", deleteProjectRoute)
 }

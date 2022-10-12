@@ -37,10 +37,9 @@ func TestGetUserRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.User{
-		FirstName:   suite.User.FirstName,
-		LastName:    suite.User.LastName,
-		MaxValues:   suite.User.MaxValues,
-		MaxProjects: suite.User.MaxProjects,
+		FirstName: suite.User.FirstName,
+		LastName:  suite.User.LastName,
+		MaxValues: suite.User.MaxValues,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)
@@ -85,20 +84,43 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test no modification path.
+	// Test empty first name path.
 	//
 
 	request, _ := json.Marshal(requests.UpdateUser{})
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.Error{Error: "Your first name cannot be empty."})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
+	assert.Nil(t, err)
+	assert.NotNil(t, user)
+	assert.Equal(t, suite.User.FirstName, user.FirstName)
+	assert.Equal(t, suite.User.LastName, user.LastName)
+	assert.Equal(t, suite.User.Password, user.Password)
+
+	//
+	// Test empty last name path.
+	//
+
+	request, _ = json.Marshal(requests.UpdateUser{
+		FirstName: suite.User.FirstName,
+	})
+	response, _ = json.Marshal(responses.Error{Error: "Your last name cannot be empty."})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, suite.User.FirstName, user.FirstName)
@@ -111,6 +133,7 @@ func TestUpdateUserRoute(t *testing.T) {
 
 	request, _ = json.Marshal(requests.UpdateUser{
 		FirstName: "NewFirstName",
+		LastName:  suite.User.LastName,
 	})
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
@@ -121,7 +144,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -133,7 +156,8 @@ func TestUpdateUserRoute(t *testing.T) {
 	//
 
 	request, _ = json.Marshal(requests.UpdateUser{
-		LastName: "NewLastName",
+		LastName:  "NewLastName",
+		FirstName: user.FirstName,
 	})
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
@@ -144,7 +168,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -156,6 +180,8 @@ func TestUpdateUserRoute(t *testing.T) {
 	//
 
 	request, _ = json.Marshal(requests.UpdateUser{
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
 		NewPassword: "Password2",
 	})
 	response, _ = json.Marshal(responses.Empty{})
@@ -167,7 +193,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -179,6 +205,8 @@ func TestUpdateUserRoute(t *testing.T) {
 	//
 
 	request, _ = json.Marshal(requests.UpdateUser{
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
 		CurrentPassword: "Password2",
 	})
 	response, _ = json.Marshal(responses.Empty{})
@@ -190,7 +218,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -202,6 +230,8 @@ func TestUpdateUserRoute(t *testing.T) {
 	//
 
 	request, _ = json.Marshal(requests.UpdateUser{
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
 		CurrentPassword: "InvalidPassword",
 		NewPassword:     "Password2",
 	})
@@ -219,6 +249,8 @@ func TestUpdateUserRoute(t *testing.T) {
 	//
 
 	request, _ = json.Marshal(requests.UpdateUser{
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
 		CurrentPassword: "Password",
 		NewPassword:     "Password2",
 	})
@@ -231,7 +263,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, "NewFirstName", user.FirstName)
@@ -261,12 +293,12 @@ func TestDeleteUserRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	user, err := suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err := suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 	assert.Equal(t, suite.User.ID, user.ID)
 
-	projects, err := suite.Service.GetProjectService().GetProjectsByUser(suite.User)
+	projects, err := suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(projects))
 
@@ -279,11 +311,11 @@ func TestDeleteUserRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	user, err = suite.Service.GetUserService().GetUserByEmail(suite.User.Email)
+	user, err = suite.Service.GetUserService().GetUser(suite.User.Email)
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 
-	projects, err = suite.Service.GetProjectService().GetProjectsByUser(suite.User)
+	projects, err = suite.Service.GetProjectService().GetProjects(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(projects))
 }
