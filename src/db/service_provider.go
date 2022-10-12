@@ -13,6 +13,7 @@ type ServiceProviderDB struct {
 	projectService services.ProjectService
 	fieldService   services.FieldService
 	valueService   services.ValueService
+	logService     services.LogsService
 }
 
 func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
