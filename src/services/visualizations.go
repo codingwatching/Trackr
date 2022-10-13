@@ -7,5 +7,5 @@ type VisualizationService interface {
 	GetVisualization(id uint, user models.User) (*models.Visualization, error)
 	AddVisualization(visualization models.Visualization) (uint, error)
 	UpdateVisualization(visualization models.Visualization) error
-	DeleteVisualization(id uint, user models.User) error
+	DeleteVisualization(visualization models.Visualization) error
 }

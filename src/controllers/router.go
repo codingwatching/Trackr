@@ -40,6 +40,7 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 	initUsersController(routerGroup, serviceProvider, sessionMiddleware)
 	initFieldsController(routerGroup, serviceProvider, sessionMiddleware)
 	initValuesController(routerGroup, serviceProvider, sessionMiddleware)
+	initVisualizationsController(routerGroup, serviceProvider, sessionMiddleware)
 
 	return router
 }

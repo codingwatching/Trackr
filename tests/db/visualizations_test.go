@@ -51,7 +51,7 @@ func TestAddVisualization(t *testing.T) {
 
 	visualizationId, err := suite.Service.GetVisualizationService().AddVisualization(newVisualization)
 	assert.Nil(t, err)
-	assert.Equal(t, 1, visualizationId)
+	assert.Equal(t, newVisualization.ID, visualizationId)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
 	assert.Nil(t, err)
@@ -80,13 +80,10 @@ func TestUpdateVisualization(t *testing.T) {
 func TestDeleteVisualization(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetVisualizationService().DeleteVisualization(2, suite.User)
+	err := suite.Service.GetVisualizationService().DeleteVisualization(models.Visualization{})
 	assert.NotNil(t, err)
 
-	err = suite.Service.GetVisualizationService().DeleteVisualization(suite.Visualization.ID, models.User{})
-	assert.NotNil(t, err)
-
-	err = suite.Service.GetVisualizationService().DeleteVisualization(1, suite.User)
+	err = suite.Service.GetVisualizationService().DeleteVisualization(suite.Visualization)
 	assert.Nil(t, err)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
