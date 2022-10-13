@@ -1,7 +1,4 @@
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import ButtonBase from "@mui/material/ButtonBase";
 import AddVisualizationButton from "../components/AddVisualizationButton";
 
 const Project = ({ project, setProject }) => {

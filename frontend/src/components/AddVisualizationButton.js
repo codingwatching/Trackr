@@ -1,13 +1,24 @@
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
+import { useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
+import AddVisualizationDialog from "./AddVisualizationDialog";
 
 const AddVisualizationButton = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <>
       <ButtonBase
+        onClick={handleOpenDialog}
         sx={{
           "&:hover": {
             background: "hsl(216deg 50% 91%)",
@@ -26,6 +37,8 @@ const AddVisualizationButton = () => {
         <AddRoundedIcon sx={{ fontSize: 30, mb: 1 }} />
         <Typography variant="button">Add Visualization</Typography>
       </ButtonBase>
+
+      <AddVisualizationDialog open={dialogOpen} onClose={handleCloseDialog} />
     </>
   );
 };
