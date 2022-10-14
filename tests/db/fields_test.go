@@ -71,16 +71,6 @@ func TestGetField(t *testing.T) {
 func TestAddField(t *testing.T) {
 	suite := tests.Startup()
 
-	newProject := suite.Project
-	newProject.ID = 2
-	newProject.APIKey = "APIKey2"
-	newProject.UserID = suite.Project.UserID
-	newProject.User = suite.User
-
-	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
-	assert.Nil(t, err)
-	assert.Equal(t, newProject.ID, projectId)
-
 	newField := suite.Field
 	newField.ID = 2
 	newField.Name = "Field2"
