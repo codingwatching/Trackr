@@ -14,7 +14,7 @@ type VisulizationServiceDB struct {
 func (service *VisulizationServiceDB) GetVisualizations(project models.Project, user models.User) ([]models.Visualization, error) {
 	var visualizations []models.Visualization
 
-	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects").Find(
+	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects ON visualizations.project_id = projects.id").Find(
 		&visualizations, "visualizations.project_id = ? AND projects.user_id = ?", project.ID, user.ID,
 	); result.Error != nil {
 		return nil, result.Error
@@ -25,7 +25,7 @@ func (service *VisulizationServiceDB) GetVisualizations(project models.Project, 
 
 func (service *VisulizationServiceDB) GetVisualization(id uint, user models.User) (*models.Visualization, error) {
 	var visualization models.Visualization
-	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects").First(
+	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects ON visualizations.project_id = projects.id").First(
 		&visualization, "visualizations.id = ? AND projects.user_id = ?", id, user.ID,
 	); result.Error != nil {
 		return nil, result.Error
