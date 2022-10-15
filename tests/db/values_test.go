@@ -14,6 +14,16 @@ import (
 func TestGetValues(t *testing.T) {
 	suite := tests.Startup()
 
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
+
 	values, err := suite.Service.GetValueService().GetValues(models.Field{}, models.User{}, "asc", 0, 0)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(values))

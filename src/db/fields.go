@@ -13,7 +13,11 @@ type FieldServiceDB struct {
 
 func (service *FieldServiceDB) GetFields(project models.Project, user models.User) ([]models.Field, error) {
 	var fields []models.Field
-	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").Find(&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Field{}).Joins(
+		"LEFT JOIN projects ON fields.project_id = projects.id",
+	).Find(
+		&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID,
+	); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -22,7 +26,11 @@ func (service *FieldServiceDB) GetFields(project models.Project, user models.Use
 
 func (service *FieldServiceDB) GetField(id uint, user models.User) (*models.Field, error) {
 	var field models.Field
-	if result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").First(&field, "fields.id = ? AND projects.user_id = ?", id, user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Field{}).Joins(
+		"LEFT JOIN projects ON fields.project_id = projects.id",
+	).First(
+		&field, "fields.id = ? AND projects.user_id = ?", id, user.ID,
+	); result.Error != nil {
 		return nil, result.Error
 	}
 
