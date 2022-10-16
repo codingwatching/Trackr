@@ -1,15 +1,12 @@
-import { useParams } from "react-router-dom";
-import { useProject } from "../contexts/ProjectContext";
+import { useFields } from "../contexts/FieldsContext";
 import { cloneElement } from "react";
-import ProjectNavBar from "./ProjectNavBar";
 import CenteredBox from "./CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
 
-const ProjectRoute = ({ element }) => {
-  const { projectId } = useParams();
-  const [project, setProject, loading, error] = useProject(projectId);
+const FieldsRoute = ({ element, project, setProject }) => {
+  const [fields, setFields, loading, error] = useFields(project.id);
 
   if (error) {
     return (
@@ -24,19 +21,18 @@ const ProjectRoute = ({ element }) => {
 
   return (
     <>
-      <ProjectNavBar loading={loading} project={project} />
       {loading ? (
         <CenteredBox>
           <CircularProgress />
           <Typography variant="button" sx={{ mt: 3, color: "gray" }}>
-            Loading Project
+            Loading Fields
           </Typography>
         </CenteredBox>
       ) : (
-        cloneElement(element, { ...element.props, project, setProject })
+        cloneElement(element, { project, setProject, fields, setFields })
       )}
     </>
   );
 };
 
-export default ProjectRoute;
+export default FieldsRoute;

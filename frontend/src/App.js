@@ -14,6 +14,8 @@ import UserSettings from "./pages/UserSettings";
 import UserRoute from "./components/UserRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
+import FieldsRoute from "./components/FieldsRoute";
+import VisualizationsRoute from "./components/VisualizationsRoute";
 
 let theme = createTheme({
   palette: {
@@ -65,7 +67,15 @@ const App = () => {
             path="/projects/:projectId"
             element={
               <AuthorizedRoute
-                element={<ProjectRoute element={<Project />} />}
+                element={
+                  <ProjectRoute
+                    element={
+                      <FieldsRoute
+                        element={<VisualizationsRoute element={<Project />} />}
+                      />
+                    }
+                  />
+                }
               />
             }
           />

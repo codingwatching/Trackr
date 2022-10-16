@@ -2,9 +2,9 @@ import { useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
-import AddVisualizationDialog from "./AddVisualizationDialog";
+import CreateVisualizationDialog from "./CreateVisualizationDialog";
 
-const AddVisualizationButton = () => {
+const CreateVisualizationButton = (props) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenDialog = () => {
@@ -38,9 +38,11 @@ const AddVisualizationButton = () => {
         <Typography variant="button">Add Visualization</Typography>
       </ButtonBase>
 
-      <AddVisualizationDialog open={dialogOpen} onClose={handleCloseDialog} />
+      {dialogOpen && (
+        <CreateVisualizationDialog onClose={handleCloseDialog} {...props} />
+      )}
     </>
   );
 };
 
-export default AddVisualizationButton;
+export default CreateVisualizationButton;

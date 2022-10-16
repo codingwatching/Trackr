@@ -1,10 +1,15 @@
 import Container from "@mui/material/Container";
-import AddVisualizationButton from "../components/AddVisualizationButton";
+import CreateVisualizationDialog from "../components/CreateVisualizationButton";
 
-const Project = ({ project, setProject }) => {
+const Project = (props) => {
+  const { visualizations } = props;
+
   return (
     <Container sx={{ my: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
-      <AddVisualizationButton project={project} setProject={setProject} />
+      {visualizations.map((visualization) => (
+        <>hi</>
+      ))}
+      <CreateVisualizationDialog {...props} />
     </Container>
   );
 };
