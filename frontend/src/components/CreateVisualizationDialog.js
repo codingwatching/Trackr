@@ -5,24 +5,30 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContentText from "@mui/material/DialogContentText";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import ButtonBase from "@mui/material/ButtonBase";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButton from "@mui/material/ToggleButton";
+import Button from "@mui/material/Button";
 import Visualizations from "./Visualizations";
 
 const CreateVisualizationDialog = (props) => {
   const [editor, setEditor] = useState();
+  const [visualization, setVisualization] = useState();
 
   const handleBack = () => {
     setEditor();
   };
 
-  const handleSelectDialog = (visualization) => {
+  const handleSelect = () => {
     setEditor(
       createElement(visualization.editor, {
         onBack: handleBack,
         ...props,
       })
     );
+  };
+
+  const handleChangeVisualization = (event, visualization) => {
+    setVisualization(visualization);
   };
 
   return (
@@ -49,37 +55,41 @@ const CreateVisualizationDialog = (props) => {
                 flexDirection: "row",
                 gap: "12px",
                 flexWrap: "wrap",
-                mb: 1,
               }}
             >
-              {Object.values(Visualizations).map((visualization) => (
-                <ButtonBase
-                  key={visualization.name}
-                  onClick={() => handleSelectDialog(visualization)}
-                  sx={{
-                    "&:hover": {
-                      background: "hsl(216deg 50% 91%)",
-                    },
-                    flex: 1,
-                    py: 5,
-
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "background 0.2s",
-                    borderRadius: 2,
-                    backgroundColor: visualization.color,
-                    boxShadow: "0px 2px 3px -1px rgb(157 157 157 / 56%)",
-                  }}
-                >
-                  {createElement(visualization.icon, { sx: { mb: 1 } })}
-
-                  <Typography variant="button">{visualization.name}</Typography>
-                </ButtonBase>
-              ))}
+              <ToggleButtonGroup
+                fullWidth
+                color="primary"
+                value={visualization}
+                exclusive
+                onChange={handleChangeVisualization}
+                sx={{ mr: 1 }}
+              >
+                {Object.values(Visualizations).map((visualization) => (
+                  <ToggleButton
+                    key={visualization.name}
+                    value={visualization}
+                    sx={{ p: 3, display: "flex", flexDirection: "column" }}
+                  >
+                    {createElement(visualization.icon, { sx: { mb: 1 } })}
+                    {visualization.name}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
             </Box>
           </DialogContent>
+          <DialogActions sx={{ pb: 3, pr: 3 }}>
+            <Button onClick={props.onClose}>Cancel</Button>
+            <Button
+              variant="contained"
+              disableElevation
+              autoFocus
+              disabled={!visualization}
+              onClick={handleSelect}
+            >
+              Select
+            </Button>
+          </DialogActions>
         </>
       )}
     </Dialog>

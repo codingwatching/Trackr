@@ -8,10 +8,14 @@ const Table = {
   icon: TableRowsIcon,
   editor: TableEditor,
   view: TableView,
-  serialize: (fieldId, sort) => {
+
+  serialize: (id, fieldId, sort) => {
     return {
-      fieldId,
-      sort,
+      id,
+      metadata: {
+        fieldId,
+        sort,
+      },
     };
   },
 };

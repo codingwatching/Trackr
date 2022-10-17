@@ -54,8 +54,10 @@ const TableEditor = ({
     }
 
     if (onBack) {
-      setVisualizations([...visualizations, Table.serialize(field, sort)]);
+      setVisualizations([...visualizations, Table.serialize(0, field, sort)]);
     }
+
+    onClose();
   };
 
   return (
