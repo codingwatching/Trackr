@@ -22,12 +22,12 @@ const CreateFieldDialog = ({ onBack, project, fields, setFields }) => {
 
     FieldsAPI.addField(project.id, data.get("name"))
       .then((result) => {
-        setFields(
-          fields.push({
-            id: result.data.id,
-            name: data.get("name"),
-          })
-        );
+        fields.push({
+          id: result.data.id,
+          name: data.get("name"),
+        });
+
+        setFields(fields);
         setLoading(false);
         onBack();
       })
@@ -48,7 +48,12 @@ const CreateFieldDialog = ({ onBack, project, fields, setFields }) => {
     <Box component="form" onSubmit={handleSubmit} noValidate>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
         {onBack && (
-          <IconButton color="primary" sx={{ mr: 1 }} onClick={onBack}>
+          <IconButton
+            color="primary"
+            sx={{ mr: 1 }}
+            disabled={loading}
+            onClick={onBack}
+          >
             <ArrowBackIcon />
           </IconButton>
         )}
@@ -72,6 +77,7 @@ const CreateFieldDialog = ({ onBack, project, fields, setFields }) => {
           margin="normal"
           required
           fullWidth
+          autoFocus
           name="name"
           label="Name"
           type="text"

@@ -4,7 +4,6 @@ import TableView from "./TableView";
 
 const Table = {
   name: "Table",
-  color: "#d1f1ff",
   icon: TableRowsIcon,
   editor: TableEditor,
   view: TableView,
@@ -13,6 +12,7 @@ const Table = {
     return {
       id,
       metadata: {
+        name: Table.name,
         fieldId,
         sort,
       },

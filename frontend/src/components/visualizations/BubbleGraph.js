@@ -4,7 +4,6 @@ import BubbleGraphView from "./BubbleGraphView";
 
 const BubbleGraph = {
   name: "Bubble Graph",
-  color: "#ffd1d1",
   icon: BubbleChartIcon,
   editor: BubbleGraphEditor,
   view: BubbleGraphView,

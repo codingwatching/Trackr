@@ -1,10 +1,10 @@
-import { useFields } from "../contexts/FieldsContext";
+import { useFields } from "../../contexts/FieldsContext";
+import { useVisualizations } from "../../contexts/VisualizationsContext";
 import { cloneElement } from "react";
-import CenteredBox from "./CenteredBox";
+import CenteredBox from "../CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
-import { useVisualizations } from "../contexts/VisualizationsContext";
 
 const VisualizationsAndFieldsRoute = ({ element, project, setProject }) => {
   const [fields, setFields, loadingFields, errorFields] = useFields(project.id);

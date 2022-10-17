@@ -1,3 +1,4 @@
+import { useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -6,11 +7,20 @@ import FormControl from "@mui/material/FormControl";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const FieldListMenu = ({ field, fields, onChange, onAddField }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       <FormControl fullWidth required sx={{ mb: 2 }}>
         <InputLabel>Field</InputLabel>
-        <Select label="Field" onChange={onChange} value={field}>
+        <Select
+          label="Field"
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
+          open={open}
+          onChange={onChange}
+          value={field}
+        >
           {fields.length ? (
             fields.map((field) => (
               <MenuItem key={field.id} value={field.id}>
@@ -22,7 +32,10 @@ const FieldListMenu = ({ field, fields, onChange, onAddField }) => {
           )}
           <Divider />
           <MenuItem
-            onClick={onAddField}
+            onClick={() => {
+              setOpen(false);
+              onAddField();
+            }}
             sx={{
               mt: 1,
               display: "flex",

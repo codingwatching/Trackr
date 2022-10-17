@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useProject } from "../contexts/ProjectContext";
+import { useProject } from "../../contexts/ProjectContext";
 import { cloneElement } from "react";
-import ProjectNavBar from "./ProjectNavBar";
-import CenteredBox from "./CenteredBox";
+import ProjectNavBar from "../ProjectNavBar";
+import CenteredBox from "../CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";

@@ -1,6 +1,6 @@
 import { cloneElement } from "react";
-import { useUser } from "../contexts/UserContext";
-import CenteredBox from "./CenteredBox";
+import { useUser } from "../../contexts/UserContext";
+import CenteredBox from "../CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";

@@ -14,7 +14,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Table from "./Table";
-import FieldListMenu from "./FieldListMenu";
+import FieldListMenu from "../FieldListMenu";
 
 const TableEditor = ({
   onBack,
