@@ -27,7 +27,6 @@ const TableEditor = ({
   visualizations,
   setVisualizations,
 }) => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [sort, setSort] = useState("desc");
   const [field, setField] = useState("");
