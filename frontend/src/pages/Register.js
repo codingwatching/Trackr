@@ -130,7 +130,7 @@ const Register = () => {
             fullWidth
             variant="contained"
             disableElevation
-            sx={{ mt: 2, mb: 2, textTransform: "none" }}
+            sx={{ mt: 2, mb: 2 }}
           >
             Sign Up
           </LoadingButton>

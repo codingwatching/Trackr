@@ -11,18 +11,15 @@ import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Table from "./Table";
+import FieldListMenu from "./FieldListMenu";
 
 const TableEditor = ({
   onBack,
   onClose,
-  project,
+  onAddField,
   fields,
   visualizations,
   setVisualizations,
@@ -80,20 +77,16 @@ const TableEditor = ({
 
         <DialogContentText sx={{ mb: 2 }}>
           A table allows you to display the data corresponding to a field in a
-          sorted and contigous manner. Select a field you wish to display in a
+          sorted and contiguous manner. Select a field you wish to display in a
           table format.
         </DialogContentText>
 
-        <FormControl fullWidth required sx={{ mb: 2 }}>
-          <InputLabel>Field</InputLabel>
-          <Select label="Field" onChange={handleChangeField} value={field}>
-            {fields.map((field) => (
-              <MenuItem key={field.id} value={field.id}>
-                {field.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FieldListMenu
+          field={field}
+          fields={fields}
+          onChange={handleChangeField}
+          onAddField={onAddField}
+        />
 
         <DialogContentText sx={{ mb: 2 }}>
           Select whether you want to display the latest data (descending) or the

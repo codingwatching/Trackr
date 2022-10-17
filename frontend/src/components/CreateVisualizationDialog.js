@@ -9,19 +9,35 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Button from "@mui/material/Button";
 import Visualizations from "./Visualizations";
+import CreateFieldDialog from "./CreateFieldDialog";
 
 const CreateVisualizationDialog = (props) => {
-  const [editor, setEditor] = useState();
+  const [primaryDialog, setPrimaryDialog] = useState();
+  const [secondaryDialog, setSecondaryDialog] = useState();
   const [visualization, setVisualization] = useState();
 
-  const handleBack = () => {
-    setEditor();
+  const handlePrimaryBack = () => {
+    setPrimaryDialog();
   };
 
-  const handleSelect = () => {
-    setEditor(
+  const handleSecondaryBack = () => {
+    setSecondaryDialog();
+  };
+
+  const handleAddField = () => {
+    setSecondaryDialog(
+      createElement(CreateFieldDialog, {
+        onBack: handleSecondaryBack,
+        ...props,
+      })
+    );
+  };
+
+  const handleNext = () => {
+    setPrimaryDialog(
       createElement(visualization.editor, {
-        onBack: handleBack,
+        onBack: handlePrimaryBack,
+        onAddField: handleAddField,
         ...props,
       })
     );
@@ -33,7 +49,7 @@ const CreateVisualizationDialog = (props) => {
 
   return (
     <Dialog open onClose={props.onClose}>
-      {editor || (
+      {secondaryDialog || primaryDialog || (
         <>
           <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
             New Visualization
@@ -85,9 +101,9 @@ const CreateVisualizationDialog = (props) => {
               disableElevation
               autoFocus
               disabled={!visualization}
-              onClick={handleSelect}
+              onClick={handleNext}
             >
-              Select
+              Next
             </Button>
           </DialogActions>
         </>

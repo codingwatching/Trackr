@@ -8,6 +8,16 @@ class FieldsAPI {
       withCredentials: true,
     });
   }
+
+  static addField(projectId, name) {
+    return axios.post(
+      this.#BASE_URL + "/",
+      { projectId, name },
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }
 
 export default FieldsAPI;
