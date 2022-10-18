@@ -7,9 +7,9 @@ type Log struct {
 	Message   string
 	CreatedAt time.Time
 
-	ProjectID *uint
+	ProjectID uint
 	Project   Project
 
-	UserID *uint
+	UserID uint
 	User   User
 }

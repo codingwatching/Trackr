@@ -262,7 +262,7 @@ func TestDeleteVisualizationRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
-	assert.NotNil(t, err)
-	assert.Nil(t, visualization)
+	logs, err := suite.Service.GetLogsService().GetUserLogs(suite.Project, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(logs))
 }

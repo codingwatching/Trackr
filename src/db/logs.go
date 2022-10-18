@@ -28,10 +28,9 @@ func (service *LogsServiceDB) GetProjectLogs(project models.Project, user models
 	return logs, nil
 }
 
-func (service *ProjectServiceDB) AddLog(log models.Log) error {
+func (service *ProjectServiceDB) AddLog(log models.Log) (uint, error) {
 	if result := service.database.Create(&log); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
-
-	return nil
+	return log.ID, nil
 }

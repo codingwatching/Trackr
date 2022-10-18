@@ -36,7 +36,7 @@ func addVisualizationRoute(c *gin.Context) {
 	createdAt := time.Now()
 
 	visualization := models.Visualization{
-		Metadata:  "",
+		Metadata:  json.Metadata,
 		UpdatedAt: createdAt,
 		CreatedAt: createdAt,
 		Project:   *project,
