@@ -116,7 +116,7 @@ const TableEditor = ({
   return (
     <>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        {visualization && (
+        {!visualization && (
           <IconButton
             color="primary"
             sx={{ mr: 1 }}
@@ -173,7 +173,7 @@ const TableEditor = ({
         </ToggleButtonGroup>
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
-        {visualization && (
+        {!visualization && (
           <Button onClick={onClose} disabled={loading}>
             Cancel
           </Button>
