@@ -16,8 +16,8 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 	var values []models.Value
 
 	result := service.database.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields")
-	result = result.Joins("LEFT JOIN projects")
+	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 
 	if order == "asc" {
 		result = result.Order("`values`.`created_at` ASC")
@@ -49,9 +49,9 @@ func (service *ValueServiceDB) GetNumberOfValuesByUser(user models.User) (int64,
 
 	result := service.database.Model(&models.User{})
 	result = result.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields")
-	result = result.Joins("LEFT JOIN projects")
-	result = result.Joins("LEFT JOIN users")
+	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("LEFT JOIN users ON `projects`.`user_id` = `users`.`id`")
 	result = result.Where("`users`.`id` = ?", user.ID)
 	result = result.Count(&count)
 
@@ -67,7 +67,7 @@ func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int
 
 	result := service.database.Model(&models.User{})
 	result = result.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields")
+	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Where("`fields`.`id` = ?", field.ID)
 	result = result.Count(&count)
 
@@ -82,8 +82,8 @@ func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Valu
 	var value models.Value
 
 	result := service.database.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields")
-	result = result.Joins("LEFT JOIN projects")
+	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.First(&value, "`values`.`id` = ? AND `projects`.`user_id` = ?", id, user.ID)
 
 	if result.Error != nil {

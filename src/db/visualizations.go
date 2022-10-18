@@ -13,7 +13,10 @@ type VisulizationServiceDB struct {
 
 func (service *VisulizationServiceDB) GetVisualizations(project models.Project, user models.User) ([]models.Visualization, error) {
 	var visualizations []models.Visualization
-	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects").Find(&visualizations, "visualizations.project_id = ? AND projects.user_id = ?", project.ID, user.ID); result.Error != nil {
+
+	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects ON visualizations.project_id = projects.id").Find(
+		&visualizations, "visualizations.project_id = ? AND projects.user_id = ?", project.ID, user.ID,
+	); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -22,7 +25,9 @@ func (service *VisulizationServiceDB) GetVisualizations(project models.Project, 
 
 func (service *VisulizationServiceDB) GetVisualization(id uint, user models.User) (*models.Visualization, error) {
 	var visualization models.Visualization
-	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects").First(&visualization, "fields.id = ? AND projects.user_id = ?", id, user.ID); result.Error != nil {
+	if result := service.database.Model(&models.Visualization{}).Joins("LEFT JOIN projects ON visualizations.project_id = projects.id").First(
+		&visualization, "visualizations.id = ? AND projects.user_id = ?", id, user.ID,
+	); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -44,8 +49,8 @@ func (service *VisulizationServiceDB) UpdateVisualization(visualization models.V
 	return nil
 }
 
-func (service *VisulizationServiceDB) DeleteVisualization(id uint, user models.User) error {
-	result := service.database.Model(&models.Field{}).Joins("LEFT JOIN projects").Delete(&models.Field{}, "visualizations.id = ? AND projects.user_id = ?", id, user.ID)
+func (service *VisulizationServiceDB) DeleteVisualization(visualization models.Visualization) error {
+	result := service.database.Delete(visualization)
 	if result.Error != nil {
 		return result.Error
 	}

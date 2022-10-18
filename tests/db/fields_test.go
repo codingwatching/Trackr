@@ -12,6 +12,16 @@ import (
 func TestGetFields(t *testing.T) {
 	suite := tests.Startup()
 
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
+
 	fields, err := suite.Service.GetFieldService().GetFields(models.Project{}, models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(fields))
@@ -32,6 +42,16 @@ func TestGetFields(t *testing.T) {
 
 func TestGetField(t *testing.T) {
 	suite := tests.Startup()
+
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
 
 	field, err := suite.Service.GetFieldService().GetField(models.Field{}.ID, suite.User)
 	assert.NotNil(t, err)

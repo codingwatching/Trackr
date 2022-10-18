@@ -15,26 +15,24 @@ import (
 func addVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	var json requests.Visualization
+	var json requests.AddVisualization
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	projectId, err := strconv.Atoi(c.Param("projectId"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
+	if json.Metadata == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The metadata parameter cannot be empty."})
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
+	project, err := serviceProvider.GetProjectService().GetProject(json.ProjectID, *user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Cannot find project."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
 	}
 
 	createdAt := time.Now()
-
 	visualization := models.Visualization{
 		Metadata:  json.Metadata,
 		UpdatedAt: createdAt,
@@ -77,6 +75,7 @@ func getVisualizationsRoute(c *gin.Context) {
 	visualizationList := make([]responses.Visualization, len(visualizations))
 	for index, visualization := range visualizations {
 		visualizationList[index] = responses.Visualization{
+			ID:        visualization.ID,
 			Metadata:  visualization.Metadata,
 			UpdatedAt: visualization.UpdatedAt,
 			CreatedAt: visualization.CreatedAt,
@@ -89,19 +88,18 @@ func getVisualizationsRoute(c *gin.Context) {
 func updateVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	visulizationId, err := strconv.Atoi(c.Param("visulizationId"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :visulizationId parameter provided."})
-		return
-	}
-
-	var json requests.Visualization
+	var json requests.UpdateVisualization
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	visualization, err := serviceProvider.GetVisualizationService().GetVisualization(uint(visulizationId), *user)
+	if json.Metadata == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The metadata parameter cannot be empty."})
+		return
+	}
+
+	visualization, err := serviceProvider.GetVisualizationService().GetVisualization(json.ID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find visualization."})
 		return
@@ -127,7 +125,13 @@ func deleteVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetVisualizationService().DeleteVisualization(uint(visualizationId), *user)
+	visualization, err := serviceProvider.GetVisualizationService().GetVisualization(uint(visualizationId), *user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find visualization."})
+		return
+	}
+
+	err = serviceProvider.GetVisualizationService().DeleteVisualization(*visualization)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete visulization."})
 		return
@@ -142,8 +146,8 @@ func initVisualizationsController(routerGroup *gin.RouterGroup, serviceProviderI
 	usersRouterGroup := routerGroup.Group("/visualizations")
 	usersRouterGroup.Use(sessionMiddleware)
 
+	usersRouterGroup.POST("/", addVisualizationRoute)
 	usersRouterGroup.GET("/:projectId", getVisualizationsRoute)
-	usersRouterGroup.POST("/:projectId", addVisualizationRoute)
-	usersRouterGroup.PUT("/:visualizationId", updateUserRoute)
-	usersRouterGroup.DELETE("/:visualizationId", deleteUserRoute)
+	usersRouterGroup.PUT("/", updateVisualizationRoute)
+	usersRouterGroup.DELETE("/:visualizationId", deleteVisualizationRoute)
 }

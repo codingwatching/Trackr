@@ -76,6 +76,7 @@ const ProjectListMenu = ({ closeSubMenu }) => {
         />
         <Skeleton variant="text" width={90} height={25} />
       </MenuItem>
+      <Divider />
     </>
   );
 

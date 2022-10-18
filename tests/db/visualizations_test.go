@@ -1,9 +1,10 @@
 package db_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"trackr/src/models"
 	"trackr/tests"
@@ -11,6 +12,16 @@ import (
 
 func TestGetVisualizations(t *testing.T) {
 	suite := tests.Startup()
+
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
 	assert.Nil(t, err)
@@ -20,21 +31,33 @@ func TestGetVisualizations(t *testing.T) {
 	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(models.Project{}, models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(visualizations))
+
+	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(suite.Project, models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(visualizations))
+
+	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(models.Project{}, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(visualizations))
 }
 
 func TestGetVisualization(t *testing.T) {
 	suite := tests.Startup()
 
-	visualization, err := suite.Service.GetVisualizationService().GetVisualization(1, suite.User)
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Project.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, visualization)
 	assert.Equal(t, suite.Visualization.ID, visualization.ID)
 
-	visualization, err = suite.Service.GetVisualizationService().GetVisualization(2, suite.User)
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(models.Project{}.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, visualization)
 
-	visualization, err = suite.Service.GetVisualizationService().GetVisualization(1, models.User{})
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Project.ID, models.User{})
+	assert.NotNil(t, err)
+	assert.Nil(t, visualization)
+
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(models.Project{}.ID, models.User{})
 	assert.NotNil(t, err)
 	assert.Nil(t, visualization)
 }
@@ -45,13 +68,10 @@ func TestAddVisualization(t *testing.T) {
 	newVisualization := suite.Visualization
 	newVisualization.ID = 2
 	newVisualization.Metadata = "Metadata"
-	newVisualization.CreatedAt = suite.Time
-	newVisualization.UpdatedAt = suite.Time
-	newVisualization.Project = suite.Project
 
 	visualizationId, err := suite.Service.GetVisualizationService().AddVisualization(newVisualization)
 	assert.Nil(t, err)
-	assert.Equal(t, 1, visualizationId)
+	assert.Equal(t, newVisualization.ID, visualizationId)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
 	assert.Nil(t, err)
@@ -80,13 +100,10 @@ func TestUpdateVisualization(t *testing.T) {
 func TestDeleteVisualization(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetVisualizationService().DeleteVisualization(2, suite.User)
+	err := suite.Service.GetVisualizationService().DeleteVisualization(models.Visualization{})
 	assert.NotNil(t, err)
 
-	err = suite.Service.GetVisualizationService().DeleteVisualization(suite.Visualization.ID, models.User{})
-	assert.NotNil(t, err)
-
-	err = suite.Service.GetVisualizationService().DeleteVisualization(1, suite.User)
+	err = suite.Service.GetVisualizationService().DeleteVisualization(suite.Visualization)
 	assert.Nil(t, err)
 
 	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
