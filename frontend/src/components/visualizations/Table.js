@@ -8,15 +8,12 @@ const Table = {
   editor: TableEditor,
   view: TableView,
 
-  serialize: (id, fieldId, sort) => {
-    return {
-      id,
-      metadata: {
-        name: Table.name,
-        fieldId,
-        sort,
-      },
-    };
+  serialize: (fieldId, sort) => {
+    return JSON.stringify({
+      name: Table.name,
+      fieldId,
+      sort,
+    });
   },
 };
 

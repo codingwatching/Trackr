@@ -15,18 +15,27 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Table from "./Table";
 import FieldListMenu from "../FieldListMenu";
+import VisualizationsAPI from "../../api/VisualizationsAPI";
 
 const TableEditor = ({
   onBack,
   onClose,
   onAddField,
+
+  project,
   fields,
+  visualization,
   visualizations,
   setVisualizations,
 }) => {
   const [error, setError] = useState();
-  const [sort, setSort] = useState("desc");
-  const [field, setField] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sort, setSort] = useState(
+    visualization ? visualization.metadata.sort : ""
+  );
+  const [field, setField] = useState(
+    visualization ? visualization.metadata.field : ""
+  );
 
   const handleChangeSort = (event, newSort) => {
     setSort(newSort);
@@ -49,18 +58,71 @@ const TableEditor = ({
       return;
     }
 
-    if (onBack) {
-      setVisualizations([...visualizations, Table.serialize(0, field, sort)]);
+    const metadata = Table.serialize(field, sort);
+
+    if (visualization) {
+      throw "unimplemented";
+
+      // VisualizationsAPI.updateVisualization(visualization.id, metadata)
+      //   .then((result) => {
+      //     visualizations.push({
+      //       id: result.data.id,
+      //       metadata: metadata,
+      //     });
+
+      //     setVisualizations(visualizations);
+      //     setLoading(false);
+      //     onClose();
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+
+      //     if (error?.response?.data?.error) {
+      //       setError(error.response.data.error);
+      //     } else {
+      //       setError("Failed to update visualization: " + error.message);
+      //     }
+      //   });
+    } else {
+      VisualizationsAPI.addVisualization(project.id, metadata)
+        .then((result) => {
+          setVisualizations([
+            ...visualizations,
+            {
+              id: result.data.id,
+              metadata: metadata,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ]);
+
+          setLoading(false);
+          onClose();
+        })
+        .catch((error) => {
+          setLoading(false);
+
+          if (error?.response?.data?.error) {
+            setError(error.response.data.error);
+          } else {
+            setError("Failed to add visualization: " + error.message);
+          }
+        });
     }
 
-    onClose();
+    setLoading(true);
   };
 
   return (
     <>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        {onBack && (
-          <IconButton color="primary" sx={{ mr: 1 }} onClick={onBack}>
+        {visualization && (
+          <IconButton
+            color="primary"
+            sx={{ mr: 1 }}
+            disabled={loading}
+            onClick={onBack}
+          >
             <ArrowBackIcon />
           </IconButton>
         )}
@@ -111,11 +173,16 @@ const TableEditor = ({
         </ToggleButtonGroup>
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
-        {onBack && <Button onClick={onClose}>Cancel</Button>}
+        {visualization && (
+          <Button onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+        )}
         <LoadingButton
           variant="contained"
           disableElevation
           autoFocus
+          loading={loading}
           onClick={handleSubmit}
         >
           {onBack ? "Create" : "Save"}
