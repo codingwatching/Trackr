@@ -30,11 +30,10 @@ const TableEditor = ({
 }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState(
-    visualization ? visualization.metadata.sort : ""
-  );
-  const [field, setField] = useState(
-    visualization ? visualization.metadata.field : ""
+
+  const [sort, setSort] = useState(visualization?.metadata?.sort || "");
+  const [fieldId, setFieldId] = useState(
+    visualization?.metadata?.fieldId || ""
   );
 
   const handleChangeSort = (event, newSort) => {
@@ -42,13 +41,13 @@ const TableEditor = ({
   };
 
   const handleChangeField = (event) => {
-    setField(event.target.value);
+    setFieldId(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!field) {
+    if (!fieldId) {
       setError("You must select a field.");
       return;
     }
@@ -58,7 +57,7 @@ const TableEditor = ({
       return;
     }
 
-    const metadata = Table.serialize(field, sort);
+    const metadata = Table.serialize(fieldId, sort);
 
     if (visualization) {
       throw new Error("unimplemented");
@@ -138,13 +137,11 @@ const TableEditor = ({
         )}
 
         <DialogContentText sx={{ mb: 2 }}>
-          A table allows you to display the data corresponding to a field in a
-          sorted and contiguous manner. Select a field you wish to display in a
-          table format.
+          Select a field you wish to display in a table format.
         </DialogContentText>
 
         <FieldListMenu
-          field={field}
+          field={fieldId}
           fields={fields}
           onChange={handleChangeField}
           onAddField={onAddField}

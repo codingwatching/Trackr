@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-const FieldListMenu = ({ field, fields, onChange, onAddField }) => {
+const FieldListMenu = ({ fieldId, fields, onChange, onAddField }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -19,7 +19,7 @@ const FieldListMenu = ({ field, fields, onChange, onAddField }) => {
           onClose={() => setOpen(false)}
           open={open}
           onChange={onChange}
-          value={field}
+          value={fieldId}
         >
           {fields.length ? (
             fields.map((field) => (
