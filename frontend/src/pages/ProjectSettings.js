@@ -168,7 +168,6 @@ const EditProject = ({ project, setProject }) => {
               mr: 1.5,
               maxWidth: 180,
               flexGrow: 1,
-              textTransform: "none",
             }}
           >
             Save Changes

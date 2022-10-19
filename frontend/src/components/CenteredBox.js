@@ -5,6 +5,7 @@ const CenteredBox = ({ children, ...props }) => {
     <Box
       {...props}
       sx={{
+        ...props.sx,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

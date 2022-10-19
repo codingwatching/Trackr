@@ -1,22 +1,33 @@
 import { useParams } from "react-router-dom";
 import { useProject } from "../../contexts/ProjectContext";
+import { useFields } from "../../contexts/FieldsContext";
+import { useVisualizations } from "../../contexts/VisualizationsContext";
 import { cloneElement } from "react";
 import ProjectNavBar from "../ProjectNavBar";
 import CenteredBox from "../CenteredBox";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
 
 const ProjectRoute = ({ element }) => {
   const { projectId } = useParams();
-  const [project, setProject, loading, error] = useProject(projectId);
+  const [project, setProject, loadingProject, errorProject] =
+    useProject(projectId);
+  const [fields, setFields, loadingFields, errorFields] = useFields(projectId);
+  const [
+    visualizations,
+    setVisualizations,
+    loadingVisualizations,
+    errorVisualizations,
+  ] = useVisualizations(projectId);
 
-  if (error) {
+  if (errorProject) {
     return (
       <CenteredBox>
         <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
         <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
-          {error}
+          {errorProject}
         </Typography>
       </CenteredBox>
     );
@@ -24,16 +35,37 @@ const ProjectRoute = ({ element }) => {
 
   return (
     <>
-      <ProjectNavBar loading={loading} project={project} />
-      {loading ? (
+      <ProjectNavBar loading={loadingProject} project={project} />
+      {loadingProject || loadingFields || loadingVisualizations ? (
         <CenteredBox>
           <CircularProgress />
-          <Typography variant="button" sx={{ mt: 3, color: "gray" }}>
-            Loading Project
+        </CenteredBox>
+      ) : errorFields || errorVisualizations ? (
+        <CenteredBox sx={{ pt: 5, pb: 8, px: 1 }}>
+          <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
+          <Typography
+            variant="h5"
+            sx={{
+              userSelect: "none",
+              display: "flex",
+              flexDirection: "column",
+              textAlign: "center",
+            }}
+          >
+            <Box>{errorFields}</Box>
+            <Box>{errorVisualizations}</Box>
           </Typography>
         </CenteredBox>
       ) : (
-        cloneElement(element, { ...element.props, project, setProject })
+        cloneElement(element, {
+          ...element.props,
+          project,
+          setProject,
+          fields,
+          setFields,
+          visualizations,
+          setVisualizations,
+        })
       )}
     </>
   );

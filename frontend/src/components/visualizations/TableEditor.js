@@ -61,7 +61,7 @@ const TableEditor = ({
     const metadata = Table.serialize(field, sort);
 
     if (visualization) {
-      throw "unimplemented";
+      throw new Error("unimplemented");
 
       // VisualizationsAPI.updateVisualization(visualization.id, metadata)
       //   .then((result) => {

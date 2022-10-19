@@ -24,6 +24,10 @@ export const useFields = (projectId) => {
         setFields([]);
       });
 
+    setLoading(true);
+    setFields([]);
+    setError();
+
     return () => {};
   }, [projectId]);
 

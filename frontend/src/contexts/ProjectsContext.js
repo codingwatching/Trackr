@@ -24,6 +24,10 @@ export const useProjects = () => {
         setProjects([]);
       });
 
+    setLoading(true);
+    setProjects([]);
+    setError();
+
     return () => {};
   }, []);
 

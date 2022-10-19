@@ -2,7 +2,6 @@ import { createVisualizationElement } from "../components/visualizations/Visuali
 import { Fragment } from "react";
 import CreateVisualizationDialog from "../components/CreateVisualizationButton";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
 
 const Project = (props) => {
   return (
