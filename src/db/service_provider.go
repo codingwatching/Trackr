@@ -14,6 +14,7 @@ type ServiceProviderDB struct {
 	fieldService         services.FieldService
 	visualizationService services.VisualizationService
 	valueService         services.ValueService
+	logsService          services.LogsService
 }
 
 func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
@@ -38,6 +39,7 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	serviceProviderDB.fieldService = &FieldServiceDB{database: database}
 	serviceProviderDB.valueService = &ValueServiceDB{database: database}
 	serviceProviderDB.visualizationService = &VisulizationServiceDB{database: database}
+	serviceProviderDB.logsService = &LogsServiceDB{database: database}
 
 	return serviceProviderDB
 }
@@ -64,4 +66,8 @@ func (serviceProviderDB *ServiceProviderDB) GetVisualizationService() services.V
 
 func (serviceProviderDB *ServiceProviderDB) GetValueService() services.ValueService {
 	return serviceProviderDB.valueService
+}
+
+func (serviceProviderDB *ServiceProviderDB) GetLogsService() services.LogsService {
+	return serviceProviderDB.logsService
 }
