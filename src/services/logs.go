@@ -6,5 +6,5 @@ import (
 
 type LogsService interface {
 	GetLogs(user models.User) ([]models.Log, error)
-	AddLog(message string, user models.User, project *models.Project) error
+	AddLog(message string, user models.User, projectId *uint) error
 }

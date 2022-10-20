@@ -41,7 +41,8 @@ func TestAddLog(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs), len(logs))
 
-	err = suite.Service.GetLogsService().AddLog("Invalid Log", suite.User, &models.Project{})
+	projectId := models.Project{}.ID
+	err = suite.Service.GetLogsService().AddLog("Invalid Log", suite.User, &projectId)
 	assert.NotNil(t, err)
 
 	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
@@ -57,7 +58,7 @@ func TestAddLog(t *testing.T) {
 	assert.Equal(t, "Third Log", logs[0].Message)
 	assert.Nil(t, logs[0].ProjectID)
 
-	err = suite.Service.GetLogsService().AddLog("Fourth Log with Project", suite.User, &suite.Project)
+	err = suite.Service.GetLogsService().AddLog("Fourth Log with Project", suite.User, &suite.Project.ID)
 	assert.Nil(t, err)
 
 	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)

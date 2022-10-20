@@ -29,12 +29,12 @@ func (service *UserServiceDB) GetNumberOfUsers(email string) (int64, error) {
 	return count, nil
 }
 
-func (service *UserServiceDB) AddUser(user models.User) error {
+func (service *UserServiceDB) AddUser(user models.User) (uint, error) {
 	if result := service.database.Create(&user); result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
-	return nil
+	return user.ID, nil
 }
 
 func (service *UserServiceDB) DeleteUser(user models.User) error {

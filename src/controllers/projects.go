@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -34,14 +35,20 @@ func addProjectRoute(c *gin.Context) {
 		User:        *user,
 	}
 
-	projectId, err := serviceProvider.GetProjectService().AddProject(project)
+	project.ID, err = serviceProvider.GetProjectService().AddProject(project)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new project."})
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog("Created a new project.", *user, &project.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.NewProject{
-		ID: projectId,
+		ID: project.ID,
 	})
 }
 
@@ -103,9 +110,21 @@ func deleteProjectRoute(c *gin.Context) {
 		return
 	}
 
+	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
+		return
+	}
+
 	err = serviceProvider.GetProjectService().DeleteProject(uint(projectId), *user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to delete project."})
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete project."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Deleted the project %s.", project.Name), *user, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 
@@ -150,6 +169,12 @@ func updateProjectRoute(c *gin.Context) {
 	err = serviceProvider.GetProjectService().UpdateProject(*project)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update project."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog("Updated the project's information.", *user, &project.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 

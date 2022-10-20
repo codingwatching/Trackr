@@ -21,12 +21,7 @@ func (service *LogsServiceDB) GetLogs(user models.User) ([]models.Log, error) {
 	return logs, nil
 }
 
-func (service *LogsServiceDB) AddLog(message string, user models.User, project *models.Project) error {
-	var projectId *uint
-	if project != nil {
-		projectId = &project.ID
-	}
-
+func (service *LogsServiceDB) AddLog(message string, user models.User, projectId *uint) error {
 	log := models.Log{
 		Message:   message,
 		CreatedAt: time.Now(),

@@ -206,6 +206,10 @@ func TestRegisterRoute(t *testing.T) {
 	assert.Equal(t, user.FirstName, "FirstName")
 	assert.Equal(t, user.LastName, "LastName")
 	assert.Nil(t, bcrypt.CompareHashAndPassword([]byte(user.Password), []byte("Password")))
+
+	logs, err := suite.Service.GetLogsService().GetLogs(*user)
+	assert.Nil(t, err)
+	assert.Equal(t, "Created a new account.", logs[0].Message)
 }
 
 func TestLogoutRoute(t *testing.T) {
@@ -278,6 +282,10 @@ func TestLogoutRoute(t *testing.T) {
 	session, _, err = suite.Service.GetSessionService().GetSessionAndUser("SessionID")
 	assert.NotNil(t, err)
 	assert.Nil(t, session)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, "Signed out.", logs[0].Message)
 }
 
 func TestLoginRoute(t *testing.T) {
@@ -417,5 +425,9 @@ func TestLoginRoute(t *testing.T) {
 
 		_, _, err = suite.Service.GetSessionService().GetSessionAndUser("ExpiredSessionID")
 		assert.NotNil(t, err)
+
+		logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+		assert.Nil(t, err)
+		assert.Equal(t, "Signed in.", logs[0].Message)
 	}
 }

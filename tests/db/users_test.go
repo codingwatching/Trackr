@@ -45,14 +45,14 @@ func TestAddUser(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
 
-	err = suite.Service.GetUserService().AddUser(suite.User)
+	_, err = suite.Service.GetUserService().AddUser(suite.User)
 	assert.NotNil(t, err)
 
 	newUser := suite.User
 	newUser.ID = 2
 	newUser.Email = "new@email"
 
-	err = suite.Service.GetUserService().AddUser(newUser)
+	newUserID, err := suite.Service.GetUserService().AddUser(newUser)
 	assert.Nil(t, err)
 
 	numberOfUsers, err = suite.Service.GetUserService().GetNumberOfUsers(newUser.Email)
@@ -63,7 +63,8 @@ func TestAddUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
 
-	assert.Equal(t, user.ID, newUser.ID)
+	assert.Equal(t, newUser.ID, newUserID)
+	assert.Equal(t, newUser.ID, user.ID)
 }
 
 func TestDeleteUser(t *testing.T) {

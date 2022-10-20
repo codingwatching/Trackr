@@ -46,6 +46,12 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog("Added a new visualization.", *user, &project.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.NewVisualization{
 		ID: visualizationId,
 	})
@@ -113,6 +119,12 @@ func updateVisualizationRoute(c *gin.Context) {
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog("Modified a visualization.", *user, &visualization.ProjectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
@@ -134,6 +146,12 @@ func deleteVisualizationRoute(c *gin.Context) {
 	err = serviceProvider.GetVisualizationService().DeleteVisualization(*visualization)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete visulization."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog("Deleted a visualization.", *user, &visualization.ProjectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 

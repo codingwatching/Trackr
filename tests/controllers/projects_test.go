@@ -3,6 +3,7 @@ package controllers_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -54,6 +55,10 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, "Created a new project.", logs[0].Message)
 }
 
 func TestGetProjectsRoute(t *testing.T) {
@@ -222,7 +227,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Failed to delete project.",
+		Error: "Failed to find project.",
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"0", nil)
@@ -254,6 +259,10 @@ func TestDeleteProjectRoute(t *testing.T) {
 	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Deleted the project %s.", suite.Project.Name), logs[0].Message)
 }
 
 func TestUpdateProjectRoute(t *testing.T) {
@@ -348,6 +357,10 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, suite.Project.Description, project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
 
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, "Updated the project's information.", logs[0].Message)
+
 	//
 	// Test updating description path.
 	//
@@ -372,6 +385,10 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
+
+	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, "Updated the project's information.", logs[0].Message)
 
 	//
 	// Test resetting api key path.
@@ -398,4 +415,8 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.NotEqual(t, suite.Project.APIKey, project.APIKey)
+
+	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, "Updated the project's information.", logs[0].Message)
 }

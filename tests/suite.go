@@ -111,7 +111,7 @@ func Startup() *Suite {
 	suite.Service.GetValueService().AddValue(suite.Value)
 
 	suite.Service.GetLogsService().AddLog("First Log", suite.User, nil)
-	suite.Service.GetLogsService().AddLog("Second Log", suite.User, &suite.Project)
+	suite.Service.GetLogsService().AddLog("Second Log", suite.User, &suite.Project.ID)
 	suite.Logs = []models.Log{
 		{
 			ID:      2,

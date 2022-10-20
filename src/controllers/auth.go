@@ -90,6 +90,12 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog("Signed in.", *user, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.SetCookie(sessionCookie, sessionId, math.MaxInt32, "/", "*", true, true)
 	c.JSON(http.StatusOK, responses.Empty{})
 }
@@ -116,6 +122,12 @@ func logoutRoute(c *gin.Context) {
 	err = serviceProvider.GetSessionService().DeleteSession(sessionId, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete session."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog("Signed out.", *user, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 
@@ -188,9 +200,15 @@ func registerRoute(c *gin.Context) {
 		MaxValues: maxValues,
 	}
 
-	err = serviceProvider.GetUserService().AddUser(user)
+	user.ID, err = serviceProvider.GetUserService().AddUser(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to register new user."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog("Created a new account.", user, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 
