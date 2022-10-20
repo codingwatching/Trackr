@@ -39,6 +39,7 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	serviceProviderDB.fieldService = &FieldServiceDB{database: database}
 	serviceProviderDB.valueService = &ValueServiceDB{database: database}
 	serviceProviderDB.visualizationService = &VisulizationServiceDB{database: database}
+	serviceProviderDB.logsService = &LogsServiceDB{database: database}
 
 	return serviceProviderDB
 }

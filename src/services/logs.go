@@ -1,9 +1,10 @@
 package services
 
-import "trackr/src/models"
+import (
+	"trackr/src/models"
+)
 
 type LogsService interface {
-	GetUserLogs(user models.User) ([]models.Log, error)
-	GetProjectLogs(project models.Project, user models.User) ([]models.Log, error)
-	AddLog(log models.Log) (uint, error)
+	GetLogs(user models.User) ([]models.Log, error)
+	AddLog(message string, user models.User, project *models.Project) error
 }
