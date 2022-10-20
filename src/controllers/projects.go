@@ -41,7 +41,7 @@ func addProjectRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog("Created a new project.", *user, &project.ID)
+	err = serviceProvider.GetLogService().AddLog("Created a new project.", *user, &project.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -122,7 +122,7 @@ func deleteProjectRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Deleted the project %s.", project.Name), *user, nil)
+	err = serviceProvider.GetLogService().AddLog(fmt.Sprintf("Deleted the project %s.", project.Name), *user, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -172,7 +172,7 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog("Updated the project's information.", *user, &project.ID)
+	err = serviceProvider.GetLogService().AddLog("Updated the project's information.", *user, &project.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return

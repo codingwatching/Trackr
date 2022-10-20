@@ -11,7 +11,7 @@ import (
 func getLogsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	logs, err := serviceProvider.GetLogsService().GetLogs(*user)
+	logs, err := serviceProvider.GetLogService().GetLogs(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get logs."})
 		return
