@@ -11,11 +11,11 @@ import (
 func TestGetLogs(t *testing.T) {
 	suite := tests.Startup()
 
-	logs, err := suite.Service.GetLogsService().GetLogs(models.User{})
+	logs, err := suite.Service.GetLogService().GetLogs(models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(logs))
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs), len(logs))
 
@@ -34,34 +34,34 @@ func TestGetLogs(t *testing.T) {
 func TestAddLog(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetLogsService().AddLog("Invalid Log", models.User{}, nil)
+	err := suite.Service.GetLogService().AddLog("Invalid Log", models.User{}, nil)
 	assert.NotNil(t, err)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs), len(logs))
 
 	projectId := models.Project{}.ID
-	err = suite.Service.GetLogsService().AddLog("Invalid Log", suite.User, &projectId)
+	err = suite.Service.GetLogService().AddLog("Invalid Log", suite.User, &projectId)
 	assert.NotNil(t, err)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs), len(logs))
 
-	err = suite.Service.GetLogsService().AddLog("Third Log", suite.User, nil)
+	err = suite.Service.GetLogService().AddLog("Third Log", suite.User, nil)
 	assert.Nil(t, err)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs)+1, len(logs))
 	assert.Equal(t, "Third Log", logs[0].Message)
 	assert.Nil(t, logs[0].ProjectID)
 
-	err = suite.Service.GetLogsService().AddLog("Fourth Log with Project", suite.User, &suite.Project.ID)
+	err = suite.Service.GetLogService().AddLog("Fourth Log with Project", suite.User, &suite.Project.ID)
 	assert.Nil(t, err)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs)+2, len(logs))
 	assert.Equal(t, "Fourth Log with Project", logs[0].Message)

@@ -35,7 +35,7 @@ func TestGetLogsRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, len(suite.Logs), len(logs))
 

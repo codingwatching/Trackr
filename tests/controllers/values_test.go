@@ -272,7 +272,7 @@ func TestDeleteValuesRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, value)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf(
 		"Delete all values associated to the field %s.", suite.Field.Name), logs[0].Message)

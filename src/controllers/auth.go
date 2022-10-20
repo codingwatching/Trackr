@@ -90,7 +90,7 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog("Signed in.", *user, nil)
+	err = serviceProvider.GetLogService().AddLog("Signed in.", *user, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -125,7 +125,7 @@ func logoutRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog("Signed out.", *user, nil)
+	err = serviceProvider.GetLogService().AddLog("Signed out.", *user, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -206,7 +206,7 @@ func registerRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog("Created a new account.", user, nil)
+	err = serviceProvider.GetLogService().AddLog("Created a new account.", user, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
