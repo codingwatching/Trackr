@@ -50,7 +50,7 @@ func addFieldRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Added the field %s.", field.Name), *user, &project.ID)
+	err = serviceProvider.GetLogService().AddLog(fmt.Sprintf("Added the field %s.", field.Name), *user, &project.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -124,7 +124,7 @@ func updateFieldRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Modified the field %s.", field.Name), *user, &field.ProjectID)
+	err = serviceProvider.GetLogService().AddLog(fmt.Sprintf("Modified the field %s.", field.Name), *user, &field.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -154,7 +154,7 @@ func deleteFieldRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Deleted the field %s.", field.Name), *user, &field.ProjectID)
+	err = serviceProvider.GetLogService().AddLog(fmt.Sprintf("Deleted the field %s.", field.Name), *user, &field.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return

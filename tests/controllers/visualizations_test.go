@@ -101,7 +101,7 @@ func TestAddVisualizationRoute(t *testing.T) {
 	assert.NotNil(t, visualization)
 	assert.Equal(t, uint(2), visualization.ID)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Added a new visualization.", logs[0].Message)
 }
@@ -294,7 +294,7 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 	assert.Equal(t, suite.Visualization.ID, visualization.ID)
 	assert.Equal(t, "NewMetadata", visualization.Metadata)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Modified a visualization.", logs[0].Message)
 }
@@ -369,7 +369,7 @@ func TestDeleteVisualizationRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, visualization)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Deleted a visualization.", logs[0].Message)
 }

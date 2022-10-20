@@ -56,7 +56,7 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.NotNil(t, project)
 	assert.Equal(t, uint(2), project.ID)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Created a new project.", logs[0].Message)
 }
@@ -260,7 +260,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("Deleted the project %s.", suite.Project.Name), logs[0].Message)
 }
@@ -357,7 +357,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, suite.Project.Description, project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Updated the project's information.", logs[0].Message)
 
@@ -386,7 +386,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.Equal(t, suite.Project.APIKey, project.APIKey)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Updated the project's information.", logs[0].Message)
 
@@ -416,7 +416,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, "New Description Name", project.Description)
 	assert.NotEqual(t, suite.Project.APIKey, project.APIKey)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, "Updated the project's information.", logs[0].Message)
 }

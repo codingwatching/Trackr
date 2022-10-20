@@ -104,7 +104,7 @@ func TestAddFieldRoute(t *testing.T) {
 	assert.NotNil(t, field)
 	assert.Equal(t, uint(2), field.ID)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("Added the field %s.", field.Name), logs[0].Message)
 }
@@ -278,7 +278,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.NotNil(t, field)
 	assert.Equal(t, "New Field Name", field.Name)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("Modified the field %s.", field.Name), logs[0].Message)
 }
@@ -358,7 +358,7 @@ func TestDeleteFieldRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("Deleted the field %s.", fieldName), logs[0].Message)
 }
