@@ -24,6 +24,7 @@ type Suite struct {
 	Field          models.Field
 	Value          models.Value
 	Visualization  models.Visualization
+	Logs           []models.Log
 }
 
 func Startup() *Suite {
@@ -108,6 +109,31 @@ func Startup() *Suite {
 		Field:   suite.Field,
 	}
 	suite.Service.GetValueService().AddValue(suite.Value)
+
+	suite.Service.GetLogsService().AddLog("First Log", suite.User, nil)
+	suite.Service.GetLogsService().AddLog("Second Log", suite.User, &suite.Project.ID)
+	suite.Logs = []models.Log{
+		{
+			ID:      2,
+			Message: "Second Log",
+
+			ProjectID: &suite.Project.ID,
+			Project:   suite.Project,
+
+			UserID: suite.User.ID,
+			User:   suite.User,
+		},
+		{
+			ID:      1,
+			Message: "First Log",
+
+			ProjectID: nil,
+			Project:   models.Project{},
+
+			UserID: suite.User.ID,
+			User:   suite.User,
+		},
+	}
 
 	return &suite
 }

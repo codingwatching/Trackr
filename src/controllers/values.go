@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -88,6 +89,16 @@ func deleteValuesRoute(c *gin.Context) {
 	err = serviceProvider.GetValueService().DeleteValues(*field)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete values."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf(
+		"Delete all values associated to the field %s.", field.Name),
+		*user,
+		&field.ProjectID,
+	)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 

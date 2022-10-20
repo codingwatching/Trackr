@@ -3,10 +3,12 @@ package controllers_test
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -101,6 +103,10 @@ func TestAddFieldRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, uint(2), field.ID)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Added the field %s.", field.Name), logs[0].Message)
 }
 
 func TestGetFieldsRoute(t *testing.T) {
@@ -271,6 +277,10 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, "New Field Name", field.Name)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Modified the field %s.", field.Name), logs[0].Message)
 }
 
 func TestDeleteFieldRoute(t *testing.T) {
@@ -333,6 +343,8 @@ func TestDeleteFieldRoute(t *testing.T) {
 	assert.Equal(t, uint(1), field.ID)
 	assert.Equal(t, suite.Project.ID, field.ProjectID)
 
+	fieldName := field.Name
+
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"1", nil)
@@ -345,4 +357,8 @@ func TestDeleteFieldRoute(t *testing.T) {
 	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.NotNil(t, err)
 	assert.Nil(t, field)
+
+	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("Deleted the field %s.", fieldName), logs[0].Message)
 }

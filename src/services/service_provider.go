@@ -5,6 +5,7 @@ type ServiceProvider interface {
 	GetProjectService() ProjectService
 	GetUserService() UserService
 	GetFieldService() FieldService
+	GetLogsService() LogsService
 	GetVisualizationService() VisualizationService
 	GetValueService() ValueService
 }

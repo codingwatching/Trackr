@@ -7,9 +7,9 @@ type Log struct {
 	Message   string
 	CreatedAt time.Time
 
-	ProjectID *uint
-	Project   Project
+	UserID uint
+	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 
-	UserID *uint
-	User   User
+	ProjectID *uint
+	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`
 }

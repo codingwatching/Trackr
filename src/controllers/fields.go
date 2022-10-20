@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -42,14 +44,20 @@ func addFieldRoute(c *gin.Context) {
 		Project: *project,
 	}
 
-	fieldId, err := serviceProvider.GetFieldService().AddField(field)
+	field.ID, err = serviceProvider.GetFieldService().AddField(field)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new field."})
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Added the field %s.", field.Name), *user, &project.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.NewField{
-		ID: fieldId,
+		ID: field.ID,
 	})
 }
 
@@ -116,6 +124,12 @@ func updateFieldRoute(c *gin.Context) {
 		return
 	}
 
+	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Modified the field %s.", field.Name), *user, &field.ProjectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
@@ -137,6 +151,12 @@ func deleteFieldRoute(c *gin.Context) {
 	err = serviceProvider.GetFieldService().DeleteField(*field)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete field."})
+		return
+	}
+
+	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf("Deleted the field %s.", field.Name), *user, &field.ProjectID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
 	}
 
