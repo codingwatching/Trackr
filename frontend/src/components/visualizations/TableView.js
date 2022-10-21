@@ -46,7 +46,7 @@ const TableView = ({ visualization, metadata }) => {
       >
         <Box sx={{ flexGrow: 1 }}>{fieldName}</Box>
         <Box>
-          <IconButton disabled={loading}>
+          <IconButton disabled={loading || error !== undefined}>
             <MoreHorizIcon />
           </IconButton>
         </Box>
