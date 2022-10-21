@@ -151,7 +151,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, suite.User.LastName, user.LastName)
 	assert.Equal(t, suite.User.Password, user.Password)
 
-	logs, err := suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, logs[0].ID, suite.Logs[0].ID+1)
 	assert.Equal(t, "Updated user settings.", logs[0].Message)
@@ -180,7 +180,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, "NewLastName", user.LastName)
 	assert.Equal(t, suite.User.Password, user.Password)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, logs[0].ID, suite.Logs[0].ID+2)
 	assert.Equal(t, "Updated user settings.", logs[0].Message)
@@ -210,7 +210,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, "NewLastName", user.LastName)
 	assert.Equal(t, suite.User.Password, user.Password)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, logs[0].ID, suite.Logs[0].ID+3)
 	assert.Equal(t, "Updated user settings.", logs[0].Message)
@@ -240,7 +240,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, "NewLastName", user.LastName)
 	assert.Equal(t, suite.User.Password, user.Password)
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, logs[0].ID, suite.Logs[0].ID+4)
 	assert.Equal(t, "Updated user settings.", logs[0].Message)
@@ -290,7 +290,7 @@ func TestUpdateUserRoute(t *testing.T) {
 	assert.Equal(t, "NewLastName", user.LastName)
 	assert.Nil(t, bcrypt.CompareHashAndPassword([]byte(user.Password), []byte("Password2")))
 
-	logs, err = suite.Service.GetLogsService().GetLogs(suite.User)
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, logs[0].ID, suite.Logs[0].ID+5)
 	assert.Equal(t, "Updated user settings.", logs[0].Message)

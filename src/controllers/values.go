@@ -92,7 +92,7 @@ func deleteValuesRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogsService().AddLog(fmt.Sprintf(
+	err = serviceProvider.GetLogService().AddLog(fmt.Sprintf(
 		"Delete all values associated to the field %s.", field.Name),
 		*user,
 		&field.ProjectID,

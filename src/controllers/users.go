@@ -65,7 +65,7 @@ func updateUserRoute(c *gin.Context) {
 		return
 	}
 
-	err := serviceProvider.GetLogsService().AddLog("Updated user settings.", *user, nil)
+	err := serviceProvider.GetLogService().AddLog("Updated user settings.", *user, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return

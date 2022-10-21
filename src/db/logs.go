@@ -8,11 +8,11 @@ import (
 	"trackr/src/models"
 )
 
-type LogsServiceDB struct {
+type LogServiceDB struct {
 	database *gorm.DB
 }
 
-func (service *LogsServiceDB) GetLogs(user models.User) ([]models.Log, error) {
+func (service *LogServiceDB) GetLogs(user models.User) ([]models.Log, error) {
 	var logs []models.Log
 	if result := service.database.Preload("Project").Order("created_at DESC").Find(&logs, "user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
@@ -21,7 +21,7 @@ func (service *LogsServiceDB) GetLogs(user models.User) ([]models.Log, error) {
 	return logs, nil
 }
 
-func (service *LogsServiceDB) AddLog(message string, user models.User, projectId *uint) error {
+func (service *LogServiceDB) AddLog(message string, user models.User, projectId *uint) error {
 	log := models.Log{
 		Message:   message,
 		CreatedAt: time.Now(),
