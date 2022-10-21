@@ -4,7 +4,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import CreateVisualizationDialog from "./CreateVisualizationDialog";
 
-const CreateVisualizationButton = (props) => {
+const CreateVisualizationButton = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenDialog = () => {
@@ -38,9 +38,7 @@ const CreateVisualizationButton = (props) => {
         <Typography variant="button">Add Visualization</Typography>
       </ButtonBase>
 
-      {dialogOpen && (
-        <CreateVisualizationDialog onClose={handleCloseDialog} {...props} />
-      )}
+      {dialogOpen && <CreateVisualizationDialog onClose={handleCloseDialog} />}
     </>
   );
 };

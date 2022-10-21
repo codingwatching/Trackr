@@ -1,4 +1,4 @@
-import { useProjects } from "../contexts/ProjectsContext";
+import { useProjects } from "../hooks/useProjects";
 import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";

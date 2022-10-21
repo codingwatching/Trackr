@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { useContext, useState } from "react";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -12,7 +13,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TextField from "@mui/material/TextField";
 import FieldsAPI from "../api/FieldsAPI";
 
-const CreateFieldDialog = ({ onBack, project, fields, setFields }) => {
+const CreateFieldDialog = ({ onBack }) => {
+  const { project, fields, setFields } = useContext(ProjectRouteContext);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 

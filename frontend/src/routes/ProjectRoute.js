@@ -1,14 +1,16 @@
 import { useParams } from "react-router-dom";
-import { useProject } from "../../contexts/ProjectContext";
-import { useFields } from "../../contexts/FieldsContext";
-import { useVisualizations } from "../../contexts/VisualizationsContext";
-import { cloneElement } from "react";
-import ProjectNavBar from "../ProjectNavBar";
-import CenteredBox from "../CenteredBox";
+import { useProject } from "../hooks/useProject";
+import { useFields } from "../hooks/useFields";
+import { useVisualizations } from "../hooks/useVisualizations";
+import { createContext } from "react";
+import ProjectNavBar from "../components/ProjectNavBar";
+import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
+
+export const ProjectRouteContext = createContext();
 
 const ProjectRoute = ({ element }) => {
   const { projectId } = useParams();
@@ -57,15 +59,18 @@ const ProjectRoute = ({ element }) => {
           </Typography>
         </CenteredBox>
       ) : (
-        cloneElement(element, {
-          ...element.props,
-          project,
-          setProject,
-          fields,
-          setFields,
-          visualizations,
-          setVisualizations,
-        })
+        <ProjectRouteContext.Provider
+          value={{
+            project,
+            setProject,
+            fields,
+            setFields,
+            visualizations,
+            setVisualizations,
+          }}
+        >
+          {element}
+        </ProjectRouteContext.Provider>
       )}
     </>
   );

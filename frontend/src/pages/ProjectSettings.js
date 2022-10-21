@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -13,7 +14,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import Moment from "react-moment";
 
-const EditProject = ({ project, setProject }) => {
+const EditProject = () => {
+  const { project, setProject } = useContext(ProjectRouteContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [success, setSuccess] = useState();

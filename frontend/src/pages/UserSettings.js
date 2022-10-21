@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserRouteContext } from "../routes/UserRoute";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -10,7 +11,8 @@ import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import UsersAPI from "../api/UsersAPI";
 
-const UserSettings = ({ user, setUser }) => {
+const UserSettings = () => {
+  const { user, setUser } = useContext(UserRouteContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
@@ -128,6 +130,7 @@ const UserSettings = ({ user, setUser }) => {
           label="First Name"
           name="firstName"
           error={error ? true : false}
+          disabled={loading}
           required
           defaultValue={user.firstName}
           sx={{ mb: 2.5 }}
@@ -137,6 +140,7 @@ const UserSettings = ({ user, setUser }) => {
           label="Last Name"
           name="lastName"
           error={error ? true : false}
+          disabled={loading}
           required
           defaultValue={user.lastName}
           sx={{ mb: 2.5 }}
@@ -162,7 +166,7 @@ const UserSettings = ({ user, setUser }) => {
           label="Current Password"
           name="currentPassword"
           error={error ? true : false}
-          value={loading ? "" : undefined}
+          disabled={loading}
           required
           sx={{ mb: 2.5 }}
         />
@@ -171,8 +175,8 @@ const UserSettings = ({ user, setUser }) => {
           type="password"
           label="New Password"
           name="newPassword"
-          value={loading ? "" : undefined}
           error={error ? true : false}
+          disabled={loading}
           required
           sx={{ mb: 2.5 }}
         />
@@ -181,8 +185,8 @@ const UserSettings = ({ user, setUser }) => {
           type="password"
           label="Repeat New Password"
           name="repeatNewPassword"
-          value={loading ? "" : undefined}
           error={error ? true : false}
+          disabled={loading}
           required
           sx={{ mb: 2.5 }}
         />

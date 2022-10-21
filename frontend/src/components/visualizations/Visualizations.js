@@ -9,7 +9,7 @@ const Visualizations = {
   bubbleGraph: BubbleGraph,
 };
 
-export const createVisualizationElement = (visualization, props) => {
+export const createVisualizationElement = (visualization) => {
   const metadata = JSON.parse(visualization.metadata);
   const visualizations = Object.values(Visualizations);
 
@@ -17,7 +17,7 @@ export const createVisualizationElement = (visualization, props) => {
     if (visualizations[i].name === metadata.name) {
       return createElement(
         visualizations[i].view,
-        { ...props, visualization, metadata },
+        { visualization, metadata },
         {}
       );
     }

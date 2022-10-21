@@ -1,17 +1,21 @@
+import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { Fragment, useContext } from "react";
 import { createVisualizationElement } from "../components/visualizations/Visualizations";
-import { Fragment } from "react";
 import CreateVisualizationDialog from "../components/CreateVisualizationButton";
 import Container from "@mui/material/Container";
 
-const Project = (props) => {
+const Project = () => {
+  const { visualizations } = useContext(ProjectRouteContext);
+
   return (
     <Container sx={{ my: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
-      {props.visualizations.map((visualization) => (
+      {visualizations.map((visualization) => (
         <Fragment key={visualization.id}>
-          {createVisualizationElement(visualization, props)}
+          {createVisualizationElement(visualization)}
         </Fragment>
       ))}
-      <CreateVisualizationDialog {...props} />
+
+      <CreateVisualizationDialog />
     </Container>
   );
 };

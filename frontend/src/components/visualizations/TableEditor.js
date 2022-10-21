@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ProjectRouteContext } from "../../routes/ProjectRoute";
+import { useContext, useState } from "react";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import DialogActions from "@mui/material/DialogActions";
@@ -17,17 +18,10 @@ import Table from "./Table";
 import FieldListMenu from "../FieldListMenu";
 import VisualizationsAPI from "../../api/VisualizationsAPI";
 
-const TableEditor = ({
-  onBack,
-  onClose,
-  onAddField,
+const TableEditor = ({ onBack, onClose, onAddField }) => {
+  const { project, visualization, visualizations, setVisualizations } =
+    useContext(ProjectRouteContext);
 
-  project,
-  fields,
-  visualization,
-  visualizations,
-  setVisualizations,
-}) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +30,7 @@ const TableEditor = ({
     visualization?.metadata?.fieldId || ""
   );
 
-  const handleChangeSort = (event, newSort) => {
+  const handleChangeSort = (_, newSort) => {
     setSort(newSort);
   };
 
@@ -141,16 +135,16 @@ const TableEditor = ({
         </DialogContentText>
 
         <FieldListMenu
-          field={fieldId}
-          fields={fields}
           onChange={handleChangeField}
           onAddField={onAddField}
+          selectedFieldId={fieldId}
         />
 
         <DialogContentText sx={{ mb: 2 }}>
           Select whether you want to display the latest data (descending) or the
           oldest data (ascending) first in the table.
         </DialogContentText>
+
         <ToggleButtonGroup
           fullWidth
           color="primary"

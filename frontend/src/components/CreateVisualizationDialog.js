@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import Visualizations from "./visualizations/Visualizations";
 import CreateFieldDialog from "./CreateFieldDialog";
 
-const CreateVisualizationDialog = (props) => {
+const CreateVisualizationDialog = ({ onClose }) => {
   const [primaryDialog, setPrimaryDialog] = useState();
   const [secondaryDialog, setSecondaryDialog] = useState();
   const [visualization, setVisualization] = useState();
@@ -27,8 +27,8 @@ const CreateVisualizationDialog = (props) => {
   const handleAddField = () => {
     setSecondaryDialog(
       createElement(CreateFieldDialog, {
+        onClose: onClose,
         onBack: handleSecondaryBack,
-        ...props,
       })
     );
   };
@@ -36,9 +36,9 @@ const CreateVisualizationDialog = (props) => {
   const handleSelectVisualization = () => {
     setPrimaryDialog(
       createElement(visualization.editor, {
+        onClose: onClose,
         onBack: handlePrimaryBack,
         onAddField: handleAddField,
-        ...props,
       })
     );
   };
@@ -48,7 +48,7 @@ const CreateVisualizationDialog = (props) => {
   };
 
   return (
-    <Dialog open onClose={props.onClose}>
+    <Dialog open onClose={onClose}>
       <Box sx={{ display: !secondaryDialog ? "block" : "none" }}>
         {primaryDialog}
       </Box>
@@ -99,7 +99,7 @@ const CreateVisualizationDialog = (props) => {
             </Box>
           </DialogContent>
           <DialogActions sx={{ pb: 3, pr: 3 }}>
-            <Button onClick={props.onClose}>Cancel</Button>
+            <Button onClick={onClose}>Cancel</Button>
             <Button
               variant="contained"
               disableElevation
