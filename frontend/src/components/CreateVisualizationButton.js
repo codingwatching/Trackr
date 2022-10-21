@@ -30,8 +30,6 @@ const CreateVisualizationButton = () => {
           justifyContent: "center",
           transition: "background 0.2s",
           borderRadius: 2,
-          backgroundColor: "#f0f4fa",
-          boxShadow: "0px 2px 3px -1px rgb(157 157 157 / 56%)",
         }}
       >
         <AddRoundedIcon sx={{ fontSize: 30, mb: 1 }} />

@@ -3,10 +3,10 @@ import axios from "axios";
 class VisualizationsAPI {
   static #BASE_URL = "http://localhost:8080/api/visualizations";
 
-  static addVisualization(projectId, metadata) {
+  static addVisualization(fieldId, metadata) {
     return axios.post(
       this.#BASE_URL + "/",
-      { projectId, metadata },
+      { fieldId, metadata },
       { withCredentials: true }
     );
   }
@@ -17,10 +17,10 @@ class VisualizationsAPI {
     });
   }
 
-  static updateVisualization(id, metadata) {
+  static updateVisualization(id, fieldId, metadata) {
     return axios.put(
       this.#BASE_URL + "/",
-      { id, metadata },
+      { id, fieldId, metadata },
       { withCredentials: true }
     );
   }

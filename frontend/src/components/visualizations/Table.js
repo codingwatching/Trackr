@@ -8,10 +8,9 @@ const Table = {
   editor: TableEditor,
   view: TableView,
 
-  serialize: (fieldId, sort) => {
+  serialize: (sort) => {
     return JSON.stringify({
       name: Table.name,
-      fieldId,
       sort,
     });
   },

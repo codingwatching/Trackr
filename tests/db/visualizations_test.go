@@ -1,10 +1,8 @@
 package db_test
 
 import (
-	"testing"
-	"time"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 
 	"trackr/src/models"
 	"trackr/tests"
@@ -23,12 +21,7 @@ func TestGetVisualizations(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, newProject.ID, projectId)
 
-	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
-	assert.Nil(t, err)
-	assert.Equal(t, 1, len(visualizations))
-	assert.Equal(t, suite.Visualization.ID, visualizations[0].ID)
-
-	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(models.Project{}, models.User{})
+	visualizations, err := suite.Service.GetVisualizationService().GetVisualizations(models.Project{}, models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(visualizations))
 
@@ -39,6 +32,11 @@ func TestGetVisualizations(t *testing.T) {
 	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(models.Project{}, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, 0, len(visualizations))
+
+	visualizations, err = suite.Service.GetVisualizationService().GetVisualizations(suite.Project, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(visualizations))
+	assert.Equal(t, suite.Visualization.ID, visualizations[0].ID)
 }
 
 func TestGetVisualization(t *testing.T) {
@@ -77,7 +75,7 @@ func TestAddVisualization(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, len(visualizations), 2)
 	assert.Equal(t, uint(2), visualizations[1].ID)
-	assert.Equal(t, suite.Project.ID, visualizations[1].ProjectID)
+	assert.Equal(t, suite.Field.ID, visualizations[1].FieldID)
 }
 
 func TestUpdateVisualization(t *testing.T) {
@@ -85,7 +83,6 @@ func TestUpdateVisualization(t *testing.T) {
 
 	visualization := suite.Visualization
 	visualization.Metadata = "Updated"
-	visualization.UpdatedAt = time.Now()
 
 	err := suite.Service.GetVisualizationService().UpdateVisualization(visualization)
 	assert.Nil(t, err)

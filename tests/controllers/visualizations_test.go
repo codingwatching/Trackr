@@ -36,6 +36,22 @@ func TestAddVisualizationRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
+	// Test invalid request parameters.
+	//
+
+	response, _ = json.Marshal(responses.Error{
+		Error: "Invalid request parameters provided.",
+	})
+
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, nil)
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
 	// Test empty metadata parameter path.
 	//
 
@@ -53,15 +69,15 @@ func TestAddVisualizationRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid project id parameter path.
+	// Test invalid field id parameter path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
-		Error: "Failed to find project.",
+		Error: "Failed to find field.",
 	})
 	request, _ = json.Marshal(requests.AddVisualization{
-		ProjectID: models.Project{}.ID,
-		Metadata:  "Metadata",
+		FieldID:  models.Field{}.ID,
+		Metadata: "Metadata",
 	})
 
 	httpRecorder = httptest.NewRecorder()
@@ -84,8 +100,8 @@ func TestAddVisualizationRoute(t *testing.T) {
 		ID: uint(2),
 	})
 	request, _ = json.Marshal(requests.AddVisualization{
-		ProjectID: suite.Project.ID,
-		Metadata:  "Metadata",
+		FieldID:  suite.Field.ID,
+		Metadata: "Metadata",
 	})
 
 	httpRecorder = httptest.NewRecorder()
@@ -172,12 +188,16 @@ func TestGetVisualizationsRoute(t *testing.T) {
 		Visualizations: []responses.Visualization{
 			{
 				ID:        suite.Visualization.ID,
+				FieldID:   suite.Field.ID,
+				FieldName: suite.Field.Name,
 				Metadata:  suite.Visualization.Metadata,
 				UpdatedAt: suite.Visualization.UpdatedAt,
 				CreatedAt: suite.Visualization.CreatedAt,
 			},
 			{
 				ID:        newVisualization.ID,
+				FieldID:   suite.Field.ID,
+				FieldName: suite.Field.Name,
 				Metadata:  newVisualization.Metadata,
 				UpdatedAt: newVisualization.UpdatedAt,
 				CreatedAt: newVisualization.CreatedAt,
@@ -252,7 +272,27 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 		Error: "Failed to find visualization.",
 	})
 	request, _ = json.Marshal(requests.UpdateVisualization{
-		ID:       0,
+		ID:       models.Visualization{}.ID,
+		Metadata: "NewMetadata",
+	})
+
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test non-existant field id path.
+	//
+
+	response, _ = json.Marshal(responses.Error{
+		Error: "Failed to find corresponding field.",
+	})
+	request, _ = json.Marshal(requests.UpdateVisualization{
+		ID:       suite.Visualization.ID,
 		Metadata: "NewMetadata",
 	})
 
@@ -268,6 +308,13 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 	// Test successful path.
 	//
 
+	newField := suite.Field
+	newField.ID = 2
+
+	newFieldId, err := suite.Service.GetFieldService().AddField(newField)
+	assert.Nil(t, err)
+	assert.Equal(t, newField.ID, newFieldId)
+
 	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, visualization)
@@ -276,7 +323,8 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 
 	response, _ = json.Marshal(responses.Empty{})
 	request, _ = json.Marshal(requests.UpdateVisualization{
-		ID:       1,
+		ID:       suite.Visualization.ID,
+		FieldID:  newFieldId,
 		Metadata: "NewMetadata",
 	})
 
@@ -292,6 +340,7 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, visualization)
 	assert.Equal(t, suite.Visualization.ID, visualization.ID)
+	assert.Equal(t, newFieldId, visualization.FieldID)
 	assert.Equal(t, "NewMetadata", visualization.Metadata)
 
 	logs, err := suite.Service.GetLogService().GetLogs(suite.User)

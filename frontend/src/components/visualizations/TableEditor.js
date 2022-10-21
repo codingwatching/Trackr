@@ -18,17 +18,22 @@ import Table from "./Table";
 import FieldListMenu from "../FieldListMenu";
 import VisualizationsAPI from "../../api/VisualizationsAPI";
 
-const TableEditor = ({ onBack, onClose, onAddField }) => {
-  const { project, visualization, visualizations, setVisualizations } =
+const TableEditor = ({
+  onBack,
+  onClose,
+  onAddField,
+
+  visualization,
+  metadata,
+}) => {
+  const { fields, visualizations, setVisualizations } =
     useContext(ProjectRouteContext);
 
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
-  const [sort, setSort] = useState(visualization?.metadata?.sort || "");
-  const [fieldId, setFieldId] = useState(
-    visualization?.metadata?.fieldId || ""
-  );
+  const [sort, setSort] = useState(metadata?.sort || "");
+  const [fieldId, setFieldId] = useState(visualization?.fieldId || "");
 
   const handleChangeSort = (_, newSort) => {
     setSort(newSort);
@@ -51,7 +56,7 @@ const TableEditor = ({ onBack, onClose, onAddField }) => {
       return;
     }
 
-    const metadata = Table.serialize(fieldId, sort);
+    const metadata = Table.serialize(sort);
 
     if (visualization) {
       throw new Error("unimplemented");
@@ -77,12 +82,14 @@ const TableEditor = ({ onBack, onClose, onAddField }) => {
       //     }
       //   });
     } else {
-      VisualizationsAPI.addVisualization(project.id, metadata)
+      VisualizationsAPI.addVisualization(fieldId, metadata)
         .then((result) => {
           setVisualizations([
             ...visualizations,
             {
               id: result.data.id,
+              fieldId: fieldId,
+              fieldName: fields.find((field) => field.id === fieldId).name,
               metadata: metadata,
               createdAt: new Date(),
               updatedAt: new Date(),

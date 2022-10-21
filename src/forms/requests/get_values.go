@@ -1,9 +1,8 @@
 package requests
 
 type GetValues struct {
-	FieldID uint `json:"fieldId"`
-
-	Order  string `json:"order"`
-	Offset int    `json:"offset"`
-	Limit  int    `json:"limit"`
+	FieldID uint   `form:"fieldId" url:"fieldId"`
+	Order   string `form:"order" url:"order"`
+	Offset  int    `form:"offset" url:"offset"`
+	Limit   int    `form:"limit" url:"limit"`
 }

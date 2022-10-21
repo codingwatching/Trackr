@@ -26,9 +26,9 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProject(json.ProjectID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, *user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
@@ -37,7 +37,7 @@ func addVisualizationRoute(c *gin.Context) {
 		Metadata:  json.Metadata,
 		UpdatedAt: createdAt,
 		CreatedAt: createdAt,
-		Project:   *project,
+		Field:     *field,
 	}
 
 	visualizationId, err := serviceProvider.GetVisualizationService().AddVisualization(visualization)
@@ -46,7 +46,7 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogService().AddLog("Added a new visualization.", *user, &project.ID)
+	err = serviceProvider.GetLogService().AddLog("Added a new visualization.", *user, &field.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -82,6 +82,9 @@ func getVisualizationsRoute(c *gin.Context) {
 	for index, visualization := range visualizations {
 		visualizationList[index] = responses.Visualization{
 			ID:        visualization.ID,
+			FieldID:   visualization.Field.ID,
+			FieldName: visualization.Field.Name,
+
 			Metadata:  visualization.Metadata,
 			UpdatedAt: visualization.UpdatedAt,
 			CreatedAt: visualization.CreatedAt,
@@ -111,7 +114,14 @@ func updateVisualizationRoute(c *gin.Context) {
 		return
 	}
 
+	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, *user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find corresponding field."})
+		return
+	}
+
 	visualization.Metadata = json.Metadata
+	visualization.Field = *field
 	visualization.UpdatedAt = time.Now()
 
 	if err := serviceProvider.GetVisualizationService().UpdateVisualization(*visualization); err != nil {
@@ -119,7 +129,7 @@ func updateVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	err = serviceProvider.GetLogService().AddLog("Modified a visualization.", *user, &visualization.ProjectID)
+	err = serviceProvider.GetLogService().AddLog("Modified a visualization.", *user, &field.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
@@ -143,13 +153,19 @@ func deleteVisualizationRoute(c *gin.Context) {
 		return
 	}
 
+	field, err := serviceProvider.GetFieldService().GetField(visualization.FieldID, *user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get corresponding field."})
+		return
+	}
+
 	err = serviceProvider.GetVisualizationService().DeleteVisualization(*visualization)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete visulization."})
 		return
 	}
 
-	err = serviceProvider.GetLogService().AddLog("Deleted a visualization.", *user, &visualization.ProjectID)
+	err = serviceProvider.GetLogService().AddLog("Deleted a visualization.", *user, &field.ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a log entry."})
 		return
