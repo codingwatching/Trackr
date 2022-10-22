@@ -12,11 +12,12 @@ import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
 import CreateFieldDialog from "./CreateFieldDialog";
 import DeleteVisualizationDialog from "./DeleteVisualizationDialog";
+import VisualizationsEditor from "./visualizations/VisualizationsEditor";
 
 const VisualizationMenuButton = ({
+  visualizationType,
   visualization,
   metadata,
-  editor,
   disabled,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -54,8 +55,9 @@ const VisualizationMenuButton = ({
 
     setDialogElement(
       createElement(
-        editor,
+        VisualizationsEditor,
         {
+          visualizationType,
           visualization,
           metadata,
           onClose: closeDialog,

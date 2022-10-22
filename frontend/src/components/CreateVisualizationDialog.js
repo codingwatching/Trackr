@@ -8,13 +8,14 @@ import Box from "@mui/material/Box";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Button from "@mui/material/Button";
-import Visualizations from "./visualizations/Visualizations";
+import VisualizationTypes from "./visualizations/Visualizations";
 import CreateFieldDialog from "./CreateFieldDialog";
+import VisualizationsEditor from "./visualizations/VisualizationsEditor";
 
 const CreateVisualizationDialog = ({ onClose }) => {
   const [primaryDialog, setPrimaryDialog] = useState();
   const [secondaryDialog, setSecondaryDialog] = useState();
-  const [visualization, setVisualization] = useState();
+  const [visualizationType, setVisualizationType] = useState();
 
   const handlePrimaryBack = () => {
     setPrimaryDialog();
@@ -35,16 +36,17 @@ const CreateVisualizationDialog = ({ onClose }) => {
 
   const handleSelectVisualization = () => {
     setPrimaryDialog(
-      createElement(visualization.editor, {
+      createElement(VisualizationsEditor, {
         onClose: onClose,
         onBack: handlePrimaryBack,
         onAddField: handleAddField,
+        visualizationType,
       })
     );
   };
 
-  const handleChangeVisualization = (event, visualization) => {
-    setVisualization(visualization);
+  const handleChangeVisualization = (event, visualizationType) => {
+    setVisualizationType(visualizationType);
   };
 
   return (
@@ -80,19 +82,19 @@ const CreateVisualizationDialog = ({ onClose }) => {
               <ToggleButtonGroup
                 fullWidth
                 color="primary"
-                value={visualization}
+                value={visualizationType}
                 exclusive
                 onChange={handleChangeVisualization}
                 sx={{ mr: 1 }}
               >
-                {Object.values(Visualizations).map((visualization) => (
+                {VisualizationTypes.map((visualizationType) => (
                   <ToggleButton
-                    key={visualization.name}
-                    value={visualization}
+                    key={visualizationType.name}
+                    value={visualizationType}
                     sx={{ p: 3, display: "flex", flexDirection: "column" }}
                   >
-                    {createElement(visualization.icon, { sx: { mb: 1 } })}
-                    {visualization.name}
+                    {createElement(visualizationType.icon, { sx: { mb: 1 } })}
+                    {visualizationType.name}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
@@ -104,7 +106,7 @@ const CreateVisualizationDialog = ({ onClose }) => {
               variant="contained"
               disableElevation
               autoFocus
-              disabled={!visualization}
+              disabled={!visualizationType}
               onClick={handleSelectVisualization}
             >
               Next

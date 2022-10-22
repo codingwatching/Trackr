@@ -12,17 +12,17 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
 
-const LIMIT = 6;
-
-const TableView = ({ visualization, metadata, editor }) => {
-  const { sort } = metadata;
+const TableView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId, fieldName } = visualization;
+  const { sort } = metadata;
+
+  const limit = 6;
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
     fieldId,
     sort,
     offset,
-    LIMIT
+    limit
   );
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const TableView = ({ visualization, metadata, editor }) => {
   };
 
   const handlePreviousPage = () => {
-    setOffset(offset - LIMIT);
+    setOffset(offset - limit);
   };
 
   return (
@@ -54,9 +54,9 @@ const TableView = ({ visualization, metadata, editor }) => {
         <Box>
           <VisualizationMenuButton
             disabled={loading || error !== undefined}
+            visualizationType={visualizationType}
             visualization={visualization}
             metadata={metadata}
-            editor={editor}
           />
         </Box>
       </Box>
@@ -126,17 +126,17 @@ const TableView = ({ visualization, metadata, editor }) => {
             }}
           >
             <Box sx={{ flexGrow: 1, color: "#00000085" }}>
-              Page {Math.floor(offset / LIMIT) + 1} of{" "}
-              {Math.max(1, Math.ceil(totalValues / LIMIT))}
+              Page {Math.floor(offset / limit) + 1} of{" "}
+              {Math.max(1, Math.ceil(totalValues / limit))}
             </Box>
             <IconButton
-              disabled={loading || offset - LIMIT < 0}
+              disabled={loading || offset - limit < 0}
               onClick={handlePreviousPage}
             >
               <ArrowLeftIcon />
             </IconButton>
             <IconButton
-              disabled={loading || offset + LIMIT >= totalValues}
+              disabled={loading || offset + limit >= totalValues}
               onClick={handleNextPage}
             >
               <ArrowRightIcon />
