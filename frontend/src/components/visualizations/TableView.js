@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useValues } from "../../hooks/useValues";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircularProgress from "@mui/material/CircularProgress";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
@@ -25,6 +24,12 @@ const TableView = ({ visualization, metadata, editor }) => {
     offset,
     LIMIT
   );
+
+  useEffect(() => {
+    setOffset(0);
+
+    return () => {};
+  }, [visualization]);
 
   const handleNextPage = () => {
     setOffset(offset + values.length);
