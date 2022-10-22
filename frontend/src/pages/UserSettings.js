@@ -92,7 +92,7 @@ const UserSettings = () => {
             {user.firstName} {user.lastName}
           </Typography>
           <Typography variant="h7" sx={{ color: "gray" }}>
-            Maximum {user.maxValues.toLocaleString()} values
+            {user.email}
           </Typography>
         </Box>
       </Box>

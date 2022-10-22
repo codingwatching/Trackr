@@ -37,6 +37,7 @@ func TestGetUserRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.User{
+		Email:     suite.User.Email,
 		FirstName: suite.User.FirstName,
 		LastName:  suite.User.LastName,
 		MaxValues: suite.User.MaxValues,

@@ -31,9 +31,9 @@ const TableEditor = ({
 
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [fieldId, setFieldId] = useState(visualization?.fieldId || "");
 
   const [sort, setSort] = useState(metadata?.sort || "");
-  const [fieldId, setFieldId] = useState(visualization?.fieldId || "");
 
   const handleChangeSort = (_, newSort) => {
     setSort(newSort);
