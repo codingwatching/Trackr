@@ -59,28 +59,36 @@ const TableEditor = ({
     const metadata = Table.serialize(sort);
 
     if (visualization) {
-      throw new Error("unimplemented");
+      VisualizationsAPI.updateVisualization(visualization.id, fieldId, metadata)
+        .then(() => {
+          setVisualizations(
+            visualizations.map((x) =>
+              x === visualization
+                ? {
+                    id: visualization.id,
+                    fieldId: fieldId,
+                    fieldName: fields.find((field) => field.id === fieldId)
+                      .name,
+                    metadata: metadata,
+                    createdAt: visualization.createdAt,
+                    updatedAt: new Date(),
+                  }
+                : x
+            )
+          );
 
-      // VisualizationsAPI.updateVisualization(visualization.id, metadata)
-      //   .then((result) => {
-      //     visualizations.push({
-      //       id: result.data.id,
-      //       metadata: metadata,
-      //     });
+          setLoading(false);
+          onClose();
+        })
+        .catch((error) => {
+          setLoading(false);
 
-      //     setVisualizations(visualizations);
-      //     setLoading(false);
-      //     onClose();
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-
-      //     if (error?.response?.data?.error) {
-      //       setError(error.response.data.error);
-      //     } else {
-      //       setError("Failed to update visualization: " + error.message);
-      //     }
-      //   });
+          if (error?.response?.data?.error) {
+            setError(error.response.data.error);
+          } else {
+            setError("Failed to update visualization: " + error.message);
+          }
+        });
     } else {
       VisualizationsAPI.addVisualization(fieldId, metadata)
         .then((result) => {
@@ -116,7 +124,7 @@ const TableEditor = ({
   return (
     <>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        {!visualization && (
+        {onBack && (
           <IconButton
             color="primary"
             sx={{ mr: 1 }}
@@ -126,7 +134,7 @@ const TableEditor = ({
             <ArrowBackIcon />
           </IconButton>
         )}
-        New Table
+        {onBack ? "New" : "Edit"} Table
       </DialogTitle>
       <DialogContent>
         {error && (
@@ -171,11 +179,9 @@ const TableEditor = ({
         </ToggleButtonGroup>
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
-        {!visualization && (
-          <Button onClick={onClose} disabled={loading}>
-            Cancel
-          </Button>
-        )}
+        <Button onClick={onClose} disabled={loading}>
+          Cancel
+        </Button>
         <LoadingButton
           variant="contained"
           disableElevation

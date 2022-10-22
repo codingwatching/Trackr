@@ -22,7 +22,7 @@ const CreateVisualizationButton = ({ variant }) => {
         startIcon={<AddRoundedIcon />}
         disableElevation
       >
-        Add Visualization
+        New Visualization
       </Button>
 
       {dialogOpen && <CreateVisualizationDialog onClose={handleCloseDialog} />}

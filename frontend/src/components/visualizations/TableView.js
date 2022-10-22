@@ -11,10 +11,11 @@ import ErrorIcon from "@mui/icons-material/Error";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CenteredBox from "../CenteredBox";
+import VisualizationMenuButton from "../VisualizationMenuButton";
 
 const LIMIT = 6;
 
-const TableView = ({ visualization, metadata }) => {
+const TableView = ({ visualization, metadata, editor }) => {
   const { sort } = metadata;
   const { fieldId, fieldName } = visualization;
   const [offset, setOffset] = useState(0);
@@ -46,9 +47,12 @@ const TableView = ({ visualization, metadata }) => {
       >
         <Box sx={{ flexGrow: 1 }}>{fieldName}</Box>
         <Box>
-          <IconButton disabled={loading || error !== undefined}>
-            <MoreHorizIcon />
-          </IconButton>
+          <VisualizationMenuButton
+            disabled={loading || error !== undefined}
+            visualization={visualization}
+            metadata={metadata}
+            editor={editor}
+          />
         </Box>
       </Box>
       {error ? (

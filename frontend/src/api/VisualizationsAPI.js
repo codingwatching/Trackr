@@ -24,6 +24,12 @@ class VisualizationsAPI {
       { withCredentials: true }
     );
   }
+
+  static deleteVisualization(id) {
+    return axios.delete(this.#BASE_URL + "/" + id, {
+      withCredentials: true,
+    });
+  }
 }
 
 export default VisualizationsAPI;

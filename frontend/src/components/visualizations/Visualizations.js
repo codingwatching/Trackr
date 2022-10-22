@@ -17,7 +17,7 @@ export const createVisualizationElement = (visualization) => {
     if (visualizations[i].name === metadata.name) {
       return createElement(
         visualizations[i].view,
-        { visualization, metadata },
+        { visualization, metadata, editor: visualizations[i].editor },
         {}
       );
     }
