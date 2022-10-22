@@ -13,7 +13,7 @@ const Project = () => {
   const { visualizations } = useContext(ProjectRouteContext);
 
   return (
-    <Container sx={{ mt: 3 }}>
+    <Container sx={{ mt: 2.5 }}>
       {visualizations.length ? (
         <>
           <Box
@@ -21,10 +21,10 @@ const Project = () => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              mb: 3,
+              mb: 2,
             }}
           >
-            <CreateVisualizationButton variant={"outlined"} />
+            <CreateVisualizationButton />
           </Box>
           <Box sx={{ pb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
             {visualizations.map((visualization) => (
