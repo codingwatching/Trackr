@@ -16,7 +16,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId, fieldName } = visualization;
   const { sort } = metadata;
 
-  const limit = 6;
+  const limit = 7;
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
     fieldId,

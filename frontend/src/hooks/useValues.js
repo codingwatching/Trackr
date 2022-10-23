@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import ValuesAPI from "../api/ValuesAPI";
 
 export const useValues = (fieldId, order, offset, limit) => {
+  order = order || "asc";
+  offset = offset || 0;
+  limit = limit || 0;
+
   const [values, setValues] = useState([]);
   const [totalValues, setTotalValues] = useState(0);
   const [loading, setLoading] = useState(true);

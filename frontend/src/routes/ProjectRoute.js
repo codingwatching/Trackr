@@ -28,7 +28,10 @@ const ProjectRoute = ({ element }) => {
     return (
       <CenteredBox>
         <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
-        <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+        <Typography
+          variant="h5"
+          sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
+        >
           {errorProject}
         </Typography>
       </CenteredBox>

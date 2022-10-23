@@ -34,7 +34,11 @@ const Project = () => {
                   p: 2,
                   flexGrow: 1,
                   display: "flex",
-                  minHeight: "420px",
+                  height: "480px",
+                  minWidth: {
+                    sm: "100%",
+                    md: "550px",
+                  },
                   flexDirection: "column",
                   fontWeight: 500,
                   fontSize: 14,
@@ -49,9 +53,12 @@ const Project = () => {
           </Box>
         </>
       ) : (
-        <CenteredBox sx={{ color: "gray" }}>
+        <CenteredBox sx={{ color: "gray", mb: 15 }}>
           <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-          <Typography variant="h5" sx={{ userSelect: "none", mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ userSelect: "none", mb: 2, textAlign: "center" }}
+          >
             You currently have no visualizations.
           </Typography>
 

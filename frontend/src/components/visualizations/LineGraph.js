@@ -7,6 +7,13 @@ const LineGraph = {
   icon: TimelineIcon,
   editor: LineGraphEditor,
   view: LineGraphView,
+
+  serialize: (color) => {
+    return JSON.stringify({
+      name: LineGraph.name,
+      color,
+    });
+  },
 };
 
 export default LineGraph;
