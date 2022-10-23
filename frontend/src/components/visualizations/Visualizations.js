@@ -1,6 +1,10 @@
 import { createElement } from "react";
+
 import Table from "./Table";
 import LineGraph from "./LineGraph";
+import CenteredBox from "../CenteredBox";
+import Typography from "@mui/material/Typography";
+import ErrorIcon from "@mui/icons-material/ErrorOutline";
 
 export const VisualizationTypes = [Table, LineGraph];
 export const VisualizationColors = [
@@ -27,4 +31,13 @@ export const createVisualizationElement = (visualization) => {
       );
     }
   }
+
+  return (
+    <CenteredBox>
+      <ErrorIcon sx={{ fontSize: 50, mb: 1.5 }} />
+      <Typography variant="h7" sx={{ userSelect: "none", mb: 2 }}>
+        Failed to load visualization, invalid type: {metadata.name}
+      </Typography>
+    </CenteredBox>
+  );
 };

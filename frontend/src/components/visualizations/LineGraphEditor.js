@@ -3,6 +3,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import DialogContentText from "@mui/material/DialogContentText";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -10,6 +11,7 @@ import LineGraph from "./LineGraph";
 
 const LineGraphEditor = forwardRef(({ metadata, setError }, ref) => {
   const [color, setColor] = useState(metadata?.color || "");
+  const [limit, setLimit] = useState(metadata?.limit || "");
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -18,7 +20,20 @@ const LineGraphEditor = forwardRef(({ metadata, setError }, ref) => {
         return;
       }
 
-      return LineGraph.serialize(color);
+      if (limit) {
+        const numberLimit = Number(limit);
+        if (numberLimit && !Number.isInteger(numberLimit)) {
+          setError("Your limit should be an integer.");
+          return;
+        }
+
+        if (numberLimit && numberLimit < 0) {
+          setError("Your limit should be greater than or equal to 0.");
+          return;
+        }
+      }
+
+      return LineGraph.serialize(color, limit);
     },
   }));
 
@@ -28,7 +43,7 @@ const LineGraphEditor = forwardRef(({ metadata, setError }, ref) => {
         Select the color of the lines on the graph.
       </DialogContentText>
 
-      <FormControl fullWidth required>
+      <FormControl fullWidth required sx={{ mb: 2 }}>
         <InputLabel>Line Color</InputLabel>
         <Select
           value={color}
@@ -60,6 +75,18 @@ const LineGraphEditor = forwardRef(({ metadata, setError }, ref) => {
           ))}
         </Select>
       </FormControl>
+
+      <DialogContentText sx={{ mb: 2 }}>
+        Enter the limit of the number of values to be displayed at once. Leave
+        blank (or enter zero) if you want all values displayed.
+      </DialogContentText>
+
+      <TextField
+        fullWidth
+        label="Limit"
+        value={limit}
+        onChange={(e) => setLimit(e.target.value)}
+      />
     </>
   );
 });

@@ -31,8 +31,8 @@ Chart.register(
 
 const LineGraphView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId, fieldName } = visualization;
-  const { color } = metadata;
-  const [values, , loading, error] = useValues(fieldId);
+  const { color, limit } = metadata;
+  const [values, , loading, error] = useValues(fieldId, null, null, limit);
 
   const options = {
     responsive: true,

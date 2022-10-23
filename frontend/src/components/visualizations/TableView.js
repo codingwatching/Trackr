@@ -89,7 +89,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
                   sx={{
                     display: "flex",
                     flexDirection: "row",
-                    py: 1.3,
+                    py: 1.25,
                     borderBottom: "1px solid #0000001f",
                   }}
                 >

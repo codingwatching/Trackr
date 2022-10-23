@@ -8,10 +8,11 @@ const LineGraph = {
   editor: LineGraphEditor,
   view: LineGraphView,
 
-  serialize: (color) => {
+  serialize: (color, limit) => {
     return JSON.stringify({
       name: LineGraph.name,
       color,
+      limit,
     });
   },
 };
