@@ -22,6 +22,11 @@ const LineGraphEditor = forwardRef(({ metadata, setError }, ref) => {
 
       if (limit) {
         const numberLimit = Number(limit);
+        if (!numberLimit) {
+          setError("Your limit should be a valid number.");
+          return;
+        }
+
         if (numberLimit && !Number.isInteger(numberLimit)) {
           setError("Your limit should be an integer.");
           return;

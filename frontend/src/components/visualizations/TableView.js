@@ -53,7 +53,6 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
         <Box sx={{ flexGrow: 1 }}>{fieldName}</Box>
         <Box>
           <VisualizationMenuButton
-            disabled={loading || error !== undefined}
             visualizationType={visualizationType}
             visualization={visualization}
             metadata={metadata}

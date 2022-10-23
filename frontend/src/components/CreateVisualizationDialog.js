@@ -1,6 +1,5 @@
 import { VisualizationTypes } from "./visualizations/Visualizations";
 import { createElement, useState } from "react";
-import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -50,7 +49,7 @@ const CreateVisualizationDialog = ({ onClose }) => {
   };
 
   return (
-    <Dialog open onClose={onClose}>
+    <>
       <Box sx={{ display: !secondaryDialog ? "block" : "none" }}>
         {primaryDialog}
       </Box>
@@ -114,7 +113,7 @@ const CreateVisualizationDialog = ({ onClose }) => {
           </DialogActions>
         </>
       )}
-    </Dialog>
+    </>
   );
 };
 

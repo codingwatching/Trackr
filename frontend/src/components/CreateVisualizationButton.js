@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Dialog from "@mui/material/Dialog";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Button from "@mui/material/Button";
 import CreateVisualizationDialog from "./CreateVisualizationDialog";
@@ -25,7 +26,9 @@ const CreateVisualizationButton = ({ variant }) => {
         New Visualization
       </Button>
 
-      {dialogOpen && <CreateVisualizationDialog onClose={handleCloseDialog} />}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <CreateVisualizationDialog onClose={handleCloseDialog} />
+      </Dialog>
     </>
   );
 };
