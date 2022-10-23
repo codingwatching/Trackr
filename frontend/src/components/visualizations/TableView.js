@@ -16,7 +16,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId, fieldName } = visualization;
   const { sort } = metadata;
 
-  const limit = 7;
+  const limit = 8;
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
     fieldId,
@@ -60,6 +60,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
           />
         </Box>
       </Box>
+
       {error ? (
         <CenteredBox>
           <ErrorIcon sx={{ fontSize: 50, mb: 1.5 }} />
@@ -74,6 +75,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,
+              fontWeight: 400,
             }}
           >
             {loading ? (
@@ -87,8 +89,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
                   sx={{
                     display: "flex",
                     flexDirection: "row",
-                    color: "#000000b0",
-                    py: 1.5,
+                    py: 1.3,
                     borderBottom: "1px solid #0000001f",
                   }}
                 >
@@ -105,10 +106,9 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
                   <Box sx={{ flexGrow: 1, textAlign: "right" }}>
                     <Tooltip title={value.createdAt}>
                       <Box>
-                        <Moment fromNow ago>
+                        <Moment format="MMM D, YYYY, hh:mm:ss A">
                           {value.createdAt}
-                        </Moment>{" "}
-                        ago
+                        </Moment>
                       </Box>
                     </Tooltip>
                   </Box>

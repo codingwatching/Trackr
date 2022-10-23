@@ -1,3 +1,4 @@
+import { VisualizationTypes } from "./visualizations/Visualizations";
 import { createElement, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,7 +9,6 @@ import Box from "@mui/material/Box";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import Button from "@mui/material/Button";
-import VisualizationTypes from "./visualizations/Visualizations";
 import CreateFieldDialog from "./CreateFieldDialog";
 import VisualizationsEditor from "./visualizations/VisualizationsEditor";
 

@@ -1,9 +1,11 @@
+import "chartjs-adapter-moment";
 import {
   Chart,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  TimeSeriesScale,
   Title,
   Tooltip,
   Legend,
@@ -21,6 +23,7 @@ Chart.register(
   LinearScale,
   PointElement,
   LineElement,
+  TimeSeriesScale,
   Title,
   Tooltip,
   Legend
@@ -39,10 +42,16 @@ const LineGraphView = ({ visualizationType, visualization, metadata }) => {
         display: false,
       },
     },
+    scales: {
+      xAxis: {
+        type: "timeseries",
+        display: false,
+      },
+    },
   };
 
   const data = {
-    labels: values.map(() => ""),
+    labels: values.map((value) => value.createdAt),
     datasets: [
       {
         data: values.map((value) => value.value),
