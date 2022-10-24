@@ -105,7 +105,7 @@ const EditProject = () => {
           defaultValue={project.name}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
-          This is the name of your project that everyone will see.
+          The name of your project used to identify it.
         </Typography>
 
         <TextField
@@ -117,7 +117,7 @@ const EditProject = () => {
           defaultValue={project.description}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
-          This is the description used to briefly describe your project.
+          The description used to briefly describe your project.
         </Typography>
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -133,22 +133,11 @@ const EditProject = () => {
               Reset API Key
             </ToggleButton>
           </ToggleButtonGroup>
-
-          <TextField
-            disabled
-            label="API Key"
-            value={project.apiKey}
-            sx={{
-              flexGrow: 1,
-              textDecoration: alignment ? "line-through" : "none",
-              color: "gray",
-            }}
-          />
         </Box>
 
         <Typography variant="caption" sx={{ mt: 1, mb: 3 }}>
-          This is the secret key used by your IoT devices to communciate with
-          your project.
+          You can reset the secret key used by your IoT devices to communciate
+          with your project.
         </Typography>
 
         <Divider />

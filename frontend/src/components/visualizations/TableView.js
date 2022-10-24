@@ -13,10 +13,9 @@ import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
 
 const TableView = ({ visualizationType, visualization, metadata }) => {
+  const limit = 8;
   const { fieldId, fieldName } = visualization;
   const { sort } = metadata;
-
-  const limit = 8;
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
     fieldId,
@@ -25,11 +24,14 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
     limit
   );
 
+  const firstPage = Math.floor(offset / limit) + 1;
+  const lastPage = Math.max(1, Math.ceil(totalValues / limit));
+
   useEffect(() => {
     setOffset(0);
 
     return () => {};
-  }, [visualization]);
+  }, [sort]);
 
   const handleNextPage = () => {
     setOffset(offset + values.length);
@@ -122,11 +124,11 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               flexDirection: "row",
               alignItems: "center",
               mt: 1.5,
+              userSelect: "none",
             }}
           >
             <Box sx={{ flexGrow: 1, color: "#00000085" }}>
-              Page {Math.floor(offset / limit) + 1} of{" "}
-              {Math.max(1, Math.ceil(totalValues / limit))}
+              Page {firstPage} of {lastPage}
             </Box>
             <IconButton
               disabled={loading || offset - limit < 0}

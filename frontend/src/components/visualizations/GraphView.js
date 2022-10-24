@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
 import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
+import { useMemo } from "react";
 
 Chart.register(
   CategoryScale,
@@ -29,10 +30,17 @@ Chart.register(
   Legend
 );
 
-const LineGraphView = ({ visualizationType, visualization, metadata }) => {
+const GraphView = ({ visualizationType, visualization, metadata }) => {
+  const color = metadata?.color || "rgb(255, 99, 132)";
+  const limit = metadata?.limit || 0;
+  const graphType = metadata?.graphType || "line";
+  const graphFunction = metadata?.graphFunction || "none";
+  const graphTimestep = metadata?.graphTimestep || "";
+
   const { fieldId, fieldName } = visualization;
-  const { color, limit } = metadata;
-  const [values, , loading, error] = useValues(fieldId, null, null, limit);
+  const [values, , , error] = useValues(fieldId, null, null, limit);
+
+  const labels = useMemo(() => {}, []);
 
   const options = {
     responsive: true,
@@ -45,7 +53,16 @@ const LineGraphView = ({ visualizationType, visualization, metadata }) => {
     scales: {
       xAxis: {
         type: "timeseries",
-        display: false,
+        grid: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: "Time",
+        },
+        ticks: {
+          display: false,
+        },
       },
     },
   };
@@ -55,8 +72,8 @@ const LineGraphView = ({ visualizationType, visualization, metadata }) => {
     datasets: [
       {
         data: values.map((value) => value.value),
-        borderColor: color || "rgb(255, 99, 132)",
-        backgroundColor: color || "rgba(255, 99, 132, 0.5)",
+        borderColor: color,
+        backgroundColor: color,
       },
     ],
   };
@@ -99,4 +116,4 @@ const LineGraphView = ({ visualizationType, visualization, metadata }) => {
   );
 };
 
-export default LineGraphView;
+export default GraphView;

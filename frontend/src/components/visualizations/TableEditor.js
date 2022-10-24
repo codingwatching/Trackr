@@ -27,8 +27,8 @@ const TableEditor = forwardRef(({ metadata, setError }, ref) => {
   return (
     <>
       <DialogContentText sx={{ mb: 2 }}>
-        Select whether you want to display the latest data (descending) or the
-        oldest data (ascending) first in the table.
+        Select whether the latest data (descending) or the oldest data
+        (ascending) to display first in the table.
       </DialogContentText>
 
       <ToggleButtonGroup

@@ -135,7 +135,7 @@ const VisualizationsEditor = ({
         )}
 
         <DialogContentText sx={{ mb: 2 }}>
-          Select a field you wish to display in a{" "}
+          Select a field whose data you wish to display in a{" "}
           {visualizationType.name.toLowerCase()}.
         </DialogContentText>
 
