@@ -34,11 +34,10 @@ const Graph = {
   editor: GraphEditor,
   view: GraphView,
 
-  serialize: (color, limit, graphType, graphFunction, graphTimestep) => {
+  serialize: (color, graphType, graphFunction, graphTimestep) => {
     return JSON.stringify({
       name: Graph.name,
       color,
-      limit,
       graphType,
       graphFunction,
       graphTimestep,

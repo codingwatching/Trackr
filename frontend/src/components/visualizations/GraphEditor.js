@@ -13,7 +13,6 @@ import {
 import DialogContentText from "@mui/material/DialogContentText";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -27,17 +26,16 @@ const GraphEditor = forwardRef(({ metadata, setError }, ref) => {
   const [graphTimestep, setGraphTimestep] = useState(
     metadata?.graphTimestep || ""
   );
-  const [limit, setLimit] = useState(metadata?.limit || "");
 
   useImperativeHandle(ref, () => ({
     submit() {
-      if (!color) {
-        setError("You must select a graph color.");
+      if (!graphType) {
+        setError("You must select a graph type.");
         return;
       }
 
-      if (!graphType) {
-        setError("You must select a graph type.");
+      if (!color) {
+        setError("You must select a graph color.");
         return;
       }
 
@@ -51,31 +49,7 @@ const GraphEditor = forwardRef(({ metadata, setError }, ref) => {
         return;
       }
 
-      if (limit) {
-        const numberLimit = Number(limit);
-        if (!numberLimit) {
-          setError("Your limit should be a valid number.");
-          return;
-        }
-
-        if (!Number.isInteger(numberLimit)) {
-          setError("Your limit should be an integer (no decimal places).");
-          return;
-        }
-
-        if (numberLimit < 0) {
-          setError("Your limit should be greater than or equal to 0.");
-          return;
-        }
-      }
-
-      return Graph.serialize(
-        color,
-        limit,
-        graphType,
-        graphFunction,
-        graphTimestep
-      );
+      return Graph.serialize(color, graphType, graphFunction, graphTimestep);
     },
   }));
 
@@ -147,21 +121,7 @@ const GraphEditor = forwardRef(({ metadata, setError }, ref) => {
       </FormControl>
 
       <DialogContentText sx={{ mb: 2 }}>
-        You can optionally enter the limit of the number of values to be
-        displayed at once. Leave the text field blank if you want all values
-        displayed.
-      </DialogContentText>
-
-      <TextField
-        sx={{ mb: 2 }}
-        fullWidth
-        label="Limit"
-        value={limit}
-        onChange={(e) => setLimit(e.target.value)}
-      />
-
-      <DialogContentText sx={{ mb: 2 }}>
-        You can optionally select an aggregate function and a timestep.
+        You can optionally select an aggregate function and timestep.
       </DialogContentText>
       <Box
         sx={{

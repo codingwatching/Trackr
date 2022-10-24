@@ -34,7 +34,7 @@ const Project = () => {
                   p: 2,
                   flexGrow: 1,
                   display: "flex",
-                  height: "480px",
+                  minHeight: "480px",
                   minWidth: {
                     sm: "100%",
                     md: "550px",

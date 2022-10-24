@@ -19,6 +19,7 @@ import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
 import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
+import moment from "moment";
 
 Chart.register(
   CategoryScale,
@@ -34,7 +35,6 @@ Chart.register(
 
 const GraphView = ({ visualizationType, visualization, metadata }) => {
   const color = metadata?.color || "rgb(255, 99, 132)";
-  const limit = metadata?.limit || 0;
   const graphType = metadata?.graphType || "line";
   const graphFunction = metadata?.graphFunction || "none";
   const graphTimestep = metadata?.graphTimestep || "";
@@ -43,6 +43,15 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
   const [values, , , error] = useValues(fieldId);
 
   const [dataValues, dataLabels] = useMemo(() => {
+    if (graphFunction === "none") {
+      return [
+        values.map((value) => value.value),
+        values.map((value) =>
+          moment(value.createdAt).format("MMM D YYYY, h:mm:ss")
+        ),
+      ];
+    }
+
     let outerBucket = [];
     let innerBucket;
     let innerBucketDate = new Date(-8640000000000000);
@@ -82,6 +91,7 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
     }
 
     let dataValues = [];
+    let dataLabels = [];
 
     for (let i = 0; i < outerBucket.length; i++) {
       const innerBucket = outerBucket[i];
@@ -120,12 +130,46 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
         }
       }
 
+      if (graphTimestep === "yearly") {
+        dataLabels.push(moment(innerBucket[0].createdAt).format("YYYY"));
+      } else if (graphTimestep === "biannually") {
+        dataLabels.push(
+          `${moment(innerBucket[0].createdAt).format("MMM YYYY")} - ${moment(
+            innerBucket[0].createdAt
+          )
+            .add(6, "months")
+            .format("MMM YYYY")}`
+        );
+      } else if (graphTimestep === "quarterly") {
+        dataLabels.push(
+          `${moment(innerBucket[0].createdAt).format("MMM YYYY")} - ${moment(
+            innerBucket[0].createdAt
+          )
+            .add(4, "months")
+            .format("MMM YYYY")}`
+        );
+      } else if (graphTimestep === "monthly") {
+        dataLabels.push(moment(innerBucket[0].createdAt).format("MMM YYYY"));
+      } else if (graphTimestep === "biweekly") {
+        dataLabels.push(
+          `${moment(innerBucket[0].createdAt).format("MMM D YYYY")} - ${moment(
+            innerBucket[0].createdAt
+          )
+            .add(2, "weeks")
+            .format("MMM D YYYY")}`
+        );
+      } else if (graphTimestep === "weekly" || graphTimestep === "daily") {
+        dataLabels.push(moment(innerBucket[0].createdAt).format("MMM D YYYY"));
+      } else {
+        dataLabels.push(
+          moment(innerBucket[0].createdAt).format("MMM D YYYY h:mm:ss")
+        );
+      }
+
       dataValues.push(value);
     }
 
-    console.log(graphTimestep, graphFunction, outerBucket, dataValues);
-
-    return [dataValues, dataValues];
+    return [dataValues, dataLabels];
   }, [values, graphTimestep, graphFunction]);
 
   const options = {
@@ -137,7 +181,17 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
       },
     },
     scales: {
-      xAxis: {},
+      xAxis:
+        graphFunction === "none"
+          ? {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                display: false,
+              },
+            }
+          : {},
     },
   };
 
