@@ -31,7 +31,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
     setOffset(0);
 
     return () => {};
-  }, [sort]);
+  }, [fieldId, sort]);
 
   const handleNextPage = () => {
     setOffset(offset + values.length);

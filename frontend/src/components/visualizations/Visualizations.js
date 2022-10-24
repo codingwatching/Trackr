@@ -1,5 +1,4 @@
 import { createElement } from "react";
-
 import Table from "./Table";
 import Graph from "./Graph";
 import CenteredBox from "../CenteredBox";
