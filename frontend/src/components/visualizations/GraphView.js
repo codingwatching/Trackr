@@ -151,9 +151,7 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
         ) {
           dataLabels.push(moment(createdAt).format("MMM D YYYY"));
         } else {
-          dataLabels.push(
-            moment(innerBucket[0].createdAt).format("MMM D YYYY h:mm:ss")
-          );
+          dataLabels.push(moment(createdAt).format("MMM D YYYY HH:mm:ss"));
         }
       } else {
         innerBucket.push(value);
