@@ -1,6 +1,6 @@
 package requests
 
 type AddVisualization struct {
-	ProjectID uint   `json:"projectId"`
-	Metadata  string `json:"metadata"`
+	FieldID  uint   `json:"fieldId"`
+	Metadata string `json:"metadata"`
 }

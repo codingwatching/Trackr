@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -13,7 +14,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import Moment from "react-moment";
 
-const EditProject = ({ project, setProject }) => {
+const EditProject = () => {
+  const { project, setProject } = useContext(ProjectRouteContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
@@ -103,7 +105,7 @@ const EditProject = ({ project, setProject }) => {
           defaultValue={project.name}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
-          This is the name of your project that everyone will see.
+          The name of your project used to identify it.
         </Typography>
 
         <TextField
@@ -115,7 +117,7 @@ const EditProject = ({ project, setProject }) => {
           defaultValue={project.description}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
-          This is the description used to briefly describe your project.
+          The description used to briefly describe your project.
         </Typography>
 
         <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -131,22 +133,11 @@ const EditProject = ({ project, setProject }) => {
               Reset API Key
             </ToggleButton>
           </ToggleButtonGroup>
-
-          <TextField
-            disabled
-            label="API Key"
-            value={project.apiKey}
-            sx={{
-              flexGrow: 1,
-              textDecoration: alignment ? "line-through" : "none",
-              color: "gray",
-            }}
-          />
         </Box>
 
         <Typography variant="caption" sx={{ mt: 1, mb: 3 }}>
-          This is the secret key used by your IoT devices to communciate with
-          your project.
+          You can reset the secret key used by your IoT devices to communciate
+          with your project.
         </Typography>
 
         <Divider />
@@ -168,7 +159,6 @@ const EditProject = ({ project, setProject }) => {
               mr: 1.5,
               maxWidth: 180,
               flexGrow: 1,
-              textTransform: "none",
             }}
           >
             Save Changes

@@ -17,34 +17,34 @@ import (
 func getValuesRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	var json requests.GetValues
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var query requests.GetValues
+	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	if json.Order != "asc" && json.Order != "desc" {
+	if query.Order != "asc" && query.Order != "desc" {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid order parameter provided."})
 		return
 	}
 
-	if json.Offset < 0 {
+	if query.Offset < 0 {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid offset parameter provided."})
 		return
 	}
 
-	if json.Limit < 0 {
+	if query.Limit < 0 {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid limit parameter provided."})
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	values, err := serviceProvider.GetValueService().GetValues(*field, *user, json.Order, json.Offset, json.Limit)
+	values, err := serviceProvider.GetValueService().GetValues(*field, *user, query.Order, query.Offset, query.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get values."})
 		return

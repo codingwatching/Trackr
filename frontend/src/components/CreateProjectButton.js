@@ -66,7 +66,6 @@ const CreateProjectButton = ({ menuItem }) => {
           type="submit"
           variant="contained"
           onClick={handleOnClick}
-          sx={{ textTransform: "none" }}
           disableElevation
           startIcon={<AddRoundedIcon />}
         >

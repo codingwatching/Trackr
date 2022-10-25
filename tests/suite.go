@@ -95,8 +95,8 @@ func Startup() *Suite {
 		UpdatedAt: suite.Time,
 		CreatedAt: suite.Time,
 
-		ProjectID: suite.Project.ID,
-		Project:   suite.Project,
+		FieldID: suite.Field.ID,
+		Field:   suite.Field,
 	}
 	suite.Service.GetVisualizationService().AddVisualization(suite.Visualization)
 

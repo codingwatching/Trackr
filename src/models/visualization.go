@@ -8,6 +8,6 @@ type Visualization struct {
 	UpdatedAt time.Time
 	CreatedAt time.Time
 
-	ProjectID uint
-	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`
+	FieldID uint
+	Field   Field `gorm:"constraint:OnDelete:CASCADE;"`
 }

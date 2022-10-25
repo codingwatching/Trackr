@@ -25,6 +25,8 @@ export const useProject = (projectId) => {
       });
 
     setLoading(true);
+    setProject();
+    setError();
 
     return () => {};
   }, [projectId]);

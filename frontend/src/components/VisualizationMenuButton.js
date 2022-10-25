@@ -1,30 +1,28 @@
 import { createElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
-import MoreVert from "@mui/icons-material/MoreVert";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SettingsIcon from "@mui/icons-material/Settings";
+import EditIcon from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteProjectDialog from "./DeleteProjectDialog";
+import CreateFieldDialog from "./CreateFieldDialog";
+import DeleteVisualizationDialog from "./DeleteVisualizationDialog";
+import VisualizationsEditor from "./visualizations/VisualizationsEditor";
 
-const ProjectMenuButton = ({
-  project,
-  projects,
-  setProjects,
-  noSettings,
+const VisualizationMenuButton = ({
+  visualizationType,
+  visualization,
+  metadata,
   disabled,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogElement, setDialogElement] = useState();
-  const navigate = useNavigate();
 
   const openDropdownMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -44,26 +42,53 @@ const ProjectMenuButton = ({
 
     setDialogElement(
       createElement(
-        DeleteProjectDialog,
-        { project, projects, setProjects, onClose: closeDialog },
+        DeleteVisualizationDialog,
+        { visualization, metadata, onClose: closeDialog },
         {}
       )
     );
   };
 
-  const handleCopyAPIKey = () => {
-    navigator.clipboard.writeText(project.apiKey);
+  const openEditDialog = () => {
+    setDialogOpen(true);
     setAnchorEl(null);
+
+    setDialogElement(
+      createElement(
+        VisualizationsEditor,
+        {
+          visualizationType,
+          visualization,
+          metadata,
+          onClose: closeDialog,
+          onAddField: openAddFieldDialog,
+        },
+        {}
+      )
+    );
   };
 
-  const handleSettingsProject = () => {
-    navigate("/projects/settings/" + project.id);
+  const openAddFieldDialog = () => {
+    setDialogElement(
+      createElement(CreateFieldDialog, {
+        onClose: closeDialog,
+        onBack: openEditDialog,
+      })
+    );
   };
+
+  if (disabled) {
+    return (
+      <IconButton disabled>
+        <MoreHorizIcon />
+      </IconButton>
+    );
+  }
 
   return (
     <>
-      <IconButton onClick={openDropdownMenu} disabled={disabled}>
-        <MoreVert />
+      <IconButton onClick={openDropdownMenu}>
+        <MoreHorizIcon />
       </IconButton>
 
       <Menu
@@ -71,19 +96,11 @@ const ProjectMenuButton = ({
         open={Boolean(anchorEl)}
         onClose={closeDropdownMenu}
       >
-        {!noSettings && (
-          <MenuItem onClick={handleSettingsProject}>
-            <ListItemIcon>
-              <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Settings</ListItemText>
-          </MenuItem>
-        )}
-        <MenuItem onClick={handleCopyAPIKey}>
+        <MenuItem onClick={openEditDialog}>
           <ListItemIcon>
-            <ContentCopyIcon fontSize="small" />
+            <EditIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Copy API Key</ListItemText>
+          <ListItemText>Edit {metadata.name}</ListItemText>
         </MenuItem>
         <Divider />
         <MenuItem onClick={openDeleteDialog}>
@@ -91,7 +108,7 @@ const ProjectMenuButton = ({
             <DeleteIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Delete</Typography>
+            <Typography color="error">Delete {metadata.name}</Typography>
           </ListItemText>
         </MenuItem>
       </Menu>
@@ -103,4 +120,4 @@ const ProjectMenuButton = ({
   );
 };
 
-export default ProjectMenuButton;
+export default VisualizationMenuButton;

@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/google/go-querystring/query"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"sort"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/assert"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -37,32 +37,17 @@ func TestGetValuesRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test invalid request parameters path.
-	//
-
-	response, _ = json.Marshal(responses.Error{
-		Error: "Invalid request parameters provided.",
-	})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, nil)
-	httpRequest.Header.Add("Cookie", "Session=SessionID")
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	//
 	// Test invalid order parameter path.
 	//
 
-	request, _ := json.Marshal(requests.GetValues{
+	request, _ := query.Values(requests.GetValues{
 		Order: "invalid",
 	})
 	response, _ = json.Marshal(responses.Error{
 		Error: "Invalid order parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -73,7 +58,7 @@ func TestGetValuesRoute(t *testing.T) {
 	// Test invalid offset parameter path.
 	//
 
-	request, _ = json.Marshal(requests.GetValues{
+	request, _ = query.Values(requests.GetValues{
 		Order:  "asc",
 		Offset: -1,
 	})
@@ -81,7 +66,7 @@ func TestGetValuesRoute(t *testing.T) {
 		Error: "Invalid offset parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -92,7 +77,7 @@ func TestGetValuesRoute(t *testing.T) {
 	// Test invalid limit parameter path.
 	//
 
-	request, _ = json.Marshal(requests.GetValues{
+	request, _ = query.Values(requests.GetValues{
 		Order:  "asc",
 		Offset: 0,
 		Limit:  -1,
@@ -101,7 +86,7 @@ func TestGetValuesRoute(t *testing.T) {
 		Error: "Invalid limit parameter provided.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -112,7 +97,7 @@ func TestGetValuesRoute(t *testing.T) {
 	// Test invalid field id parameter path.
 	//
 
-	request, _ = json.Marshal(requests.GetValues{
+	request, _ = query.Values(requests.GetValues{
 		Order:   "asc",
 		Offset:  0,
 		Limit:   0,
@@ -122,7 +107,7 @@ func TestGetValuesRoute(t *testing.T) {
 		Error: "Failed to find field.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -170,7 +155,7 @@ func TestGetValuesRoute(t *testing.T) {
 					expectedValuesSlice = expectedValuesSlice[offset:]
 				}
 
-				request, _ = json.Marshal(requests.GetValues{
+				request, _ = query.Values(requests.GetValues{
 					Order:   order,
 					Offset:  offset,
 					Limit:   limit,
@@ -178,7 +163,7 @@ func TestGetValuesRoute(t *testing.T) {
 				})
 
 				httpRecorder = httptest.NewRecorder()
-				httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+				httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
 				httpRequest.Header.Add("Cookie", "Session=SessionID")
 				suite.Router.ServeHTTP(httpRecorder, httpRequest)
 

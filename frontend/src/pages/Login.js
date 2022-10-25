@@ -99,7 +99,7 @@ const Login = () => {
             fullWidth
             variant="contained"
             disableElevation
-            sx={{ mt: 2, mb: 2, textTransform: "none" }}
+            sx={{ mt: 2, mb: 2 }}
           >
             Sign In
           </LoadingButton>

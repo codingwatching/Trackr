@@ -24,6 +24,10 @@ export const useUser = () => {
         setUser();
       });
 
+    setLoading(true);
+    setUser();
+    setError();
+
     return () => {};
   }, []);
 

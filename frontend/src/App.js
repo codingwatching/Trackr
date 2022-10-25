@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import ProjectRoute from "./routes/ProjectRoute";
 import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import AuthorizedRoute from "./components/AuthorizedRoute";
+import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
-import ProjectRoute from "./components/ProjectRoute";
 import ProjectFields from "./pages/ProjectFields";
 import UserSettings from "./pages/UserSettings";
-import UserRoute from "./components/UserRoute";
+import UserRoute from "./routes/UserRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
@@ -24,10 +24,8 @@ let theme = createTheme({
       main: "#edf2ff",
     },
   },
-  transitions: {
-    duration: {
-      standard: 300,
-    },
+  disableTransition: {
+    transition: "none",
   },
 });
 

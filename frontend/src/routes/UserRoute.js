@@ -1,9 +1,11 @@
-import { cloneElement } from "react";
-import { useUser } from "../contexts/UserContext";
-import CenteredBox from "./CenteredBox";
+import { createContext } from "react";
+import { useUser } from "../hooks/useUser";
+import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
+
+export const UserRouteContext = createContext();
 
 const UserRoute = ({ element }) => {
   const [user, setUser, loading, error] = useUser();
@@ -27,7 +29,11 @@ const UserRoute = ({ element }) => {
     );
   }
 
-  return cloneElement(element, { user, setUser });
+  return (
+    <UserRouteContext.Provider value={{ user, setUser }}>
+      {element}
+    </UserRouteContext.Provider>
+  );
 };
 
 export default UserRoute;

@@ -1,4 +1,4 @@
-import { useProjects } from "../contexts/ProjectsContext";
+import { useProjects } from "../hooks/useProjects";
 import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -35,7 +35,10 @@ const Projects = () => {
     return (
       <CenteredBox>
         <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
-        <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+        <Typography
+          variant="h5"
+          sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
+        >
           {error}
         </Typography>
       </CenteredBox>

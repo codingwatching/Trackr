@@ -15,6 +15,7 @@ func getUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
 	c.JSON(http.StatusOK, responses.User{
+		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		MaxValues: user.MaxValues,

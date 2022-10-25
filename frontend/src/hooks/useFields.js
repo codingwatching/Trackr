@@ -1,31 +1,35 @@
 import { useState, useEffect } from "react";
-import ProjectsAPI from "../api/ProjectsAPI";
+import FieldsAPI from "../api/FieldsAPI";
 
-export const useProjects = () => {
-  const [projects, setProjects] = useState([]);
+export const useFields = (projectId) => {
+  const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
   useEffect(() => {
-    ProjectsAPI.getProjects()
+    FieldsAPI.getFields(projectId)
       .then((result) => {
         setLoading(false);
         setError();
-        setProjects(result.data.projects);
+        setFields(result.data.fields);
       })
       .catch((error) => {
         if (error?.response?.data?.error) {
           setError(error.response.data.error);
         } else {
-          setError("Failed to load projects: " + error.message);
+          setError("Failed to load fields: " + error.message);
         }
 
         setLoading(false);
-        setProjects([]);
+        setFields([]);
       });
 
-    return () => {};
-  }, []);
+    setLoading(true);
+    setFields([]);
+    setError();
 
-  return [projects, setProjects, loading, error];
+    return () => {};
+  }, [projectId]);
+
+  return [fields, setFields, loading, error];
 };

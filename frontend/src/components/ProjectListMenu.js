@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useProjects } from "../contexts/ProjectsContext";
+import { useProjects } from "../hooks/useProjects";
 import MenuItem from "@mui/material/MenuItem";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ErrorIcon from "@mui/icons-material/Error";
