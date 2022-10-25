@@ -56,42 +56,109 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
     let innerBucket;
     let innerBucketDate = new Date(-8640000000000000);
 
+    let dataValues = [];
+    let dataLabels = [];
+
     for (let i = 0; i < values.length; i++) {
       const value = values[i];
-      const createdAt = new Date(value.createdAt);
-      const deltaMilliseconds = createdAt - innerBucketDate;
+      let createdAt = new Date(value.createdAt);
 
-      let deltaTimestep;
+      let delta;
       if (graphTimestep === "yearly") {
-        deltaTimestep = deltaMilliseconds / 31540000000;
+        createdAt.setHours(0, 0, 0, 0);
+        createdAt.setDate(1);
+        createdAt.setMonth(0);
+
+        delta = moment(createdAt).diff(moment(innerBucketDate), "years", true);
       } else if (graphTimestep === "biannually") {
-        deltaTimestep = deltaMilliseconds / 15770000000;
+        const biannual = Math.floor(createdAt.getMonth() / 6);
+
+        createdAt.setHours(0, 0, 0, 0);
+        createdAt.setDate(1);
+        createdAt.setMonth(biannual * 6);
+
+        delta =
+          moment(createdAt).diff(moment(innerBucketDate), "months", true) / 6;
       } else if (graphTimestep === "quarterly") {
-        deltaTimestep = deltaMilliseconds / 10512000000;
+        const quarter = Math.floor(createdAt.getMonth() / 3);
+
+        createdAt.setHours(0, 0, 0, 0);
+        createdAt.setDate(1);
+        createdAt.setMonth(quarter * 3);
+
+        delta =
+          moment(createdAt).diff(moment(innerBucketDate), "months", true) / 3;
       } else if (graphTimestep === "monthly") {
-        deltaTimestep = deltaMilliseconds / 2628000000;
+        createdAt.setHours(0, 0, 0, 0);
+        createdAt.setDate(1);
+
+        delta = moment(createdAt).diff(moment(innerBucketDate), "months", true);
       } else if (graphTimestep === "biweekly") {
-        deltaTimestep = deltaMilliseconds / 1209600000;
+        if (i === 0) {
+          createdAt = moment(createdAt).startOf("month").toDate();
+        } else {
+          const subDelta =
+            moment(createdAt).diff(moment(innerBucketDate), "weeks", true) / 2;
+
+          if (subDelta > 1) {
+            createdAt = moment(createdAt).add(1, "weeks").toDate();
+          }
+        }
+
+        delta =
+          moment(createdAt).diff(moment(innerBucketDate), "weeks", true) / 2;
       } else if (graphTimestep === "weekly") {
-        deltaTimestep = deltaMilliseconds / 604800000;
+        if (i === 0) {
+          createdAt = moment(createdAt).startOf("month").toDate();
+        } else {
+          const subDelta =
+            moment(createdAt).diff(moment(innerBucketDate), "weeks", true) > 1;
+
+          if (subDelta > 1) {
+            createdAt = moment(createdAt).add(1, "weeks").toDate();
+          }
+        }
+
+        delta = moment(createdAt).diff(moment(innerBucketDate), "weeks", true);
       } else if (graphTimestep === "daily") {
-        deltaTimestep = deltaMilliseconds / 86400000;
+        createdAt.setHours(0, 0, 0, 0);
+
+        delta = moment(createdAt).diff(moment(innerBucketDate), "days", true);
       } else {
-        deltaTimestep = deltaMilliseconds / 3600000;
+        createdAt.setHours(createdAt.getHours(), 0, 0, 0);
+
+        delta = moment(createdAt).diff(moment(innerBucketDate), "hours", true);
       }
 
-      if (deltaTimestep > 1) {
+      if (delta >= 1) {
         innerBucket = [value];
         innerBucketDate = createdAt;
 
         outerBucket.push(innerBucket);
+
+        if (graphTimestep === "yearly") {
+          dataLabels.push(moment(createdAt).format("YYYY"));
+        } else if (
+          graphTimestep === "biannually" ||
+          graphTimestep === "quarterly" ||
+          graphTimestep === "monthly"
+        ) {
+          dataLabels.push(moment(createdAt).format("MMM YYYY"));
+        } else if (
+          graphTimestep === "biweekly" ||
+          graphTimestep === "weekly" ||
+          graphTimestep === "daily"
+        ) {
+          dataLabels.push(moment(createdAt).format("MMM D YYYY"));
+        } else {
+          dataLabels.push(
+            moment(innerBucket[0].createdAt).format("MMM D YYYY h:mm:ss")
+          );
+        }
       } else {
         innerBucket.push(value);
       }
     }
-
-    let dataValues = [];
-    let dataLabels = [];
 
     for (let i = 0; i < outerBucket.length; i++) {
       const innerBucket = outerBucket[i];
@@ -122,48 +189,14 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
             value = currentValue;
           }
         }
+      } else if (graphFunction === "count") {
+        value = innerBucket.length;
       } else {
         value = 0;
 
         for (let j = 0; j < innerBucket.length; j++) {
           value += Number(innerBucket[j].value);
         }
-      }
-
-      if (graphTimestep === "yearly") {
-        dataLabels.push(moment(innerBucket[0].createdAt).format("YYYY"));
-      } else if (graphTimestep === "biannually") {
-        dataLabels.push(
-          `${moment(innerBucket[0].createdAt).format("MMM YYYY")} - ${moment(
-            innerBucket[0].createdAt
-          )
-            .add(6, "months")
-            .format("MMM YYYY")}`
-        );
-      } else if (graphTimestep === "quarterly") {
-        dataLabels.push(
-          `${moment(innerBucket[0].createdAt).format("MMM YYYY")} - ${moment(
-            innerBucket[0].createdAt
-          )
-            .add(4, "months")
-            .format("MMM YYYY")}`
-        );
-      } else if (graphTimestep === "monthly") {
-        dataLabels.push(moment(innerBucket[0].createdAt).format("MMM YYYY"));
-      } else if (graphTimestep === "biweekly") {
-        dataLabels.push(
-          `${moment(innerBucket[0].createdAt).format("MMM D YYYY")} - ${moment(
-            innerBucket[0].createdAt
-          )
-            .add(2, "weeks")
-            .format("MMM D YYYY")}`
-        );
-      } else if (graphTimestep === "weekly" || graphTimestep === "daily") {
-        dataLabels.push(moment(innerBucket[0].createdAt).format("MMM D YYYY"));
-      } else {
-        dataLabels.push(
-          moment(innerBucket[0].createdAt).format("MMM D YYYY h:mm:ss")
-        );
       }
 
       dataValues.push(value);
@@ -228,7 +261,9 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
         >
           <Box>{fieldName}</Box>
           {graphFunction !== "none" && (
-            <Box sx={{ ml: 0.5, color: "gray" }}>({graphFunction})</Box>
+            <Box sx={{ ml: 0.5, color: "gray" }}>
+              ({graphTimestep} {graphFunction})
+            </Box>
           )}
         </Box>
         <Box>

@@ -16,7 +16,7 @@ export const GraphTypes = [
   ["Bar", BarChartIcon],
 ];
 
-export const GraphFunctions = ["None", "Average", "Min", "Max", "Sum"];
+export const GraphFunctions = ["None", "Average", "Min", "Max", "Sum", "Count"];
 export const GraphTimesteps = [
   "Yearly",
   "Biannually",

@@ -107,7 +107,7 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
                   <Box sx={{ flexGrow: 1, textAlign: "right" }}>
                     <Tooltip title={value.createdAt}>
                       <Box>
-                        <Moment format="MMM D, YYYY, hh:mm:ss A">
+                        <Moment format="MMM D, YYYY, HH:mm:ss">
                           {value.createdAt}
                         </Moment>
                       </Box>
