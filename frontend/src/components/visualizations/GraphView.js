@@ -95,7 +95,12 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
         delta = moment(createdAt).diff(moment(innerBucketDate), "months", true);
       } else if (graphTimestep === "biweekly") {
         if (i === 0) {
-          createdAt = moment(createdAt).startOf("month").toDate();
+          const weeks = Math.trunc((createdAt.getDate() - 1) / 7);
+
+          createdAt = moment(createdAt)
+            .startOf("month")
+            .add(weeks, "weeks")
+            .toDate();
         } else {
           const subDelta =
             moment(createdAt).diff(moment(innerBucketDate), "weeks", true) / 2;
@@ -109,7 +114,12 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
           moment(createdAt).diff(moment(innerBucketDate), "weeks", true) / 2;
       } else if (graphTimestep === "weekly") {
         if (i === 0) {
-          createdAt = moment(createdAt).startOf("month").toDate();
+          const weeks = Math.trunc((createdAt.getDate() - 1) / 7);
+
+          createdAt = moment(createdAt)
+            .startOf("month")
+            .add(weeks, "weeks")
+            .toDate();
         } else {
           const subDelta =
             moment(createdAt).diff(moment(innerBucketDate), "weeks", true) > 1;
