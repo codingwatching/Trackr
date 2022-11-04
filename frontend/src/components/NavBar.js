@@ -1,6 +1,7 @@
 import { useLocation, matchPath, useNavigate } from "react-router-dom";
 import { useState, cloneElement } from "react";
 import AppBar from "@mui/material/AppBar";
+import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -63,12 +64,16 @@ const NavBar = () => {
     setAnchorElSubMenu(null);
   };
 
-  const handleOpenUserSettings = () => {
+  const handleOpenUserSettings = (event) => {
+    event.preventDefault();
+
     navigate("/settings");
     handleCloseUserMenu();
   };
 
-  const handleOpenLogs = () => {
+  const handleOpenLogs = (event) => {
+    event.preventDefault();
+
     navigate("/logs");
     handleCloseUserMenu();
   };
@@ -83,8 +88,8 @@ const NavBar = () => {
     <AppBar
       position="static"
       sx={{
-        background: "#fff",
-        boxShadow: "0px 0px 4px -1px #9d9d9d",
+        background: "white",
+        boxShadow: "0px 0px 4px 0px #00000033",
         zIndex: 1,
       }}
     >
@@ -113,30 +118,45 @@ const NavBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem
+                <Link
+                  href={page.href}
+                  underline="none"
+                  sx={{ color: "unset" }}
                   key={page.name}
-                  onClick={() => {
-                    navigate(page.href);
-                    handleCloseNavMenu();
-                  }}
                 >
-                  <Typography textAlign="center">{page.name}</Typography>
-                </MenuItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(page.href);
+                      handleCloseNavMenu();
+                    }}
+                  >
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
 
           <Box sx={{ display: "flex" }}>
-            <Button
-              onClick={() => navigate("/")}
-              sx={{
-                color: "black",
-                mr: 1,
-                textTransform: "lowercase",
-              }}
-            >
-              <Logo />
-            </Button>
+            <Link href={"/"} underline="none">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/");
+                }}
+                sx={{
+                  color: "black",
+                  mr: 1,
+                  textTransform: "lowercase",
+                  "&:hover": {
+                    background: "#00000033",
+                  },
+                }}
+              >
+                <Logo />
+              </Button>
+            </Link>
           </Box>
 
           <Box
@@ -158,23 +178,31 @@ const NavBar = () => {
                     },
                     location.pathname
                   )
-                    ? "inset 0px -4px 0px 0px #0052cc;"
+                    ? "inset 0px -4px 0px 0px #4184e9;"
                     : "",
                 }}
               >
-                <Button
-                  onClick={(e) =>
-                    page.subMenu ? handleOpenSubMenu(e) : navigate(page.href)
-                  }
-                  endIcon={page.subMenu && <KeyboardArrowDownIcon />}
-                  sx={{
-                    my: 2,
-                    color: "black",
-                    textTransform: "none",
-                  }}
-                >
-                  {page.name}
-                </Button>
+                <Link href={page.href} underline="none">
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      page.subMenu ? handleOpenSubMenu(e) : navigate(page.href);
+                    }}
+                    endIcon={page.subMenu && <KeyboardArrowDownIcon />}
+                    sx={{
+                      my: 2,
+                      color: "black",
+                      textTransform: "none",
+
+                      "&:hover": {
+                        background: "#00000022",
+                      },
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
 
                 {page.subMenu && (
                   <Menu
@@ -209,7 +237,7 @@ const NavBar = () => {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar />
+                <Avatar sx={{ backgroundColor: "primary.main" }} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -227,19 +255,23 @@ const NavBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleOpenUserSettings}>
-                <ListItemIcon>
-                  <Settings fontSize="small" />
-                </ListItemIcon>
-                Settings
-              </MenuItem>
-              <MenuItem onClick={handleOpenLogs}>
-                <ListItemIcon>
-                  <FormatListNumberedIcon fontSize="small" />
-                </ListItemIcon>
-                Logs
-              </MenuItem>
-              <Divider />
+              <Link href="/settings" underline="none" sx={{ color: "unset" }}>
+                <MenuItem onClick={handleOpenUserSettings}>
+                  <ListItemIcon>
+                    <Settings fontSize="small" />
+                  </ListItemIcon>
+                  Settings
+                </MenuItem>
+              </Link>
+              <Link href="/logs" underline="none" sx={{ color: "unset" }}>
+                <MenuItem onClick={handleOpenLogs}>
+                  <ListItemIcon>
+                    <FormatListNumberedIcon fontSize="small" />
+                  </ListItemIcon>
+                  Logs
+                </MenuItem>
+              </Link>
+              <Divider sx={{ my: 1 }} />
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
