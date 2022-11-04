@@ -5,12 +5,7 @@ import InsertChartIcon from "@mui/icons-material/InsertChart";
 const Logo = () => {
   return (
     <>
-      <InsertChartIcon
-        sx={{
-          color: "primary.main",
-          mr: 1,
-        }}
-      />
+      <InsertChartIcon sx={{ color: "primary.main", mr: 1 }} />
       <Typography
         variant="h6"
         noWrap

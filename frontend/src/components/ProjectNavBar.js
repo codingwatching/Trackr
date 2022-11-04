@@ -7,6 +7,7 @@ import {
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
@@ -55,7 +56,11 @@ const ProjectNavBar = ({ project, loading }) => {
   return (
     <AppBar
       position="static"
-      sx={{ background: "#fafbfc", boxShadow: "0px 0px 4px -1px #9d9d9d" }}
+      sx={{
+        background: "white",
+        borderBottom: "1px solid #0000001f",
+        boxShadow: "none",
+      }}
     >
       <Container sx={{ display: "flex", flexDirection: "column" }}>
         <Box
@@ -139,28 +144,33 @@ const ProjectNavBar = ({ project, loading }) => {
                 key={page.name}
                 sx={{ marginLeft: page.right ? "auto" : "none" }}
               >
-                <Button
-                  onClick={() => navigate(page.href)}
-                  startIcon={page.icon}
-                  sx={{
-                    my: 2,
-                    mr: 1,
-                    color: "black",
-                    background: matchPath(
-                      {
-                        path: page.match,
-                        exact: true,
-                        strict: false,
-                      },
-                      location.pathname
-                    )
-                      ? "rgb(70 144 255 / 13%)"
-                      : "",
-                    textTransform: "none",
-                  }}
-                >
-                  {page.name}
-                </Button>
+                <Link href={page.href} underline="none">
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(page.href);
+                    }}
+                    startIcon={page.icon}
+                    sx={{
+                      my: 2,
+                      mr: 1,
+                      color: "black",
+                      background: matchPath(
+                        {
+                          path: page.match,
+                          exact: true,
+                          strict: false,
+                        },
+                        location.pathname
+                      )
+                        ? "rgb(70 144 255 / 13%)"
+                        : "",
+                      textTransform: "none",
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
               </Box>
             ))}
           </Box>

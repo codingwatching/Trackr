@@ -11,7 +11,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Link from "@mui/material/Link";
 import CenteredBox from "../components/CenteredBox";
-import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
 import ErrorIcon from "@mui/icons-material/Error";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
@@ -118,11 +118,14 @@ const Projects = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            color: "darkgray",
+            mb: 15,
           }}
         >
-          <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-          <Typography variant="h5" sx={{ mb: 10, userSelect: "none" }}>
+          <NightsStayIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
+          <Typography
+            variant="h5"
+            sx={{ userSelect: "none", mb: 2, textAlign: "center" }}
+          >
             You currently have no projects.
           </Typography>
         </Box>

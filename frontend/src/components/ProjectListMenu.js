@@ -5,6 +5,7 @@ import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ErrorIcon from "@mui/icons-material/Error";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import Skeleton from "@mui/material/Skeleton";
 import CreateProjectButton from "./CreateProjectButton";
 
@@ -13,12 +14,16 @@ const ProjectListMenu = ({ closeSubMenu }) => {
   const navigate = useNavigate();
   const MAX_PROJECTS = 3;
 
-  const handleViewAllProjects = () => {
+  const handleViewAllProjects = (event) => {
+    event.preventDefault();
+
     navigate("/projects");
     closeSubMenu();
   };
 
-  const handleViewProject = (project) => {
+  const handleViewProject = (event, project) => {
+    event.preventDefault();
+
     navigate("/projects/" + project.id);
     closeSubMenu();
   };
@@ -90,47 +95,55 @@ const ProjectListMenu = ({ closeSubMenu }) => {
             <Typography variant="subtitle2">Recent</Typography>
           </MenuItem>
           {projects.slice(0, MAX_PROJECTS).map((project) => (
-            <MenuItem
-              onClick={() => handleViewProject(project)}
-              sx={{ display: "flex", alignItems: "center" }}
+            <Link
+              href={"/projects/" + project.id}
               key={project.id}
+              underline="none"
             >
-              <AccountTreeRoundedIcon
-                sx={{
-                  fontSize: 25,
-                  color: "white",
-                  backgroundColor: "primary.main",
-                  mr: 1.5,
-                  p: 0.25,
-                  borderRadius: 1,
-                }}
-              />
-
-              <Typography
-                variant="subtitle2"
-                color="#2a2a2a"
-                sx={{ fontWeight: 400 }}
+              <MenuItem
+                onClick={(event) => handleViewProject(event, project)}
+                sx={{ display: "flex", alignItems: "center" }}
               >
-                {project.name}
-              </Typography>
-            </MenuItem>
+                <AccountTreeRoundedIcon
+                  sx={{
+                    fontSize: 25,
+                    color: "white",
+                    backgroundColor: "primary.main",
+                    mr: 1.5,
+                    p: 0.25,
+                    borderRadius: 1,
+                  }}
+                />
+
+                <Typography
+                  variant="subtitle2"
+                  color="#2a2a2a"
+                  sx={{ fontWeight: 400 }}
+                >
+                  {project.name}
+                </Typography>
+              </MenuItem>
+            </Link>
           ))}
-          <Divider />
+          <Divider sx={{ my: 1 }} />
         </>
       )}
 
-      <MenuItem
-        onClick={handleViewAllProjects}
-        sx={{ py: 1, pr: 8, alignItems: "start" }}
-      >
-        <Typography
-          variant="subtitle2"
-          color="#2a2a2a"
-          sx={{ fontWeight: 400 }}
+      <Link href={"/projects/"} underline="none">
+        <MenuItem
+          onClick={handleViewAllProjects}
+          sx={{ py: 1, pr: 8, alignItems: "start" }}
         >
-          View all projects
-        </Typography>
-      </MenuItem>
+          <Typography
+            variant="subtitle2"
+            color="#2a2a2a"
+            sx={{ fontWeight: 400 }}
+          >
+            View all projects
+          </Typography>
+        </MenuItem>
+      </Link>
+
       <CreateProjectButton menuItem={closeSubMenu} />
     </>
   );

@@ -18,7 +18,7 @@ import ProjectAPI from "./pages/ProjectAPI";
 let theme = createTheme({
   palette: {
     primary: {
-      main: "#0052cc",
+      main: "#4184e9",
     },
     secondary: {
       main: "#edf2ff",

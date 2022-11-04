@@ -4,7 +4,7 @@ import { createVisualizationElement } from "../components/visualizations/Visuali
 import CreateVisualizationButton from "../components/CreateVisualizationButton";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import NightsStayOutlinedIcon from "@mui/icons-material/NightsStayOutlined";
+import NightsStayIcon from "@mui/icons-material/NightsStay";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import CenteredBox from "../components/CenteredBox";
@@ -53,8 +53,8 @@ const Project = () => {
           </Box>
         </>
       ) : (
-        <CenteredBox sx={{ color: "gray", mb: 15 }}>
-          <NightsStayOutlinedIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
+        <CenteredBox sx={{ mb: 15 }}>
+          <NightsStayIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
           <Typography
             variant="h5"
             sx={{ userSelect: "none", mb: 2, textAlign: "center" }}

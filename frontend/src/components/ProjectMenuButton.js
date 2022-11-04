@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import MoreVert from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
+import Link from "@mui/material/Link";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -56,7 +57,9 @@ const ProjectMenuButton = ({
     setAnchorEl(null);
   };
 
-  const handleSettingsProject = () => {
+  const handleSettingsProject = (event) => {
+    event.preventDefault();
+
     navigate("/projects/settings/" + project.id);
   };
 
@@ -72,12 +75,18 @@ const ProjectMenuButton = ({
         onClose={closeDropdownMenu}
       >
         {!noSettings && (
-          <MenuItem onClick={handleSettingsProject}>
-            <ListItemIcon>
-              <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Settings</ListItemText>
-          </MenuItem>
+          <Link
+            href={"/projects/settings/" + project.id}
+            underline="none"
+            sx={{ color: "unset" }}
+          >
+            <MenuItem onClick={handleSettingsProject}>
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Settings</ListItemText>
+            </MenuItem>
+          </Link>
         )}
         <MenuItem onClick={handleCopyAPIKey}>
           <ListItemIcon>
