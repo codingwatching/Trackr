@@ -104,7 +104,7 @@ const EditProject = () => {
           required
           defaultValue={project.name}
         />
-        <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
+        <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The name of your project used to identify it.
         </Typography>
 
@@ -116,7 +116,7 @@ const EditProject = () => {
           rows={4}
           defaultValue={project.description}
         />
-        <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
+        <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The description used to briefly describe your project.
         </Typography>
 
@@ -135,7 +135,7 @@ const EditProject = () => {
           </ToggleButtonGroup>
         </Box>
 
-        <Typography variant="caption" sx={{ mt: 1, mb: 3 }}>
+        <Typography variant="caption" sx={{ mt: 1, mb: 3, color: "gray" }}>
           You can reset the secret key used by your IoT devices to communciate
           with your project.
         </Typography>

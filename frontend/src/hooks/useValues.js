@@ -12,6 +12,10 @@ export const useValues = (fieldId, order, offset, limit) => {
   const [error, setError] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setValues([]);
+    setError();
+
     ValuesAPI.getValues(fieldId, order, offset, limit)
       .then((result) => {
         setLoading(false);
@@ -30,10 +34,6 @@ export const useValues = (fieldId, order, offset, limit) => {
         setValues([]);
         setTotalValues(0);
       });
-
-    setLoading(true);
-    setValues([]);
-    setError();
 
     return () => {};
   }, [fieldId, order, offset, limit]);

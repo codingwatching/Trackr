@@ -189,11 +189,17 @@ const NavBar = () => {
 
                       page.subMenu ? handleOpenSubMenu(e) : navigate(page.href);
                     }}
-                    endIcon={page.subMenu && <KeyboardArrowDownIcon />}
+                    endIcon={
+                      page.subMenu && (
+                        <KeyboardArrowDownIcon
+                          sx={{ ml: -0.5, color: "gray" }}
+                        />
+                      )
+                    }
                     sx={{
                       my: 2,
-                      color: "black",
                       textTransform: "none",
+                      color: "black",
 
                       "&:hover": {
                         background: "#00000022",

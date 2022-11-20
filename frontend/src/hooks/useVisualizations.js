@@ -7,6 +7,10 @@ export const useVisualizations = (projectId) => {
   const [error, setError] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setVisualizations([]);
+    setError();
+
     VisualizationsAPI.getVisualizations(projectId)
       .then((result) => {
         setLoading(false);
@@ -23,10 +27,6 @@ export const useVisualizations = (projectId) => {
         setLoading(false);
         setVisualizations([]);
       });
-
-    setLoading(true);
-    setVisualizations([]);
-    setError();
 
     return () => {};
   }, [projectId]);

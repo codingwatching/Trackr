@@ -7,6 +7,10 @@ export const useProjects = () => {
   const [error, setError] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setProjects([]);
+    setError();
+
     ProjectsAPI.getProjects()
       .then((result) => {
         setLoading(false);
@@ -23,10 +27,6 @@ export const useProjects = () => {
         setLoading(false);
         setProjects([]);
       });
-
-    setLoading(true);
-    setProjects([]);
-    setError();
 
     return () => {};
   }, []);

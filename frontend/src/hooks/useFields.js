@@ -7,6 +7,10 @@ export const useFields = (projectId) => {
   const [error, setError] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setFields([]);
+    setError();
+
     FieldsAPI.getFields(projectId)
       .then((result) => {
         setLoading(false);
@@ -23,10 +27,6 @@ export const useFields = (projectId) => {
         setLoading(false);
         setFields([]);
       });
-
-    setLoading(true);
-    setFields([]);
-    setError();
 
     return () => {};
   }, [projectId]);
