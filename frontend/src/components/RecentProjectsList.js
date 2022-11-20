@@ -77,7 +77,7 @@ const RecentProjectsList = () => {
                 background: "white",
                 mt: 5,
                 px: 2,
-                pb: 2,
+                pb: 3,
                 flex: 1,
               }}
             >
@@ -92,9 +92,7 @@ const RecentProjectsList = () => {
                 }}
               />
 
-              <TextButton
-                onClick={() => navigate("/projects/fields/" + project.id)}
-              >
+              <TextButton onClick={() => navigate("/projects/" + project.id)}>
                 <Typography variant="h6" sx={{ fontSize: "18px" }}>
                   {project.name}
                 </Typography>
