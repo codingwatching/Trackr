@@ -24,6 +24,18 @@ func (service *FieldServiceDB) GetFields(project models.Project, user models.Use
 	return fields, nil
 }
 
+func (service *FieldServiceDB) GetNumberOfFields(project models.Project, user models.User) (int64, error) {
+	var count int64
+
+	if result := service.database.Model(&models.Field{}).Joins(
+		"LEFT JOIN projects ON fields.project_id = projects.id",
+	).Where("fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID).Count(&count); result.Error != nil {
+		return 0, result.Error
+	}
+
+	return count, nil
+}
+
 func (service *FieldServiceDB) GetField(id uint, user models.User) (*models.Field, error) {
 	var field models.Field
 	if result := service.database.Model(&models.Field{}).Joins(

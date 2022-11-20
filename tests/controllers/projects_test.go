@@ -94,20 +94,22 @@ func TestGetProjectsRoute(t *testing.T) {
 	response, _ = json.Marshal(responses.ProjectList{
 		Projects: []responses.Project{
 			{
-				ID:          suite.Project.ID,
-				Name:        suite.Project.Name,
-				Description: suite.Project.Description,
-				APIKey:      suite.Project.APIKey,
-				CreatedAt:   suite.Project.CreatedAt,
-				UpdatedAt:   suite.Project.UpdatedAt,
+				ID:             suite.Project.ID,
+				Name:           suite.Project.Name,
+				Description:    suite.Project.Description,
+				APIKey:         suite.Project.APIKey,
+				CreatedAt:      suite.Project.CreatedAt,
+				UpdatedAt:      suite.Project.UpdatedAt,
+				NumberOfFields: 1,
 			},
 			{
-				ID:          newProject.ID,
-				Name:        newProject.Name,
-				Description: newProject.Description,
-				APIKey:      newProject.APIKey,
-				CreatedAt:   newProject.CreatedAt,
-				UpdatedAt:   newProject.UpdatedAt,
+				ID:             newProject.ID,
+				Name:           newProject.Name,
+				Description:    newProject.Description,
+				APIKey:         newProject.APIKey,
+				CreatedAt:      newProject.CreatedAt,
+				UpdatedAt:      newProject.UpdatedAt,
+				NumberOfFields: 0,
 			},
 		},
 	})
@@ -173,12 +175,13 @@ func TestGetProjectRoute(t *testing.T) {
 	//
 
 	response, _ = json.Marshal(responses.Project{
-		ID:          suite.Project.ID,
-		Name:        suite.Project.Name,
-		Description: suite.Project.Description,
-		APIKey:      suite.Project.APIKey,
-		CreatedAt:   suite.Project.CreatedAt,
-		UpdatedAt:   suite.Project.UpdatedAt,
+		ID:             suite.Project.ID,
+		Name:           suite.Project.Name,
+		Description:    suite.Project.Description,
+		APIKey:         suite.Project.APIKey,
+		CreatedAt:      suite.Project.CreatedAt,
+		UpdatedAt:      suite.Project.UpdatedAt,
+		NumberOfFields: 1,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path+"1", nil)

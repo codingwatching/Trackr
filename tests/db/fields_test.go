@@ -40,6 +40,26 @@ func TestGetFields(t *testing.T) {
 	assert.Equal(t, suite.Field.ID, fields[0].ID)
 }
 
+func TestGetNumberOfFields(t *testing.T) {
+	suite := tests.Startup()
+
+	numberOfFields, err := suite.Service.GetFieldService().GetNumberOfFields(models.Project{}, models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, int64(0), numberOfFields)
+
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(suite.Project, models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, int64(0), numberOfFields)
+
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(models.Project{}, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(0), numberOfFields)
+
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(suite.Project, suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), numberOfFields)
+}
+
 func TestGetField(t *testing.T) {
 	suite := tests.Startup()
 
