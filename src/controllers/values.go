@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -114,6 +115,17 @@ func addValueRoute(c *gin.Context) {
 
 	if json.Value == "" {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value cannot be empty."})
+		return
+	}
+
+	floatValue, err := strconv.ParseFloat(json.Value, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value must be a floating point number."})
+		return
+	}
+
+	if math.IsNaN(floatValue) || math.IsInf(floatValue, 0) {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value cannot be NaN nor Infinity."})
 		return
 	}
 

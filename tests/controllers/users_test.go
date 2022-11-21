@@ -40,6 +40,7 @@ func TestGetUserRoute(t *testing.T) {
 		Email:     suite.User.Email,
 		FirstName: suite.User.FirstName,
 		LastName:  suite.User.LastName,
+		CreatedAt: suite.User.CreatedAt,
 
 		NumberOfFields: 1,
 		NumberOfValues: 1,

@@ -30,6 +30,7 @@ func getUserRoute(c *gin.Context) {
 		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
+		CreatedAt: user.CreatedAt,
 
 		NumberOfFields: numberOfFields,
 		NumberOfValues: numberOfValues,

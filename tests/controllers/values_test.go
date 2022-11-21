@@ -334,6 +334,82 @@ func TestAddValueRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
+	// Test invalid value type path.
+	//
+
+	request, _ = json.Marshal(requests.AddValue{
+		Value:   "invalid",
+		APIKey:  suite.Project.APIKey,
+		FieldID: suite.Field.ID,
+	})
+	response, _ = json.Marshal(responses.Error{
+		Error: "The value must be a floating point number.",
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test NaN value path.
+	//
+
+	request, _ = json.Marshal(requests.AddValue{
+		Value:   "NaN",
+		APIKey:  suite.Project.APIKey,
+		FieldID: suite.Field.ID,
+	})
+	response, _ = json.Marshal(responses.Error{
+		Error: "The value cannot be NaN nor Infinity.",
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test -Inf value path.
+	//
+
+	request, _ = json.Marshal(requests.AddValue{
+		Value:   "-Inf",
+		APIKey:  suite.Project.APIKey,
+		FieldID: suite.Field.ID,
+	})
+	response, _ = json.Marshal(responses.Error{
+		Error: "The value cannot be NaN nor Infinity.",
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
+	// Test Inf value path.
+	//
+
+	request, _ = json.Marshal(requests.AddValue{
+		Value:   "Inf",
+		APIKey:  suite.Project.APIKey,
+		FieldID: suite.Field.ID,
+	})
+	response, _ = json.Marshal(responses.Error{
+		Error: "The value cannot be NaN nor Infinity.",
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
 	// Test maximum values path.
 	//
 
