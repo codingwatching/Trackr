@@ -33,15 +33,16 @@ func Startup() *Suite {
 	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:"))
 	suite.Time = time.Now()
 	suite.User = models.User{
-		ID:         1,
-		Email:      "Email@email",
-		Password:   "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
-		FirstName:  "FirstName",
-		LastName:   "LastName",
-		UpdatedAt:  suite.Time,
-		CreatedAt:  suite.Time,
-		IsVerified: true,
-		MaxValues:  1,
+		ID:               1,
+		Email:            "Email@email",
+		Password:         "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
+		FirstName:        "FirstName",
+		LastName:         "LastName",
+		UpdatedAt:        suite.Time,
+		CreatedAt:        suite.Time,
+		IsVerified:       true,
+		MaxValues:        1,
+		MaxValueInterval: 5,
 	}
 	suite.Service.GetUserService().AddUser(suite.User)
 
@@ -103,7 +104,7 @@ func Startup() *Suite {
 	suite.Value = models.Value{
 		ID:        1,
 		Value:     "1.00",
-		CreatedAt: suite.Time,
+		CreatedAt: suite.Time.Add(-time.Second * time.Duration(suite.User.MaxValueInterval)),
 
 		FieldID: suite.Field.ID,
 		Field:   suite.Field,

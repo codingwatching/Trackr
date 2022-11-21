@@ -4,5 +4,9 @@ type User struct {
 	Email     string `json:"email"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
-	MaxValues uint   `json:"maxValues"`
+
+	NumberOfFields   int64 `json:"numberOfFields"`
+	NumberOfValues   int64 `json:"numberOfValues"`
+	MaxValueInterval int64 `json:"maxValueInterval"`
+	MaxValues        int64 `json:"maxValues"`
 }

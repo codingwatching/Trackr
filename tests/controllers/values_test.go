@@ -381,4 +381,22 @@ func TestAddValueRoute(t *testing.T) {
 	assert.NotNil(t, value)
 	assert.Equal(t, uint(2), value.ID)
 	assert.Equal(t, "2.00", value.Value)
+
+	//
+	// Test rate limit.
+	//
+
+	suite.User.MaxValues++
+	suite.Service.GetUserService().UpdateUser(suite.User)
+
+	request, _ = json.Marshal(requests.AddValue{
+		Value:   "3.00",
+		APIKey:  suite.Project.APIKey,
+		FieldID: suite.Field.ID,
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusTooManyRequests, httpRecorder.Code)
 }

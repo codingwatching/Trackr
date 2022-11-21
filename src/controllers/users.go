@@ -14,11 +14,28 @@ import (
 func getUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFieldsByUser(*user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of fields."})
+		return
+	}
+
+	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(*user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of values."})
+		return
+	}
+
 	c.JSON(http.StatusOK, responses.User{
 		Email:     user.Email,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		MaxValues: user.MaxValues,
+
+		NumberOfFields: numberOfFields,
+		NumberOfValues: numberOfValues,
+
+		MaxValueInterval: user.MaxValueInterval,
+		MaxValues:        user.MaxValues,
 	})
 }
 

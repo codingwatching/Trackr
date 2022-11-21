@@ -40,24 +40,61 @@ func TestGetFields(t *testing.T) {
 	assert.Equal(t, suite.Field.ID, fields[0].ID)
 }
 
-func TestGetNumberOfFields(t *testing.T) {
+func TestGetNumberOfFieldsByProject(t *testing.T) {
 	suite := tests.Startup()
 
-	numberOfFields, err := suite.Service.GetFieldService().GetNumberOfFields(models.Project{}, models.User{})
+	numberOfFields, err := suite.Service.GetFieldService().GetNumberOfFieldsByProject(models.Project{}, models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, int64(0), numberOfFields)
 
-	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(suite.Project, models.User{})
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFieldsByProject(suite.Project, models.User{})
 	assert.Nil(t, err)
 	assert.Equal(t, int64(0), numberOfFields)
 
-	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(models.Project{}, suite.User)
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFieldsByProject(models.Project{}, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, int64(0), numberOfFields)
 
-	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFields(suite.Project, suite.User)
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFieldsByProject(suite.Project, suite.User)
 	assert.Nil(t, err)
 	assert.Equal(t, int64(1), numberOfFields)
+}
+
+func TestGetNumberOfFieldsByUser(t *testing.T) {
+	suite := tests.Startup()
+
+	numberOfFields, err := suite.Service.GetFieldService().GetNumberOfFieldsByUser(models.User{})
+	assert.Nil(t, err)
+	assert.Equal(t, int64(0), numberOfFields)
+
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFieldsByUser(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), numberOfFields)
+
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
+
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
+	assert.Nil(t, err)
+	assert.Equal(t, newProject.ID, projectId)
+
+	newField := suite.Field
+	newField.ID = 2
+	newField.Name = "Field2"
+	newField.CreatedAt = suite.Time
+	newField.UpdatedAt = suite.Time
+	newField.Project = newProject
+
+	fieldId, err := suite.Service.GetFieldService().AddField(newField)
+	assert.Nil(t, err)
+	assert.Equal(t, newField.ID, fieldId)
+
+	numberOfFields, err = suite.Service.GetFieldService().GetNumberOfFieldsByUser(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(2), numberOfFields)
 }
 
 func TestGetField(t *testing.T) {
@@ -85,7 +122,6 @@ func TestGetField(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, suite.Field.ID, field.ID)
-
 }
 
 func TestAddField(t *testing.T) {

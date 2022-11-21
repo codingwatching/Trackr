@@ -40,7 +40,12 @@ func TestGetUserRoute(t *testing.T) {
 		Email:     suite.User.Email,
 		FirstName: suite.User.FirstName,
 		LastName:  suite.User.LastName,
-		MaxValues: suite.User.MaxValues,
+
+		NumberOfFields: 1,
+		NumberOfValues: 1,
+
+		MaxValueInterval: suite.User.MaxValueInterval,
+		MaxValues:        suite.User.MaxValues,
 	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, nil)

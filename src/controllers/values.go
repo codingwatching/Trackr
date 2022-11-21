@@ -140,6 +140,23 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
+	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(project.User)
+	if lastAddedValue != nil {
+		timeSinceLastAddedValue := time.Duration(project.User.MaxValueInterval)*time.Second - time.Since(lastAddedValue.CreatedAt)
+
+		if timeSinceLastAddedValue > 0 {
+			c.Header("Retry-After", fmt.Sprint(timeSinceLastAddedValue.Seconds()))
+			c.JSON(http.StatusTooManyRequests, responses.Error{
+				Error: fmt.Sprintf("You can only add a value every %d seconds, retry after %f seconds.",
+					project.User.MaxValueInterval,
+					timeSinceLastAddedValue.Seconds(),
+				),
+			})
+
+			return
+		}
+	}
+
 	value := models.Value{
 		Value:     json.Value,
 		CreatedAt: time.Now(),

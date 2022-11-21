@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CreateProjectButton from "../components/CreateProjectButton";
 import RecentProjectsList from "../components/RecentProjectsList";
+import UsageList from "../components/UsageList";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ const Dashboard = () => {
         </Box>
       </Box>
 
+      <UsageList />
       <RecentProjectsList />
     </Container>
   );

@@ -119,7 +119,40 @@ func TestGetValue(t *testing.T) {
 	value, err = suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, value)
-	assert.Equal(t, suite.Value.ID, value.ID)
+	assert.Equal(t, suite.Value.Value, value.Value)
+}
+
+func TestGetLastAddedValue(t *testing.T) {
+	suite := tests.Startup()
+
+	value, err := suite.Service.GetValueService().GetLastAddedValue(models.User{})
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
+
+	value, err = suite.Service.GetValueService().GetLastAddedValue(suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, value)
+	assert.Equal(t, suite.Value.Value, value.Value)
+
+	newValue := suite.Value
+	newValue.ID = 2
+	newValue.Value = "2.00"
+	newValue.CreatedAt = time.Now().Add(time.Minute)
+
+	err = suite.Service.GetValueService().AddValue(newValue)
+	assert.Nil(t, err)
+
+	value, err = suite.Service.GetValueService().GetLastAddedValue(suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, value)
+	assert.Equal(t, newValue.Value, value.Value)
+
+	err = suite.Service.GetValueService().DeleteValues(newValue.Field)
+	assert.Nil(t, err)
+
+	value, err = suite.Service.GetValueService().GetLastAddedValue(suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
 }
 
 func TestAddValue(t *testing.T) {

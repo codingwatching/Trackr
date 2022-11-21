@@ -67,7 +67,7 @@ func getProjectRoute(c *gin.Context) {
 		return
 	}
 
-	numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFields(*project, *user)
+	numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFieldsByProject(*project, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of fields."})
 		return
@@ -95,7 +95,7 @@ func getProjectsRoute(c *gin.Context) {
 
 	projectList := make([]responses.Project, len(projects))
 	for index, project := range projects {
-		numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFields(project, *user)
+		numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFieldsByProject(project, *user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of fields."})
 			return

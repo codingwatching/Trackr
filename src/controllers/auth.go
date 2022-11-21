@@ -19,7 +19,8 @@ const (
 	sessionIdLength = 64
 	sessionCookie   = "Session"
 
-	maxValues = 10000
+	maxValueInterval = 15
+	maxValues        = 10000
 )
 
 func loginRoute(c *gin.Context) {
@@ -197,7 +198,8 @@ func registerRoute(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 
-		MaxValues: maxValues,
+		MaxValues:        maxValues,
+		MaxValueInterval: maxValueInterval,
 	}
 
 	user.ID, err = serviceProvider.GetUserService().AddUser(user)
