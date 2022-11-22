@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <Container sx={{ mt: 3 }}>
+    <Container sx={{ mt: 3, pb: 4 }}>
       <Box
         sx={{
           background: "#f7f7f7",

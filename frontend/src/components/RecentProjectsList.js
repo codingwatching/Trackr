@@ -22,7 +22,7 @@ const RecentProjectsList = () => {
     >
       <Typography
         variant="h6"
-        sx={{ flexGrow: 1, pb: 2, borderBottom: "2px solid #f4f5f7", mb: 3 }}
+        sx={{ flexGrow: 1, pb: 2, borderBottom: "2px solid #ededed", mb: 3 }}
       >
         Recent Projects
       </Typography>
@@ -47,6 +47,12 @@ const RecentProjectsList = () => {
         ) : loading ? (
           <CenteredBox>
             <CircularProgress />
+          </CenteredBox>
+        ) : projects.length === 0 ? (
+          <CenteredBox>
+            <Typography variant="h7" sx={{ color: "gray" }}>
+              You currently have no projects.
+            </Typography>
           </CenteredBox>
         ) : (
           projects.map((project) => (
