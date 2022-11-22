@@ -10,8 +10,8 @@ import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
 import ProjectFields from "./pages/ProjectFields";
-import UserSettings from "./pages/UserSettings";
-import UserRoute from "./routes/UserRoute";
+import UserAccountDetails from "./pages/UserAccountDetails";
+import UserSettingsRoute from "./routes/UserSettingsRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
@@ -47,7 +47,7 @@ const App = () => {
             path="/settings/"
             element={
               <AuthorizedRoute
-                element={<UserRoute element={<UserSettings />} />}
+                element={<UserSettingsRoute element={<UserAccountDetails />} />}
               />
             }
           />

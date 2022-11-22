@@ -12,11 +12,9 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Logo from "./Logo";
@@ -68,13 +66,6 @@ const NavBar = () => {
     event.preventDefault();
 
     navigate("/settings");
-    handleCloseUserMenu();
-  };
-
-  const handleOpenLogs = (event) => {
-    event.preventDefault();
-
-    navigate("/logs");
     handleCloseUserMenu();
   };
 
@@ -269,15 +260,6 @@ const NavBar = () => {
                   Settings
                 </MenuItem>
               </Link>
-              <Link href="/logs" underline="none" sx={{ color: "unset" }}>
-                <MenuItem onClick={handleOpenLogs}>
-                  <ListItemIcon>
-                    <FormatListNumberedIcon fontSize="small" />
-                  </ListItemIcon>
-                  Logs
-                </MenuItem>
-              </Link>
-              <Divider sx={{ my: 1 }} />
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />

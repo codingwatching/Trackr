@@ -3,11 +3,14 @@ import { useUser } from "../hooks/useUser";
 import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
+import UserSettingsSidebar from "../components/UserSettingsSidebar";
 
-export const UserRouteContext = createContext();
+export const UserSettingsRouteContext = createContext();
 
-const UserRoute = ({ element }) => {
+const UserSettingsRoute = ({ element }) => {
   const [user, setUser, loading, error] = useUser();
 
   if (error) {
@@ -30,10 +33,17 @@ const UserRoute = ({ element }) => {
   }
 
   return (
-    <UserRouteContext.Provider value={{ user, setUser }}>
-      {element}
-    </UserRouteContext.Provider>
+    <Container sx={{ mt: 3, display: "flex", flexDirection: "row" }}>
+      <Box sx={{ flex: 0.25 }}>
+        <UserSettingsSidebar />
+      </Box>
+      <Box sx={{ flex: 0.75 }}>
+        <UserSettingsRouteContext.Provider value={{ user, setUser }}>
+          {element}
+        </UserSettingsRouteContext.Provider>
+      </Box>
+    </Container>
   );
 };
 
-export default UserRoute;
+export default UserSettingsRoute;
