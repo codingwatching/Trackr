@@ -68,6 +68,7 @@ const UsageList = () => {
                   flexDirection: "row",
                   alignItems: "start",
                   mb: 1,
+                  color: "#585858",
                 }}
               >
                 <Box
@@ -75,6 +76,7 @@ const UsageList = () => {
                     display: "flex",
                     flexDirection: "row",
                     flex: 1,
+                    pr: 1,
                   }}
                 >
                   <Typography variant="h7">
@@ -114,7 +116,7 @@ const UsageList = () => {
                 boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
               }}
             >
-              <Typography variant="h4">
+              <Typography variant="h5">
                 {user.numberOfValues.toLocaleString()}
               </Typography>
               <Typography variant="h5" sx={{ color: "gray" }}>
@@ -136,11 +138,34 @@ const UsageList = () => {
                 boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
               }}
             >
-              <Typography variant="h4">
+              <Typography variant="h5">
                 {user.numberOfFields.toLocaleString()}
               </Typography>
               <Typography variant="h5" sx={{ color: "gray" }}>
                 fields
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 0.25,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 1,
+                px: 2,
+                py: 8,
+                background: "white",
+                boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
+              }}
+            >
+              <Typography variant="h5">
+                {user.maxValueInterval.toLocaleString()}{" "}
+                {user.maxValueInterval === 1 ? "second" : "seconds"}
+              </Typography>
+              <Typography variant="h5" sx={{ color: "gray" }}>
+                rate limit
               </Typography>
             </Box>
           </>
