@@ -26,13 +26,12 @@ const UserSettingsSidebar = () => {
   return (
     <>
       {pages.map((page) => (
-        <Link href={page.href} underline="none">
+        <Link key={page.href} href={page.href} underline="none">
           <Box
             onClick={(e) => {
               e.preventDefault();
               navigate(page.href);
             }}
-            key={page.href}
             sx={{
               display: "flex",
               flexDirection: "row",
