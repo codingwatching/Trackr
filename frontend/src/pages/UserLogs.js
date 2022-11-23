@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLogs } from "../hooks/useLogs";
 import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
 import Box from "@mui/material/Box";
@@ -17,21 +18,70 @@ import TableRow from "@mui/material/TableRow";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Avatar from "@mui/material/Avatar";
 import moment from "moment";
-import { Link } from "@mui/material";
+import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
 
 const UserLogs = () => {
+  const navigate = useNavigate();
   const { user } = useContext(UserSettingsRouteContext);
   const [search, setSearch] = useState("");
   const [logs, loading, error] = useLogs();
+  const [offset, setOffset] = useState(0);
 
-  console.log(logs);
+  const limit = 20;
+  const filteredLogs = useMemo(
+    () =>
+      logs.filter(
+        (log) =>
+          log.message.toLowerCase().includes(search.toLowerCase()) ||
+          log.projectName.toLowerCase().includes(search.toLowerCase()) ||
+          log.createdAt.toLowerCase().includes(search.toLowerCase())
+      ),
+    [logs, search]
+  );
+
+  const splicedLogs = useMemo(
+    () => filteredLogs.slice(offset, offset + limit),
+    [filteredLogs, offset, limit]
+  );
+
+  useEffect(() => {
+    setOffset(0);
+
+    return () => {};
+  }, [search]);
+
+  const handleNextPage = () => {
+    setOffset(offset + splicedLogs.length);
+  };
+
+  const handlePreviousPage = () => {
+    setOffset(offset - limit);
+  };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", px: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant="h5">Activity Logs</Typography>
       <Typography variant="h7" sx={{ mb: 2 }}>
         View your recent activity and access history.
       </Typography>
+
+      <TextField
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder="Search"
+        sx={{ mb: 2, color: "blue" }}
+        size="small"
+        variant="outlined"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
       {error ? (
         <CenteredBox sx={{ mt: 2 }}>
@@ -49,93 +99,78 @@ const UserLogs = () => {
         </CenteredBox>
       ) : (
         <>
-          <TextField
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            placeholder="Search"
-            sx={{ mb: 2, color: "blue" }}
-            size="small"
-            variant="outlined"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-
-          <Table sx={{ border: "1px solid #e0e0e0", mb: 2 }}>
+          <Table sx={{ border: "1px solid #e0e0e0" }}>
             <TableHead sx={{ background: "#f6f8fa" }}>
               <TableRow>
                 <TableCell align="left">Recent events</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {logs
-                .filter(
-                  (log) =>
-                    log.message.toLowerCase().includes(search.toLowerCase()) ||
-                    log.projectName.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((log, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              {splicedLogs.map((log, index) => (
+                <TableRow
+                  key={index}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell
+                    align="left"
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                   >
-                    <TableCell
-                      align="left"
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Box>
-                        <Avatar
-                          sx={{
-                            width: 33,
-                            height: 33,
+                    <Box>
+                      <Avatar
+                        sx={{
+                          width: 33,
+                          height: 33,
 
+                          mr: 2,
+                          background: "#b9b9b9",
+                        }}
+                      />
+                      {log.projectName && (
+                        <AccountTreeRoundedIcon
+                          sx={{
+                            position: "absolute",
+                            marginTop: "-15px",
+                            marginLeft: "14px",
+                            fontSize: 23,
+                            borderRadius: "100%",
+                            p: "3px",
+                            background: "#c6ddff",
                             mr: 2,
-                            background: "#b9b9b9",
+                            color: "primary.main",
                           }}
                         />
-                        {log.projectName && (
-                          <AccountTreeRoundedIcon
-                            sx={{
-                              position: "absolute",
-                              marginTop: "-15px",
-                              marginLeft: "14px",
-                              fontSize: 23,
-                              borderRadius: "100%",
-                              p: "3px",
-                              background: "#c6ddff",
-                              mr: 2,
-                              color: "primary.main",
-                            }}
-                          />
-                        )}
-                      </Box>
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row", flex: 1 }}
-                      >
-                        <Box sx={{ flex: 1 }}>
-                          <Box sx={{ fontWeight: "bold" }}>
-                            {user.firstName} {user.lastName}
-                            {log.projectName && (
-                              <>
-                                {" "}
-                                &mdash;{" "}
-                                <Link href={"/projects/" + log.projectId}>
-                                  {log.projectName}
-                                </Link>
-                              </>
-                            )}
-                          </Box>
-                          <Box>{log.message}</Box>
+                      )}
+                    </Box>
+                    <Box
+                      sx={{ display: "flex", flexDirection: "row", flex: 1 }}
+                    >
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ fontWeight: "bold" }}>
+                          {user.firstName} {user.lastName}
+                          {log.projectName && (
+                            <>
+                              {" "}
+                              &mdash;{" "}
+                              <Link
+                                href={"/projects/" + log.projectId}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  navigate("/projects/" + log.projectId);
+                                }}
+                              >
+                                {log.projectName}
+                              </Link>
+                            </>
+                          )}
                         </Box>
+                        <Box>{log.message}</Box>
+                      </Box>
 
+                      <Tooltip title={log.createdAt}>
                         <Box
                           sx={{
                             display: "flex",
@@ -145,12 +180,40 @@ const UserLogs = () => {
                         >
                           {moment(log.createdAt).fromNow()}
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              userSelect: "none",
+              mt: 1.5,
+              mb: 3,
+            }}
+          >
+            <Button
+              sx={{ px: 2 }}
+              onClick={handlePreviousPage}
+              disabled={offset - limit < 0}
+            >
+              Newer
+            </Button>
+            <Button
+              sx={{ px: 2 }}
+              onClick={handleNextPage}
+              disabled={offset + limit >= filteredLogs.length}
+            >
+              Older
+            </Button>
+          </Box>
         </>
       )}
     </Box>

@@ -145,29 +145,6 @@ const UsageList = () => {
                 fields
               </Typography>
             </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flex: 0.25,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 1,
-                px: 2,
-                py: 8,
-                background: "white",
-                boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
-              }}
-            >
-              <Typography variant="h5">
-                {user.maxValueInterval.toLocaleString()}{" "}
-                {user.maxValueInterval === 1 ? "second" : "seconds"}
-              </Typography>
-              <Typography variant="h5" sx={{ color: "gray" }}>
-                rate limit
-              </Typography>
-            </Box>
           </>
         )}
       </Box>

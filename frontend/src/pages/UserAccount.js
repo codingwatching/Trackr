@@ -15,7 +15,7 @@ const UserAccount = () => {
   const { user } = useContext(UserSettingsRouteContext);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", px: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
           display: "flex",

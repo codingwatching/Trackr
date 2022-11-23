@@ -33,11 +33,17 @@ const UserSettingsRoute = ({ element }) => {
   }
 
   return (
-    <Container sx={{ mt: 3, display: "flex", flexDirection: "row" }}>
-      <Box sx={{ flex: 0.25 }}>
+    <Container
+      sx={{
+        mt: 3,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "column", md: "row" },
+      }}
+    >
+      <Box sx={{ flex: 0.25, mb: { xs: 2, sm: 2, md: 0 } }}>
         <UserSettingsSidebar />
       </Box>
-      <Box sx={{ flex: 0.75 }}>
+      <Box sx={{ flex: 0.75, px: { xs: 0, sm: 0, md: 3 } }}>
         <UserSettingsRouteContext.Provider value={{ user, setUser }}>
           {element}
         </UserSettingsRouteContext.Provider>

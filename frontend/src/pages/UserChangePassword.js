@@ -60,8 +60,8 @@ const UserChangePassword = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", px: 3 }}>
-      <Typography variant="h5">Password and Authentication</Typography>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Typography variant="h5">Change Password</Typography>
       <Typography variant="h7" sx={{ mb: 2 }}>
         Enter your current password and a new password.
       </Typography>
@@ -120,6 +120,7 @@ const UserChangePassword = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "baseline",
+            mb: 3,
           }}
         >
           <LoadingButton

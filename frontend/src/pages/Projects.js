@@ -88,11 +88,9 @@ const Projects = () => {
         />
       </Box>
 
-      <Divider />
-
       {projects.length ? (
-        <Table>
-          <TableHead>
+        <Table sx={{ border: "1px solid #e0e0e0", mb: 2 }}>
+          <TableHead sx={{ background: "#f6f8fa" }}>
             <TableRow>
               <TableCell align="left">Name</TableCell>
               <TableCell align="left">Created</TableCell>
