@@ -19,15 +19,43 @@ const Dashboard = () => {
           display: "flex",
 
           borderRadius: 1,
-          flexDirection: "row",
-          alignItems: "start",
+          flexDirection: {
+            xs: "column",
+            sm: "column",
+            md: "row",
+          },
+          alignItems: {
+            xs: "center",
+            sm: "center",
+            md: "start",
+          },
           px: 4,
           py: 5,
           mb: 3,
         }}
       >
-        <AutoAwesomeTwoToneIcon sx={{ fontSize: 120, color: "#3887ffc4" }} />
-        <Box sx={{ ml: 5, display: "flex", flexDirection: "column" }}>
+        <AutoAwesomeTwoToneIcon
+          sx={{
+            fontSize: 120,
+            color: "#3887ffc4",
+            mb: {
+              sm: 3,
+              xs: 3,
+              md: 0,
+            },
+          }}
+        />
+        <Box
+          sx={{
+            ml: {
+              sm: 0,
+              xs: 0,
+              md: 5,
+            },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography variant="h6">
             Welcome to trackr! Let's get started
           </Typography>

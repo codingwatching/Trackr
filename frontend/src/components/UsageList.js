@@ -46,12 +46,16 @@ const UsageList = () => {
             <CircularProgress />
           </CenteredBox>
         ) : (
-          <>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "8px", flex: 1 }}>
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                flex: 0.5,
+                flex: {
+                  sm: 1,
+                  xs: 1,
+                  md: 0.5,
+                },
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 1,
@@ -76,7 +80,7 @@ const UsageList = () => {
                     display: "flex",
                     flexDirection: "row",
                     flex: 1,
-                    pr: 1,
+                    pr: 1.5,
                   }}
                 >
                   <Typography variant="h7">
@@ -90,7 +94,7 @@ const UsageList = () => {
                   </Typography>
                 </Box>
 
-                <Typography variant="h7">
+                <Typography variant="h7" sx={{ textAlign: "center" }}>
                   {((user.numberOfValues / user.maxValues) * 100).toFixed(2)}%
                   used
                 </Typography>
@@ -106,7 +110,11 @@ const UsageList = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                flex: 0.25,
+                flex: {
+                  xs: 1,
+                  sm: 1,
+                  md: 0.25,
+                },
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 1,
@@ -128,7 +136,11 @@ const UsageList = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                flex: 0.25,
+                flex: {
+                  sm: 1,
+                  xs: 1,
+                  md: 0.25,
+                },
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 1,
@@ -145,7 +157,7 @@ const UsageList = () => {
                 fields
               </Typography>
             </Box>
-          </>
+          </Box>
         )}
       </Box>
     </Box>

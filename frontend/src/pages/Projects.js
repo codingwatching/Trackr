@@ -1,6 +1,6 @@
 import { useProjects } from "../hooks/useProjects";
-import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -78,6 +78,7 @@ const Projects = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
         <CreateProjectButton
           sx={{
             fontSize: 13,
