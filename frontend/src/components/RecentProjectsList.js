@@ -31,7 +31,8 @@ const RecentProjectsList = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
-          gap: "10px",
+          flexWrap: "wrap",
+          gap: "15px",
         }}
       >
         {error ? (
@@ -60,9 +61,18 @@ const RecentProjectsList = () => {
               key={project.id}
               sx={{
                 display: "flex",
-                overflow: "hidden",
                 flexDirection: "row",
-                width: "230px",
+                minWidth: {
+                  xs: "100%",
+                  sm: "49%",
+                  md: "23%",
+                },
+                maxWidth: {
+                  xs: "unset",
+                  sm: "unset",
+                  md: "200px",
+                },
+                flex: 1,
                 borderRadius: 1,
                 background: "#ebf3ff",
                 boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
