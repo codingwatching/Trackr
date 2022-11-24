@@ -15,6 +15,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TableContainer from "@mui/material/TableContainer";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Avatar from "@mui/material/Avatar";
 import moment from "moment";
@@ -99,94 +100,99 @@ const UserLogs = () => {
         </CenteredBox>
       ) : (
         <>
-          <Table sx={{ border: "1px solid #e0e0e0" }}>
-            <TableHead sx={{ background: "#f6f8fa" }}>
-              <TableRow>
-                <TableCell align="left">Recent events</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {splicedLogs.map((log, index) => (
-                <TableRow
-                  key={index}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell
-                    align="left"
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
+          <TableContainer
+            sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
+            component={Box}
+          >
+            <Table>
+              <TableHead sx={{ background: "#f6f8fa" }}>
+                <TableRow>
+                  <TableCell align="left">Recent events</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {splicedLogs.map((log, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <Box>
-                      <Avatar
-                        sx={{
-                          width: 33,
-                          height: 33,
-
-                          mr: 2,
-                          background: "#b9b9b9",
-                        }}
-                      />
-                      {log.projectName && (
-                        <AccountTreeRoundedIcon
+                    <TableCell
+                      align="left"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box>
+                        <Avatar
                           sx={{
-                            position: "absolute",
-                            marginTop: "-15px",
-                            marginLeft: "14px",
-                            fontSize: 23,
-                            borderRadius: "100%",
-                            p: "3px",
-                            background: "#c6ddff",
+                            width: 33,
+                            height: 33,
+
                             mr: 2,
-                            color: "primary.main",
+                            background: "#b9b9b9",
                           }}
                         />
-                      )}
-                    </Box>
-                    <Box
-                      sx={{ display: "flex", flexDirection: "row", flex: 1 }}
-                    >
-                      <Box sx={{ flex: 1 }}>
-                        <Box sx={{ fontWeight: "bold" }}>
-                          {user.firstName} {user.lastName}
-                          {log.projectName && (
-                            <>
-                              {" "}
-                              &mdash;{" "}
-                              <Link
-                                href={"/projects/" + log.projectId}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  navigate("/projects/" + log.projectId);
-                                }}
-                              >
-                                {log.projectName}
-                              </Link>
-                            </>
-                          )}
-                        </Box>
-                        <Box>{log.message}</Box>
+                        {log.projectName && (
+                          <AccountTreeRoundedIcon
+                            sx={{
+                              position: "absolute",
+                              marginTop: "-15px",
+                              marginLeft: "14px",
+                              fontSize: 23,
+                              borderRadius: "100%",
+                              p: "3px",
+                              background: "#c6ddff",
+                              mr: 2,
+                              color: "primary.main",
+                            }}
+                          />
+                        )}
                       </Box>
-
-                      <Tooltip title={log.createdAt}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            color: "gray",
-                          }}
-                        >
-                          {moment(log.createdAt).fromNow()}
+                      <Box
+                        sx={{ display: "flex", flexDirection: "row", flex: 1 }}
+                      >
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ fontWeight: "bold" }}>
+                            {user.firstName} {user.lastName}
+                            {log.projectName && (
+                              <>
+                                {" "}
+                                &mdash;{" "}
+                                <Link
+                                  href={"/projects/" + log.projectId}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate("/projects/" + log.projectId);
+                                  }}
+                                >
+                                  {log.projectName}
+                                </Link>
+                              </>
+                            )}
+                          </Box>
+                          <Box>{log.message}</Box>
                         </Box>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+                        <Tooltip title={log.createdAt}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: "gray",
+                            }}
+                          >
+                            {moment(log.createdAt).fromNow()}
+                          </Box>
+                        </Tooltip>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <Box
             sx={{

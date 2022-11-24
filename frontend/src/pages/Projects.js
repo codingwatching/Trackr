@@ -10,11 +10,11 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TableContainer from "@mui/material/TableContainer";
 import Link from "@mui/material/Link";
 import CenteredBox from "../components/CenteredBox";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import ErrorIcon from "@mui/icons-material/Error";
-import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
@@ -89,59 +89,64 @@ const Projects = () => {
       </Box>
 
       {projects.length ? (
-        <Table sx={{ border: "1px solid #e0e0e0", mb: 2 }}>
-          <TableHead sx={{ background: "#f6f8fa" }}>
-            <TableRow>
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="left">Created</TableCell>
-              <TableCell align="right"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {projects
-              .filter((project) =>
-                project.name.toLowerCase().includes(search.toLowerCase())
-              )
-              .map((project) => (
-                <TableRow
-                  key={project.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell align="left">
-                    <Link
-                      component={NavLink}
-                      to={"/projects/" + project.id}
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <AccountTreeRoundedIcon sx={{ mr: 3 }} />
-                      {project.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Tooltip title={project.createdAt}>
-                      <Box>
-                        <Moment fromNow ago>
-                          {project.createdAt}
-                        </Moment>{" "}
-                        ago
-                      </Box>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell align="right">
-                    <ProjectMenuButton
-                      project={project}
-                      projects={projects}
-                      setProjects={setProjects}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <TableContainer
+          sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
+          component={Box}
+        >
+          <Table>
+            <TableHead sx={{ background: "#f6f8fa" }}>
+              <TableRow>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">Created</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {projects
+                .filter((project) =>
+                  project.name.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((project) => (
+                  <TableRow
+                    key={project.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">
+                      <Link
+                        component={NavLink}
+                        to={"/projects/" + project.id}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <AccountTreeRoundedIcon sx={{ mr: 3 }} />
+                        {project.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Tooltip title={project.createdAt}>
+                        <Box>
+                          <Moment fromNow ago>
+                            {project.createdAt}
+                          </Moment>{" "}
+                          ago
+                        </Box>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell align="right">
+                      <ProjectMenuButton
+                        project={project}
+                        projects={projects}
+                        setProjects={setProjects}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
         <Box
           sx={{
