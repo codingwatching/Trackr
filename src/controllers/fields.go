@@ -85,8 +85,9 @@ func getFieldsRoute(c *gin.Context) {
 	fieldList := make([]responses.Field, len(fields))
 	for index, field := range fields {
 		fieldList[index] = responses.Field{
-			ID:   field.ID,
-			Name: field.Name,
+			ID:        field.ID,
+			Name:      field.Name,
+			CreatedAt: field.CreatedAt,
 		}
 	}
 
