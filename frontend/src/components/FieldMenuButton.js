@@ -6,18 +6,16 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
 import DeleteFieldDialog from "./DeleteFieldDialog";
 import DeleteValuesDialog from "./DeleteValuesDialog";
+// import EditFieldDialog from "./EditFieldDialog";
+import EditIcon from "@mui/icons-material/Edit";
 
-const FieldMenuButton = ({
-  field,
-  fields,
-  setFields,
-  disabled,
-}) => {
+const FieldMenuButton = ({ field }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogElement, setDialogElement] = useState();
@@ -39,11 +37,7 @@ const FieldMenuButton = ({
     setAnchorEl(null);
 
     setDialogElement(
-      createElement(
-        DeleteFieldDialog,
-        { field, fields, setFields, onClose: closeDialog },
-        {}
-      )
+      createElement(DeleteFieldDialog, { field, onClose: closeDialog }, {})
     );
   };
 
@@ -52,19 +46,22 @@ const FieldMenuButton = ({
     setAnchorEl(null);
 
     setDialogElement(
-      createElement(
-        DeleteValuesDialog,
-        { field, onClose: closeDialog },
-        {}
-      )
+      createElement(DeleteValuesDialog, { field, onClose: closeDialog }, {})
     );
   };
 
-  
+  // const openEditFieldDialog = () => {
+  //   setDialogOpen(true);
+  //   setAnchorEl(null);
+
+  //   setDialogElement(
+  //     createElement(EditFieldDialog, { field, onClose: closeDialog }, {})
+  //   );
+  // };
 
   return (
     <>
-      <IconButton onClick={openDropdownMenu} disabled={disabled}>
+      <IconButton onClick={openDropdownMenu}>
         <MoreVert />
       </IconButton>
 
@@ -73,22 +70,30 @@ const FieldMenuButton = ({
         open={Boolean(anchorEl)}
         onClose={closeDropdownMenu}
       >
-        
-        <Divider />
+        {/* <MenuItem onClick={openEditFieldDialog}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem> */}
+
         <MenuItem onClick={openDeleteValuesDialog}>
           <ListItemIcon>
-            <DeleteIcon fontSize="small" color="error" />
+            <DeleteOutlineIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Delete Values</Typography>
+            <Typography color="error">Clear Values</Typography>
           </ListItemText>
         </MenuItem>
+
+        <Divider />
+
         <MenuItem onClick={openDeleteFieldDialog}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Delete Field</Typography>
+            <Typography color="error">Delete</Typography>
           </ListItemText>
         </MenuItem>
       </Menu>

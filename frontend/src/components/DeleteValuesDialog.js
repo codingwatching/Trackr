@@ -7,15 +7,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ValuesAPI from "../api/ValuesAPI";
 
-const DeleteValuesDialog = ({ field, onClose}) => {
+const DeleteValuesDialog = ({ field, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
-  
 
   const handleDeleteValues = () => {
     ValuesAPI.deleteValues(field.id)
       .then(() => {
-        onClose(); 
+        onClose();
       })
       .catch((error) => {
         setLoading(false);
@@ -47,8 +46,8 @@ const DeleteValuesDialog = ({ field, onClose}) => {
       <DialogTitle>Delete Values</DialogTitle>
       <DialogContent>
         <DialogContentText variant="h7">
-            Are you sure you want to delete all the values
-            from the "{field.name}" field?
+          Are you sure you want to delete all the values from the "{field.name}"
+          field?
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ mb: 1.5, mr: 1 }}>

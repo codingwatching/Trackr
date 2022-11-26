@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -7,18 +8,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import FieldsAPI from "../api/FieldsAPI";
 
-const DeleteFieldDialog = ({ onClose, field, fields, setFields }) => {
+const DeleteFieldDialog = ({ onClose, field }) => {
+  const { fields, setFields, visualizations, setVisualizations } =
+    useContext(ProjectRouteContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
-  
 
   const handleDeleteField = () => {
     FieldsAPI.deleteField(field.id)
       .then(() => {
         onClose();
-        
+
         if (setFields && fields) {
           setFields(fields.filter((x) => x.id !== field.id));
+          setVisualizations(
+            visualizations.filter((x) => x.fieldId !== field.id)
+          );
         }
       })
       .catch((error) => {

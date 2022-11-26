@@ -19,6 +19,16 @@ class FieldsAPI {
     );
   }
 
+  static updateField(fieldId, name) {
+    return axios.put(
+      this.#BASE_URL + "/",
+      { fieldId, name },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
   static deleteField(fieldId) {
     return axios.delete(this.#BASE_URL + "/" + fieldId, {
       withCredentials: true,
