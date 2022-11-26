@@ -54,7 +54,22 @@ const UserSettingsSidebar = () => {
                 ? "#ebebeb"
                 : "unset",
 
-              "&:hover": { background: "#ebf3ff", cursor: "pointer" },
+              color: matchPath(
+                {
+                  path: page.href,
+                  exact: true,
+                  strict: false,
+                },
+                location.pathname
+              )
+                ? "black"
+                : "gray",
+
+              "&:hover": {
+                background: "#ebf3ff",
+                cursor: "pointer",
+                color: "black",
+              },
             }}
           >
             <Box
