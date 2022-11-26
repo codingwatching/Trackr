@@ -10,8 +10,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-const CreateProjectButton = ({ sx, menuItem }) => {
+const CreateProjectButton = ({ sx, menuItem, icon }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -62,6 +63,7 @@ const CreateProjectButton = ({ sx, menuItem }) => {
       ) : (
         <LoadingButton
           sx={sx}
+          startIcon={icon && <AddRoundedIcon />}
           loading={loading}
           type="submit"
           variant="contained"

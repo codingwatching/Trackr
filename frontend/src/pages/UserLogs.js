@@ -201,7 +201,6 @@ const UserLogs = () => {
               alignItems: "center",
               justifyContent: "center",
               userSelect: "none",
-              mt: 1.5,
               mb: 3,
             }}
           >

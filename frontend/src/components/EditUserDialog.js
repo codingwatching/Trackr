@@ -1,4 +1,4 @@
-import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
 import { useContext, useState } from "react";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
@@ -10,10 +10,10 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
-import FieldsAPI from "../api/FieldsAPI";
+import UsersAPI from "../api/UsersAPI";
 
-const EditFieldDialog = ({ field, onClose }) => {
-  const { fields, setFields } = useContext(ProjectRouteContext);
+const EditUserDialog = ({ onClose }) => {
+  const { setUser, user } = useContext(UserSettingsRouteContext);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -22,21 +22,15 @@ const EditFieldDialog = ({ field, onClose }) => {
 
     const data = new FormData(event.currentTarget);
 
-    FieldsAPI.updateField(field.id, data.get("name"))
-      .then((result) => {
-        setFields(
-          fields.map((f) =>
-            f.id === field.id
-              ? {
-                  id: field.id,
-                  createdAt: field.createdAt,
-                  name: data.get("name"),
-                }
-              : f
-          )
-        );
-
+    UsersAPI.updateUser(data.get("firstName"), data.get("lastName"))
+      .then(() => {
+        setUser({
+          ...user,
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+        });
         setLoading(false);
+
         onClose();
       })
       .catch((error) => {
@@ -45,7 +39,7 @@ const EditFieldDialog = ({ field, onClose }) => {
         if (error?.response?.data?.error) {
           setError(error.response.data.error);
         } else {
-          setError("Failed to rename field: " + error.message);
+          setError("Failed to change name: " + error.message);
         }
       });
 
@@ -56,7 +50,7 @@ const EditFieldDialog = ({ field, onClose }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        Rename Field
+        Edit name
       </DialogTitle>
       <DialogContent sx={{ mb: -2 }}>
         {error && (
@@ -67,8 +61,7 @@ const EditFieldDialog = ({ field, onClose }) => {
           </Fade>
         )}
         <DialogContentText>
-          You can rename your field if you've made a typo or just want to change
-          the name.
+          You can change your first name and last name to anything you want.
         </DialogContentText>
 
         <TextField
@@ -77,9 +70,21 @@ const EditFieldDialog = ({ field, onClose }) => {
           required
           fullWidth
           autoFocus
-          defaultValue={field.name}
-          name="name"
-          label="Name"
+          defaultValue={user.firstName}
+          name="firstName"
+          label="First Name"
+          type="text"
+        />
+
+        <TextField
+          error={error ? true : false}
+          margin="normal"
+          required
+          fullWidth
+          autoFocus
+          defaultValue={user.lastName}
+          name="lastName"
+          label="Last Name"
           type="text"
         />
       </DialogContent>
@@ -101,4 +106,4 @@ const EditFieldDialog = ({ field, onClose }) => {
   );
 };
 
-export default EditFieldDialog;
+export default EditUserDialog;

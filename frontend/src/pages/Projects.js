@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -80,6 +81,7 @@ const Projects = () => {
         />
 
         <CreateProjectButton
+          icon
           sx={{
             fontSize: 13,
             background: "#eaecf0",
@@ -88,6 +90,8 @@ const Projects = () => {
           }}
         />
       </Box>
+
+      <Divider sx={{ mb: 3 }} />
 
       {projects.length ? (
         <TableContainer
