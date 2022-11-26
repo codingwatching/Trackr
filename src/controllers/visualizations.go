@@ -81,9 +81,8 @@ func getVisualizationsRoute(c *gin.Context) {
 	visualizationList := make([]responses.Visualization, len(visualizations))
 	for index, visualization := range visualizations {
 		visualizationList[index] = responses.Visualization{
-			ID:        visualization.ID,
-			FieldID:   visualization.Field.ID,
-			FieldName: visualization.Field.Name,
+			ID:      visualization.ID,
+			FieldID: visualization.Field.ID,
 
 			Metadata:  visualization.Metadata,
 			UpdatedAt: visualization.UpdatedAt,

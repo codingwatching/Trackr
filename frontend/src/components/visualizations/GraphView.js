@@ -10,9 +10,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { ProjectRouteContext } from "../../routes/ProjectRoute";
 import { Line, Bar } from "react-chartjs-2";
 import { useValues } from "../../hooks/useValues";
-import { useMemo } from "react";
+import { useMemo, useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -38,8 +39,10 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
   const graphFunction = metadata?.graphFunction || "none";
   const graphTimestep = metadata?.graphTimestep || "";
 
-  const { fieldId, fieldName } = visualization;
+  const { fields } = useContext(ProjectRouteContext);
+  const { fieldId } = visualization;
   const [values, , , error] = useValues(fieldId);
+  const fieldName = fields.find((field) => field.id === fieldId)?.name;
 
   const [dataValues, dataLabels] = useMemo(() => {
     if (graphFunction === "none") {

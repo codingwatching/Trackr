@@ -186,9 +186,6 @@ func TestDeleteValues(t *testing.T) {
 	err := suite.Service.GetValueService().AddValue(newValue)
 	assert.Nil(t, err)
 
-	err = suite.Service.GetValueService().DeleteValues(models.Field{})
-	assert.NotNil(t, err)
-
 	value, err := suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, value)

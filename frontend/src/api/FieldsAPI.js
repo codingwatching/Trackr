@@ -19,10 +19,10 @@ class FieldsAPI {
     );
   }
 
-  static updateField(fieldId, name) {
+  static updateField(id, name) {
     return axios.put(
       this.#BASE_URL + "/",
-      { fieldId, name },
+      { id, name },
       {
         withCredentials: true,
       }

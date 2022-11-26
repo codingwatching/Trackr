@@ -12,7 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
 import DeleteFieldDialog from "./DeleteFieldDialog";
 import DeleteValuesDialog from "./DeleteValuesDialog";
-// import EditFieldDialog from "./EditFieldDialog";
+import EditFieldDialog from "./EditFieldDialog";
 import EditIcon from "@mui/icons-material/Edit";
 
 const FieldMenuButton = ({ field }) => {
@@ -50,14 +50,14 @@ const FieldMenuButton = ({ field }) => {
     );
   };
 
-  // const openEditFieldDialog = () => {
-  //   setDialogOpen(true);
-  //   setAnchorEl(null);
+  const openEditFieldDialog = () => {
+    setDialogOpen(true);
+    setAnchorEl(null);
 
-  //   setDialogElement(
-  //     createElement(EditFieldDialog, { field, onClose: closeDialog }, {})
-  //   );
-  // };
+    setDialogElement(
+      createElement(EditFieldDialog, { field, onClose: closeDialog }, {})
+    );
+  };
 
   return (
     <>
@@ -70,19 +70,19 @@ const FieldMenuButton = ({ field }) => {
         open={Boolean(anchorEl)}
         onClose={closeDropdownMenu}
       >
-        {/* <MenuItem onClick={openEditFieldDialog}>
+        <MenuItem onClick={openEditFieldDialog}>
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
-        </MenuItem> */}
+          <ListItemText>Rename</ListItemText>
+        </MenuItem>
 
         <MenuItem onClick={openDeleteValuesDialog}>
           <ListItemIcon>
-            <DeleteOutlineIcon fontSize="small" color="error" />
+            <DeleteOutlineIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Clear Values</Typography>
+            <Typography>Delete All Values</Typography>
           </ListItemText>
         </MenuItem>
 
@@ -93,7 +93,7 @@ const FieldMenuButton = ({ field }) => {
             <DeleteIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Delete</Typography>
+            <Typography color="error">Delete Field</Typography>
           </ListItemText>
         </MenuItem>
       </Menu>

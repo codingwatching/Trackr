@@ -122,9 +122,5 @@ func (service *ValueServiceDB) DeleteValues(field models.Field) error {
 		return result.Error
 	}
 
-	if result.RowsAffected < 1 {
-		return fmt.Errorf("no rows affected")
-	}
-
 	return nil
 }

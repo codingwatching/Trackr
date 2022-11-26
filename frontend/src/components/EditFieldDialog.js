@@ -6,15 +6,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContentText from "@mui/material/DialogContentText";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
-import IconButton from "@mui/material/IconButton";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TextField from "@mui/material/TextField";
 import FieldsAPI from "../api/FieldsAPI";
 
-const CreateFieldDialog = ({ onBack, onClose }) => {
-  const { project, fields, setFields } = useContext(ProjectRouteContext);
+const EditFieldDialog = ({ field, onClose }) => {
+  const { fields, setFields } = useContext(ProjectRouteContext);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -23,24 +21,22 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
 
     const data = new FormData(event.currentTarget);
 
-    FieldsAPI.addField(project.id, data.get("name"))
+    FieldsAPI.updateField(field.id, data.get("name"))
       .then((result) => {
-        setFields([
-          ...fields,
-          {
-            id: result.data.id,
-            name: data.get("name"),
-            createdAt: new Date(),
-          },
-        ]);
+        setFields(
+          fields.map((f) =>
+            f.id === field.id
+              ? {
+                  id: field.id,
+                  createdAt: field.createdAt,
+                  name: data.get("name"),
+                }
+              : f
+          )
+        );
 
         setLoading(false);
-
-        if (onBack) {
-          onBack();
-        } else {
-          onClose();
-        }
+        onClose();
       })
       .catch((error) => {
         setLoading(false);
@@ -48,7 +44,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
         if (error?.response?.data?.error) {
           setError(error.response.data.error);
         } else {
-          setError("Failed to add field: " + error.message);
+          setError("Failed to rename field: " + error.message);
         }
       });
 
@@ -59,17 +55,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate>
       <DialogTitle sx={{ display: "flex", alignItems: "center" }}>
-        {onBack && (
-          <IconButton
-            color="primary"
-            sx={{ mr: 1 }}
-            disabled={loading}
-            onClick={onBack}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-        )}
-        Add Field
+        Rename Field
       </DialogTitle>
       <DialogContent sx={{ mb: -2 }}>
         {error && (
@@ -80,8 +66,8 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
           </Fade>
         )}
         <DialogContentText>
-          Choose a name that'll help you identify this field easily like:
-          temperature, humidity, or atmospheric pressure.
+          You can rename your field if you've made a typo or just want to change
+          the name.
         </DialogContentText>
 
         <TextField
@@ -90,6 +76,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
           required
           fullWidth
           autoFocus
+          defaultValue={field.name}
           name="name"
           label="Name"
           type="text"
@@ -98,15 +85,16 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
       <DialogActions sx={{ pb: 3, pr: 3 }}>
         <LoadingButton
           loading={loading}
+          variant="contained"
           type="submit"
           disableElevation
           autoFocus
         >
-          Create Field
+          Save Field
         </LoadingButton>
       </DialogActions>
     </Box>
   );
 };
 
-export default CreateFieldDialog;
+export default EditFieldDialog;
