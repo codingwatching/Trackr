@@ -14,6 +14,12 @@ class ValuesAPI {
       withCredentials: true,
     });
   }
+
+   static deleteValues(fieldId) {
+    return axios.delete(this.#BASE_URL + "/" + fieldId, {
+      withCredentials: true,
+    });
+  }
 }
 
 export default ValuesAPI;

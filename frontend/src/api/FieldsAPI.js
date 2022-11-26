@@ -18,6 +18,12 @@ class FieldsAPI {
       }
     );
   }
+
+  static deleteField(fieldId) {
+    return axios.delete(this.#BASE_URL + "/" + fieldId, {
+      withCredentials: true,
+    });
+  }
 }
 
 export default FieldsAPI;
