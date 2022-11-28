@@ -112,7 +112,7 @@ const ProjectFields = () => {
         </TableContainer>
       ) : (
         <CenteredBox>
-          <Typography variant="h7" sx={{ color: "gray", my: 3 }}>
+          <Typography variant="h7" sx={{ color: "gray" }}>
             You currently have no fields.
           </Typography>
         </CenteredBox>

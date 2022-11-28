@@ -38,7 +38,6 @@ const UserSettingsSidebar = () => {
               alignItems: "center",
               justifyContent: "start",
               borderRadius: 1,
-              color: "black",
               userSelect: "none",
               p: 1,
               my: 0.5,

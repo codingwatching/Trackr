@@ -26,16 +26,25 @@ const Project = () => {
           >
             <CreateVisualizationButton />
           </Box>
-          <Box sx={{ pb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
+          <Box
+            sx={{
+              mb: 3,
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
             {visualizations.map((visualization) => (
               <Paper
                 key={visualization.id}
                 sx={{
                   p: 2,
-                  flexGrow: 1,
                   display: "flex",
-                  minHeight: "480px",
+                  flex: 1,
+                  height: "480px",
                   minWidth: {
+                    xs: "100%",
                     sm: "100%",
                     md: "550px",
                   },

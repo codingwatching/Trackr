@@ -25,7 +25,7 @@ const UserAccount = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h7" sx={{ width: "145px", color: "gray" }}>
+        <Typography variant="h7" sx={{ width: "160px", color: "gray" }}>
           Full name
         </Typography>
         <Typography variant="h7" sx={{ flex: 1, fontWeight: "bold" }}>
@@ -45,7 +45,7 @@ const UserAccount = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h7" sx={{ width: "145px", color: "gray" }}>
+        <Typography variant="h7" sx={{ width: "160px", color: "gray" }}>
           Email address
         </Typography>
         <Typography variant="h7" sx={{ flex: 1, fontWeight: "bold" }}>
@@ -64,7 +64,7 @@ const UserAccount = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h7" sx={{ width: "145px", color: "gray" }}>
+        <Typography variant="h7" sx={{ width: "160px", color: "gray" }}>
           Maximum values
         </Typography>
         <Typography variant="h7" sx={{ flex: 1, fontWeight: "bold" }}>
@@ -83,7 +83,7 @@ const UserAccount = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h7" sx={{ width: "145px", color: "gray" }}>
+        <Typography variant="h7" sx={{ width: "160px", color: "gray" }}>
           Rate limit
         </Typography>
         <Typography variant="h7" sx={{ flex: 1, fontWeight: "bold" }}>

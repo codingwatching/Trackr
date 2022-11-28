@@ -17,6 +17,7 @@ import { useMemo, useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
+import CircularProgress from "@mui/material/CircularProgress";
 import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
 import moment from "moment";
@@ -41,7 +42,7 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
 
   const { fields } = useContext(ProjectRouteContext);
   const { fieldId } = visualization;
-  const [values, , , error] = useValues(fieldId);
+  const [values, , loading, error] = useValues(fieldId);
   const fieldName = fields.find((field) => field.id === fieldId)?.name;
 
   const [dataValues, dataLabels] = useMemo(() => {
@@ -293,13 +294,21 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
           </Typography>
         </CenteredBox>
       ) : (
-        <Box sx={{ height: "100%" }}>
-          {graphType === "line" ? (
-            <Line options={options} data={data} />
+        <>
+          {loading ? (
+            <CenteredBox>
+              <CircularProgress />
+            </CenteredBox>
           ) : (
-            <Bar options={options} data={data} />
+            <Box sx={{ height: "100%" }}>
+              {graphType === "line" ? (
+                <Line options={options} data={data} />
+              ) : (
+                <Bar options={options} data={data} />
+              )}
+            </Box>
           )}
-        </Box>
+        </>
       )}
     </>
   );
