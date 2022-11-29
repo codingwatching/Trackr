@@ -57,7 +57,7 @@ const ProjectAPI = () => {
       <LoadingButton variant="outlined" disableElevation>
         Reset API Key
       </LoadingButton>
-      <Divider sx={{ my: 3 }} />
+      <Divider sx={{ my: 3.5 }} />
       <OpenAPI />
     </Container>
   );
