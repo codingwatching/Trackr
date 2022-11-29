@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -107,18 +108,18 @@ func deleteValuesRoute(c *gin.Context) {
 }
 
 func addValueRoute(c *gin.Context) {
-	var json requests.AddValue
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var form requests.AddValue
+	if err := c.BindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	if json.Value == "" {
+	if form.Value == "" {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value cannot be empty."})
 		return
 	}
 
-	floatValue, err := strconv.ParseFloat(json.Value, 64)
+	floatValue, err := strconv.ParseFloat(form.Value, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value must be a floating point number."})
 		return
@@ -129,7 +130,7 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(json.APIKey)
+	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(form.APIKey)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
@@ -141,7 +142,7 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, project.User)
+	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -170,7 +171,7 @@ func addValueRoute(c *gin.Context) {
 	}
 
 	value := models.Value{
-		Value:     json.Value,
+		Value:     form.Value,
 		CreatedAt: time.Now(),
 
 		Field: *field,

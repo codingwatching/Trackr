@@ -27,6 +27,11 @@
     margin:0;
 }
 
+.swagger-ui .table-container {
+    padding: 0;
+    padding-top: 20px;
+}
+
 .swagger-ui section.models.is-open h4 {
     border-bottom: 1px solid rgb(224 224 224);
 }

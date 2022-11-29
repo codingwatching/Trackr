@@ -1,7 +1,7 @@
 package requests
 
 type AddValue struct {
-	APIKey  string `json:"apiKey"`
-	FieldID uint   `json:"fieldId"`
-	Value   string `json:"value"`
+	APIKey  string `form:"apiKey"`
+	FieldID uint   `form:"fieldId"`
+	Value   string `form:"value"`
 }
