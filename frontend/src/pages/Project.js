@@ -39,7 +39,6 @@ const Project = () => {
               <Paper
                 key={visualization.id}
                 sx={{
-                  p: 2,
                   display: "flex",
                   flex: 1,
                   height: "480px",

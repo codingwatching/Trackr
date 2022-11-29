@@ -32,7 +32,10 @@ const ProjectFields = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+        >
           Fields
         </Typography>
 
@@ -72,9 +75,9 @@ const ProjectFields = () => {
           component={Box}
         >
           <Table>
-            <TableHead sx={{ background: "#f6f8fa" }}>
+            <TableHead>
               <TableRow>
-                <TableCell align="left">Id</TableCell>
+                <TableCell align="left">ID</TableCell>
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="left">Created</TableCell>
                 <TableCell align="right"></TableCell>

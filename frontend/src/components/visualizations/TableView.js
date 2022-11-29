@@ -51,7 +51,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          pb: 1.5,
+          py: 1.5,
+          px: 2,
           borderBottom: "1px solid #0000001f",
         }}
       >
@@ -80,6 +81,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               flexDirection: "column",
               flexGrow: 1,
               fontWeight: 400,
+              py: 0.5,
+              px: 2,
             }}
           >
             {loading ? (
@@ -126,7 +129,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              mt: 1.5,
+              py: 1.5,
+              px: 2,
               userSelect: "none",
             }}
           >

@@ -60,7 +60,10 @@ const Projects = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+        >
           Projects
         </Typography>
 
@@ -99,7 +102,7 @@ const Projects = () => {
           component={Box}
         >
           <Table>
-            <TableHead sx={{ background: "#f6f8fa" }}>
+            <TableHead>
               <TableRow>
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="left">Created</TableCell>

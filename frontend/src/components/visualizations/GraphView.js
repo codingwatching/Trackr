@@ -257,8 +257,8 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          pb: 1.5,
-          mb: 1.5,
+          py: 1.5,
+          px: 2,
           borderBottom: "1px solid #0000001f",
         }}
       >
@@ -300,7 +300,7 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
               <CircularProgress />
             </CenteredBox>
           ) : (
-            <Box sx={{ height: "100%" }}>
+            <Box sx={{ height: "100%", p: 2 }}>
               {graphType === "line" ? (
                 <Line options={options} data={data} />
               ) : (

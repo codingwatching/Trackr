@@ -105,7 +105,7 @@ const UserLogs = () => {
             component={Box}
           >
             <Table>
-              <TableHead sx={{ background: "#f6f8fa" }}>
+              <TableHead>
                 <TableRow>
                   <TableCell align="left">Recent events</TableCell>
                 </TableRow>

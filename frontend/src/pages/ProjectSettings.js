@@ -64,7 +64,10 @@ const EditProject = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h5" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+        >
           Settings
         </Typography>
       </Box>
