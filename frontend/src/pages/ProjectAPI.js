@@ -13,7 +13,7 @@ const ProjectAPI = () => {
   const { project } = useContext(ProjectRouteContext);
 
   return (
-    <Container sx={{ mt: 3 }}>
+    <Container sx={{ mt: 3, pb: 3 }}>
       <Box
         sx={{
           display: "flex",
@@ -27,10 +27,11 @@ const ProjectAPI = () => {
         </Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
+
       <Typography variant="h7">
         The trackr API enables you to write data to a field in a project of your
         choice. The API can be called just with any HTTP Client, like Postman,
-        Insomnia, or even with a browser.
+        Insomnia, or even right here in the browser.
       </Typography>
 
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -57,7 +58,6 @@ const ProjectAPI = () => {
         Reset API Key
       </LoadingButton>
       <Divider sx={{ my: 3 }} />
-
       <OpenAPI />
     </Container>
   );
