@@ -5,9 +5,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import LoadingButton from "@mui/lab/LoadingButton";
-
-const apiPath = "http://localhost:8080/api/values";
+import ResetAPIKeyButton from "../components/ResetAPIKeyButton";
 
 const ProjectAPI = () => {
   const { project } = useContext(ProjectRouteContext);
@@ -19,7 +17,7 @@ const ProjectAPI = () => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          mb: 1,
+          mb: 0.5,
         }}
       >
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
@@ -27,8 +25,8 @@ const ProjectAPI = () => {
         </Typography>
       </Box>
       <Typography variant="h7" sx={{ pb: 10 }}>
-        Below is your API key which you can use to access your project's data
-        using the API. Keep this key safe in a secret place.
+        Below is your API key which you can use to access your project's data.
+        Keep this key safe in a secret place.
       </Typography>
 
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -50,9 +48,7 @@ const ProjectAPI = () => {
           to reset your API key.
         </Typography>
       </Box>
-      <LoadingButton variant="outlined" disableElevation>
-        Reset API Key
-      </LoadingButton>
+      <ResetAPIKeyButton variant="outlined" />
 
       <Divider sx={{ mb: 3, mt: 4 }} />
 
@@ -62,7 +58,7 @@ const ProjectAPI = () => {
           flexDirection: "row",
           alignItems: "center",
           mt: 3,
-          mb: 1,
+          mb: 0.5,
         }}
       >
         <Typography variant="h5" sx={{ flexGrow: 1 }}>

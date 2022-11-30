@@ -42,6 +42,53 @@
 
 .swagger-ui section.models.is-open h4 {
     border-bottom: 1px solid rgb(224 224 224);
+    margin:0;
+    color:black;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+    box-shadow: none;
+    padding: 9px;
+    border-color: #d9d9d9;
+}
+
+.swagger-ui .opblock-summary button {
+    outline: none;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+    box-shadow: none;
+    padding: 9px;
+    border-color: #d9d9d9;
+    opacity: 1;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+}
+
+.swagger-ui .opblock-body select {
+    min-width: 340px;
+}
+
+.swagger-ui .response-col_status {
+    font-size: 12px;
+}
+
+.swagger-ui .response-col_links {
+    font-size: 12px;
+}
+
+.swagger-ui .opblock-summary-control:focus {
+    outline: none;
+}
+
+.swagger-ui select {
+    margin-top:5px;
+    appearance: none;
+    background-color: white;
 }
 
 .swagger-ui section.models {
@@ -100,29 +147,36 @@
 
 .swagger-ui .opblock.opblock-put .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-get .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-post .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-delete .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-patch .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-options .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 
 .swagger-ui .opblock.opblock-head .opblock-summary {
     border-color: #e0e0e0;
+    padding-right: 20px;
 }
 

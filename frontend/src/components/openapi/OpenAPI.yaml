@@ -7,9 +7,9 @@ info:
     Insomnia, or even right here in the browser.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/api/
+  - url: http://localhost:8080/
 paths:
-  /values/:
+  /api/values/:
     get:
       summary: Returns a list of values associated to a field in a project.
       description: Returns a list of values associated to a field in a project. 
@@ -28,13 +28,6 @@ paths:
             type: number
           description: The ID of the field you wish to view the values of.
         - in: query
-          name: order
-          schema:
-            type: string
-            enum: [asc, desc]
-          description: The sort order you wish to list the values in.
-          example: asc
-        - in: query
           name: offset
           schema:
             type: integer
@@ -48,6 +41,13 @@ paths:
             minimum: 0
             example: 100
           description: The number of values to show at a time.
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: The sort order you wish to list the values in.
+          example: asc
           
       responses:
         200:

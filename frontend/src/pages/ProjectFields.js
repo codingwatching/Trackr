@@ -17,7 +17,6 @@ import FieldMenuButton from "../components/FieldMenuButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-import { Divider } from "@mui/material";
 
 const ProjectFields = () => {
   const { fields } = useContext(ProjectRouteContext);
