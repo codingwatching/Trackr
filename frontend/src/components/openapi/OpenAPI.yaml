@@ -73,7 +73,7 @@ paths:
               schema:  
                 $ref: '#/components/schemas/Error'
         500:
-          description: A server error.
+          description: A server-side error.
           content:
             application/json:
               schema:  
@@ -111,13 +111,13 @@ paths:
               schema:  
                 $ref: '#/components/schemas/Success'
         400:
-          description: A client error.
+          description: A client-side error.
           content:
             application/json:
               schema:  
                 $ref: '#/components/schemas/Error'
         500:
-          description: A server error.
+          description: A server-side error.
           content:
             application/json:
               schema:  
