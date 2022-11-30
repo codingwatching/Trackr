@@ -17,8 +17,6 @@ import (
 )
 
 func getValuesRoute(c *gin.Context) {
-	user := getLoggedInUser(c)
-
 	var query requests.GetValues
 	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -40,13 +38,19 @@ func getValuesRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, *user)
+	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(query.APIKey)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
+		return
+	}
+
+	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	values, err := serviceProvider.GetValueService().GetValues(*field, *user, query.Order, query.Offset, query.Limit)
+	values, err := serviceProvider.GetValueService().GetValues(*field, project.User, query.Order, query.Offset, query.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get values."})
 		return
@@ -191,9 +195,9 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 
 	valuesRouterGroup := routerGroup.Group("/values")
 	valuesRouterGroup.Use(sessionMiddleware)
-	valuesRouterGroup.GET("/", getValuesRoute)
 	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
 	externalValuesRouterGroup := routerGroup.Group("/values")
+	externalValuesRouterGroup.GET("/", getValuesRoute)
 	externalValuesRouterGroup.POST("/", addValueRoute)
 }

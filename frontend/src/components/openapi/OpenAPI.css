@@ -32,6 +32,14 @@
     padding-top: 20px;
 }
 
+.swagger-ui .parameters-container {
+    padding: 0 20px;
+}
+
+.swagger-ui table thead tr td, .swagger-ui table thead tr th {
+    border-bottom: 1px solid rgb(217 217 217);
+}
+
 .swagger-ui section.models.is-open h4 {
     border-bottom: 1px solid rgb(224 224 224);
 }

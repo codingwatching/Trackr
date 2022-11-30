@@ -40,9 +40,9 @@ const GraphView = ({ visualizationType, visualization, metadata }) => {
   const graphFunction = metadata?.graphFunction || "none";
   const graphTimestep = metadata?.graphTimestep || "";
 
-  const { fields } = useContext(ProjectRouteContext);
+  const { fields, project } = useContext(ProjectRouteContext);
   const { fieldId } = visualization;
-  const [values, , loading, error] = useValues(fieldId);
+  const [values, , loading, error] = useValues(project.apiKey, fieldId);
   const fieldName = fields.find((field) => field.id === fieldId)?.name;
 
   const [dataValues, dataLabels] = useMemo(() => {

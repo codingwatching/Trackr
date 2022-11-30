@@ -9,7 +9,75 @@ info:
 servers:
   - url: http://localhost:8080/api/
 paths:
-  /values:
+  /values/:
+    get:
+      summary: Returns a list of values associated to a field in a project.
+      description: Returns a list of values associated to a field in a project. 
+                   You can sort the values, offset the values and limit the number of values shown.
+      parameters:
+        - in: query
+          name: apiKey
+          required: true
+          schema:
+            type: string
+          description: The project's API key used to authorize you.
+        - in: query
+          name: fieldId
+          required: true
+          schema:
+            type: number
+          description: The ID of the field you wish to view the values of.
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: The sort order you wish to list the values in.
+          example: asc
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            example: 0
+          description: The number of values you wish to offset by.
+        - in: query
+          name: limit
+          schema:
+            type: number
+            minimum: 0
+            example: 100
+          description: The number of values to show at a time.
+          
+      responses:
+        200:
+          description: An object containing the total number of values 
+                       that are in the field and a list of the values 
+                       that were requested.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Value'
+                  totalValues:
+                    type: integer
+                    example: 1
+        400:
+          description: A client-side error.
+          content:
+            application/json:
+              schema:  
+                $ref: '#/components/schemas/Error'
+        500:
+          description: A server error.
+          content:
+            application/json:
+              schema:  
+                $ref: '#/components/schemas/Error'
     post:
       summary: Adds a value to a field in a project.
       description: Adds a value to a field in a project using the field's ID.
@@ -20,10 +88,24 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/AddValue'
+              type: object
+              properties:
+                apiKey:
+                  type: string
+                  description: The project's API key used to authorize you.
+                fieldId:
+                  type: number
+                  description: The ID of the field you wish to add a value to.
+                value:
+                  type: number
+                  description: The value you wish to add.
+              required:
+                - apiKey
+                - fieldId
+                - value
       responses:
         200:
-          description: An empty object indicating an successful operation.
+          description: An empty object indicating a successful operation.
           content:
             application/json:
               schema:  
@@ -42,23 +124,21 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    AddValue:
+    Value:
       type: object
       properties:
-        apiKey:
-          type: string
-          description: The project's API key used to authorize you.
-        fieldId:
-          type: number
-          description: The ID of the field you wish to add a value to.
+        id:
+          type: integer
+          example: 1
+          description: The ID of the value.
         value:
           type: number
-          description: The value you wish to add.
-      required:
-        - apiKey
-        - fieldId
-        - value
-        
+          example: 21.50
+          description: The actual value stored.
+        createdAt:
+          type: string
+          example: "2022-11-07T13:56:52.1430884-06:00"
+          description: The date and time when the value was created. 
     Error:
       type: object
       properties:

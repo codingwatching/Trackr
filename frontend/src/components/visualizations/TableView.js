@@ -17,9 +17,10 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
   const limit = 8;
   const { sort } = metadata;
   const { fieldId } = visualization;
-  const { fields } = useContext(ProjectRouteContext);
+  const { project, fields } = useContext(ProjectRouteContext);
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
+    project.apiKey,
     fieldId,
     sort,
     offset,

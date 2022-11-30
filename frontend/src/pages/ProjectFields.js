@@ -67,8 +67,6 @@ const ProjectFields = () => {
         />
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
-
       {fields.length ? (
         <TableContainer
           sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}

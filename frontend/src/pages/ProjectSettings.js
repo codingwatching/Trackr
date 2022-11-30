@@ -72,8 +72,6 @@ const EditProject = () => {
         </Typography>
       </Box>
 
-      <Divider />
-
       <Box
         component="form"
         onSubmit={handleSubmit}
