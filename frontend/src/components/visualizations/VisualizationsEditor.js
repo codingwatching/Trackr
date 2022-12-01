@@ -60,7 +60,7 @@ const VisualizationsEditor = ({
                       .name,
                     metadata: metadata,
                     createdAt: visualization.createdAt,
-                    updatedAt: new Date(),
+                    updatedAt: new Date().toISOString(),
                   }
                 : v
             )
@@ -88,8 +88,8 @@ const VisualizationsEditor = ({
               fieldId: fieldId,
               fieldName: fields.find((field) => field.id === fieldId).name,
               metadata: metadata,
-              createdAt: new Date(),
-              updatedAt: new Date(),
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             },
           ]);
 

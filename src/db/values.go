@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-
 	"gorm.io/gorm"
 
 	"trackr/src/models"
@@ -78,6 +77,22 @@ func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int
 	return count, nil
 }
 
+func (service *ValueServiceDB) GetLastAddedValue(user models.User) (*models.Value, error) {
+	var value models.Value
+
+	result := service.database.Model(&models.Value{})
+	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Order("`values`.`created_at` DESC")
+	result = result.First(&value, "`projects`.`user_id` = ?", user.ID)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &value, nil
+}
+
 func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Value, error) {
 	var value models.Value
 
@@ -105,10 +120,6 @@ func (service *ValueServiceDB) DeleteValues(field models.Field) error {
 	result := service.database.Delete(&models.Value{}, "field_id = ?", field.ID)
 	if result.Error != nil {
 		return result.Error
-	}
-
-	if result.RowsAffected < 1 {
-		return fmt.Errorf("no rows affected")
 	}
 
 	return nil

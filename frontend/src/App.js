@@ -10,8 +10,10 @@ import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
 import ProjectFields from "./pages/ProjectFields";
-import UserSettings from "./pages/UserSettings";
-import UserRoute from "./routes/UserRoute";
+import UserAccount from "./pages/UserAccount";
+import UserChangePassword from "./pages/UserChangePassword";
+import UserLogs from "./pages/UserLogs";
+import UserSettingsRoute from "./routes/UserSettingsRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
@@ -47,7 +49,23 @@ const App = () => {
             path="/settings/"
             element={
               <AuthorizedRoute
-                element={<UserRoute element={<UserSettings />} />}
+                element={<UserSettingsRoute element={<UserAccount />} />}
+              />
+            }
+          />
+          <Route
+            path="/settings/changepassword"
+            element={
+              <AuthorizedRoute
+                element={<UserSettingsRoute element={<UserChangePassword />} />}
+              />
+            }
+          />
+          <Route
+            path="/settings/logs"
+            element={
+              <AuthorizedRoute
+                element={<UserSettingsRoute element={<UserLogs />} />}
               />
             }
           />

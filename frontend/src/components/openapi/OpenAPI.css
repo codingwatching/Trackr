@@ -1,0 +1,182 @@
+.swagger-ui .wrapper {
+    padding: 0;
+}
+
+.swagger-ui .info {
+    display: none;
+}
+
+.swagger-ui .scheme-container {
+    margin: 0;
+    padding: 0;
+}
+
+.swagger-ui .scheme-container {
+    display: none;
+}
+
+.swagger-ui .opblock-tag {
+    display: none;
+}
+
+.swagger-ui .authorization__btn {
+    display: none;
+}
+
+.swagger-ui .renderedMarkdown p {
+    margin:0;
+}
+
+.swagger-ui .table-container {
+    padding: 0;
+    padding-top: 20px;
+}
+
+.swagger-ui .parameters-container {
+    padding: 0 20px;
+}
+
+.swagger-ui table thead tr td, .swagger-ui table thead tr th {
+    border-bottom: 1px solid rgb(217 217 217);
+}
+
+.swagger-ui section.models.is-open h4 {
+    border-bottom: 1px solid rgb(224 224 224);
+    margin:0;
+    color:black;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+    box-shadow: none;
+    padding: 9px;
+    border-color: #d9d9d9;
+}
+
+.swagger-ui .opblock-summary button {
+    outline: none;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+    box-shadow: none;
+    padding: 9px;
+    border-color: #d9d9d9;
+    opacity: 1;
+}
+
+.swagger-ui .parameters-col_description select {
+    border-width: 1px;
+}
+
+.swagger-ui .opblock-body select {
+    min-width: 340px;
+}
+
+.swagger-ui .response-col_status {
+    font-size: 12px;
+}
+
+.swagger-ui .response-col_links {
+    font-size: 12px;
+}
+
+.swagger-ui .opblock-summary-control:focus {
+    outline: none;
+}
+
+.swagger-ui select {
+    margin-top:5px;
+    appearance: none;
+    background-color: white;
+}
+
+.swagger-ui section.models {
+    border: 1px solid rgb(224 224 224);
+    border-radius: 4px;
+    margin: 0 0;
+}
+
+.swagger-ui .btn {
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    border: 1px solid gray;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-put {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-get {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-post {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-delete {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-patch {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-options {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-head {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: none;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-patch .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-options .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+
+.swagger-ui .opblock.opblock-head .opblock-summary {
+    border-color: #e0e0e0;
+    padding-right: 20px;
+}
+

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ValuesAPI from "../api/ValuesAPI";
 
-export const useValues = (fieldId, order, offset, limit) => {
+export const useValues = (apiKey, fieldId, order, offset, limit) => {
   order = order || "asc";
   offset = offset || 0;
   limit = limit || 0;
@@ -12,7 +12,11 @@ export const useValues = (fieldId, order, offset, limit) => {
   const [error, setError] = useState();
 
   useEffect(() => {
-    ValuesAPI.getValues(fieldId, order, offset, limit)
+    setLoading(true);
+    setValues([]);
+    setError();
+
+    ValuesAPI.getValues(apiKey, fieldId, order, offset, limit)
       .then((result) => {
         setLoading(false);
         setError();
@@ -31,12 +35,8 @@ export const useValues = (fieldId, order, offset, limit) => {
         setTotalValues(0);
       });
 
-    setLoading(true);
-    setValues([]);
-    setError();
-
     return () => {};
-  }, [fieldId, order, offset, limit]);
+  }, [apiKey, fieldId, order, offset, limit]);
 
   return [values, totalValues, loading, error];
 };

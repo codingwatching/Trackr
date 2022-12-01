@@ -142,7 +142,20 @@ const ProjectNavBar = ({ project, loading }) => {
             {pages.map((page) => (
               <Box
                 key={page.name}
-                sx={{ marginLeft: page.right ? "auto" : "none" }}
+                sx={{
+                  ml: page.right ? "auto" : "none",
+                  mr: page.right ? "unset" : 1,
+                  boxShadow: matchPath(
+                    {
+                      path: page.match,
+                      exact: true,
+                      strict: false,
+                    },
+                    location.pathname
+                  )
+                    ? "inset 0px -4px 0px 0px #4184e9;"
+                    : "",
+                }}
               >
                 <Link href={page.href} underline="none">
                   <Button
@@ -153,9 +166,11 @@ const ProjectNavBar = ({ project, loading }) => {
                     startIcon={page.icon}
                     sx={{
                       my: 2,
-                      mr: 1,
-                      color: "black",
-                      background: matchPath(
+                      pr: { xs: 0, sm: 1 },
+                      "&:hover": {
+                        color: "black",
+                      },
+                      color: matchPath(
                         {
                           path: page.match,
                           exact: true,
@@ -163,12 +178,15 @@ const ProjectNavBar = ({ project, loading }) => {
                         },
                         location.pathname
                       )
-                        ? "rgb(70 144 255 / 13%)"
-                        : "",
+                        ? "black"
+                        : "gray",
+
                       textTransform: "none",
                     }}
                   >
-                    {page.name}
+                    <Box sx={{ display: { xs: "none", sm: "unset" } }}>
+                      {page.name}
+                    </Box>
                   </Button>
                 </Link>
               </Box>

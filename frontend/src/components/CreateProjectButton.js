@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Button from "@mui/material/Button";
 import ProjectsAPI from "../api/ProjectsAPI";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,8 +10,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-const CreateProjectButton = ({ menuItem }) => {
+const CreateProjectButton = ({ sx, menuItem, icon }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -62,12 +62,13 @@ const CreateProjectButton = ({ menuItem }) => {
         </MenuItem>
       ) : (
         <LoadingButton
+          sx={sx}
+          startIcon={icon && <AddRoundedIcon />}
           loading={loading}
           type="submit"
           variant="contained"
           onClick={handleOnClick}
           disableElevation
-          startIcon={<AddRoundedIcon />}
         >
           Create Project
         </LoadingButton>

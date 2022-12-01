@@ -189,7 +189,6 @@ func TestGetVisualizationsRoute(t *testing.T) {
 			{
 				ID:        suite.Visualization.ID,
 				FieldID:   suite.Field.ID,
-				FieldName: suite.Field.Name,
 				Metadata:  suite.Visualization.Metadata,
 				UpdatedAt: suite.Visualization.UpdatedAt,
 				CreatedAt: suite.Visualization.CreatedAt,
@@ -197,7 +196,6 @@ func TestGetVisualizationsRoute(t *testing.T) {
 			{
 				ID:        newVisualization.ID,
 				FieldID:   suite.Field.ID,
-				FieldName: suite.Field.Name,
 				Metadata:  newVisualization.Metadata,
 				UpdatedAt: newVisualization.UpdatedAt,
 				CreatedAt: newVisualization.CreatedAt,

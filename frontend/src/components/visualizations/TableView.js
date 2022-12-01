@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { ProjectRouteContext } from "../../routes/ProjectRoute";
+import { useEffect, useState, useContext } from "react";
 import { useValues } from "../../hooks/useValues";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -14,16 +15,19 @@ import VisualizationMenuButton from "../VisualizationMenuButton";
 
 const TableView = ({ visualizationType, visualization, metadata }) => {
   const limit = 8;
-  const { fieldId, fieldName } = visualization;
   const { sort } = metadata;
+  const { fieldId } = visualization;
+  const { project, fields } = useContext(ProjectRouteContext);
   const [offset, setOffset] = useState(0);
   const [values, totalValues, loading, error] = useValues(
+    project.apiKey,
     fieldId,
     sort,
     offset,
     limit
   );
 
+  const fieldName = fields.find((field) => field.id === fieldId)?.name;
   const firstPage = Math.floor(offset / limit) + 1;
   const lastPage = Math.max(1, Math.ceil(totalValues / limit));
 
@@ -48,7 +52,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          pb: 1.5,
+          py: 1.5,
+          px: 2,
           borderBottom: "1px solid #0000001f",
         }}
       >
@@ -77,6 +82,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               flexDirection: "column",
               flexGrow: 1,
               fontWeight: 400,
+              py: 0.5,
+              px: 2,
             }}
           >
             {loading ? (
@@ -123,7 +130,8 @@ const TableView = ({ visualizationType, visualization, metadata }) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              mt: 1.5,
+              py: 1.5,
+              px: 2,
               userSelect: "none",
             }}
           >

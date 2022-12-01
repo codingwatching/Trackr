@@ -9,7 +9,6 @@ const Logo = () => {
       <Typography
         variant="h6"
         noWrap
-        component="a"
         sx={{
           ml: -0.5,
           fontWeight: 500,

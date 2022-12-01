@@ -12,11 +12,9 @@ import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Logo from "./Logo";
@@ -68,13 +66,6 @@ const NavBar = () => {
     event.preventDefault();
 
     navigate("/settings");
-    handleCloseUserMenu();
-  };
-
-  const handleOpenLogs = (event) => {
-    event.preventDefault();
-
-    navigate("/logs");
     handleCloseUserMenu();
   };
 
@@ -189,11 +180,17 @@ const NavBar = () => {
 
                       page.subMenu ? handleOpenSubMenu(e) : navigate(page.href);
                     }}
-                    endIcon={page.subMenu && <KeyboardArrowDownIcon />}
+                    endIcon={
+                      page.subMenu && (
+                        <KeyboardArrowDownIcon
+                          sx={{ ml: -0.5, color: "gray" }}
+                        />
+                      )
+                    }
                     sx={{
                       my: 2,
-                      color: "black",
                       textTransform: "none",
+                      color: "black",
 
                       "&:hover": {
                         background: "#00000022",
@@ -237,7 +234,7 @@ const NavBar = () => {
           >
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar sx={{ backgroundColor: "primary.main" }} />
+                <Avatar sx={{ backgroundColor: "#e3e3e3", color: "#585858" }} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -263,15 +260,6 @@ const NavBar = () => {
                   Settings
                 </MenuItem>
               </Link>
-              <Link href="/logs" underline="none" sx={{ color: "unset" }}>
-                <MenuItem onClick={handleOpenLogs}>
-                  <ListItemIcon>
-                    <FormatListNumberedIcon fontSize="small" />
-                  </ListItemIcon>
-                  Logs
-                </MenuItem>
-              </Link>
-              <Divider sx={{ my: 1 }} />
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />

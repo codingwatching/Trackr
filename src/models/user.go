@@ -14,5 +14,6 @@ type User struct {
 	UpdatedAt  time.Time
 	CreatedAt  time.Time
 
-	MaxValues uint
+	MaxValues        int64
+	MaxValueInterval int64
 }

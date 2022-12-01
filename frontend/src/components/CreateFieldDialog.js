@@ -13,25 +13,34 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TextField from "@mui/material/TextField";
 import FieldsAPI from "../api/FieldsAPI";
 
-const CreateFieldDialog = ({ onBack }) => {
+const CreateFieldDialog = ({ onBack, onClose }) => {
   const { project, fields, setFields } = useContext(ProjectRouteContext);
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
 
     FieldsAPI.addField(project.id, data.get("name"))
       .then((result) => {
-        fields.push({
-          id: result.data.id,
-          name: data.get("name"),
-        });
+        setFields([
+          ...fields,
+          {
+            id: result.data.id,
+            name: data.get("name"),
+            createdAt: new Date().toISOString(),
+          },
+        ]);
 
-        setFields(fields);
         setLoading(false);
-        onBack();
+
+        if (onBack) {
+          onBack();
+        } else {
+          onClose();
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -44,6 +53,7 @@ const CreateFieldDialog = ({ onBack }) => {
       });
 
     setLoading(true);
+    setError();
   };
 
   return (

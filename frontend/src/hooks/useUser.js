@@ -7,6 +7,10 @@ export const useUser = () => {
   const [error, setError] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setUser();
+    setError();
+
     UsersAPI.getUser()
       .then((result) => {
         setLoading(false);
@@ -23,10 +27,6 @@ export const useUser = () => {
         setLoading(false);
         setUser();
       });
-
-    setLoading(true);
-    setUser();
-    setError();
 
     return () => {};
   }, []);

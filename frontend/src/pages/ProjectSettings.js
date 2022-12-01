@@ -9,9 +9,6 @@ import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import Moment from "react-moment";
 
 const EditProject = () => {
@@ -19,11 +16,6 @@ const EditProject = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
-  const [alignment, setAlignment] = useState();
-
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -33,7 +25,7 @@ const EditProject = () => {
       project.id,
       data.get("name"),
       data.get("description"),
-      alignment ? true : false
+      false
     )
       .then((result) => {
         setProject({
@@ -47,7 +39,6 @@ const EditProject = () => {
         setLoading(false);
         setSuccess("Project settings updated successfully.");
         setError();
-        setAlignment();
       })
       .catch((error) => {
         setLoading(false);
@@ -73,12 +64,13 @@ const EditProject = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h5" sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h5"
+          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+        >
           Settings
         </Typography>
       </Box>
-
-      <Divider />
 
       <Box
         component="form"
@@ -104,7 +96,7 @@ const EditProject = () => {
           required
           defaultValue={project.name}
         />
-        <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
+        <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The name of your project used to identify it.
         </Typography>
 
@@ -116,28 +108,8 @@ const EditProject = () => {
           rows={4}
           defaultValue={project.description}
         />
-        <Typography variant="caption" sx={{ mt: 1, mb: 2.5 }}>
+        <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The description used to briefly describe your project.
-        </Typography>
-
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <ToggleButtonGroup
-            color="primary"
-            value={alignment}
-            exclusive
-            onChange={handleChange}
-            sx={{ mr: 1 }}
-          >
-            <ToggleButton value={true}>
-              <ChangeCircleIcon sx={{ mr: 1 }} />
-              Reset API Key
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
-
-        <Typography variant="caption" sx={{ mt: 1, mb: 3 }}>
-          You can reset the secret key used by your IoT devices to communciate
-          with your project.
         </Typography>
 
         <Divider />

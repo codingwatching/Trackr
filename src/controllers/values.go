@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -15,8 +17,6 @@ import (
 )
 
 func getValuesRoute(c *gin.Context) {
-	user := getLoggedInUser(c)
-
 	var query requests.GetValues
 	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -38,13 +38,19 @@ func getValuesRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, *user)
+	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(query.APIKey)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
+		return
+	}
+
+	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	values, err := serviceProvider.GetValueService().GetValues(*field, *user, query.Order, query.Offset, query.Limit)
+	values, err := serviceProvider.GetValueService().GetValues(*field, project.User, query.Order, query.Offset, query.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get values."})
 		return
@@ -106,18 +112,29 @@ func deleteValuesRoute(c *gin.Context) {
 }
 
 func addValueRoute(c *gin.Context) {
-	var json requests.AddValue
-	if err := c.ShouldBindJSON(&json); err != nil {
+	var form requests.AddValue
+	if err := c.ShouldBindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}
 
-	if json.Value == "" {
+	if form.Value == "" {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value cannot be empty."})
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(json.APIKey)
+	floatValue, err := strconv.ParseFloat(form.Value, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value must be a floating point number."})
+		return
+	}
+
+	if math.IsNaN(floatValue) || math.IsInf(floatValue, 0) {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The value cannot be NaN nor Infinity."})
+		return
+	}
+
+	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(form.APIKey)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
@@ -129,7 +146,7 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(json.FieldID, project.User)
+	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, project.User)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -140,8 +157,25 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
+	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(project.User)
+	if lastAddedValue != nil {
+		timeSinceLastAddedValue := time.Duration(project.User.MaxValueInterval)*time.Second - time.Since(lastAddedValue.CreatedAt)
+
+		if timeSinceLastAddedValue > 0 {
+			c.Header("Retry-After", fmt.Sprint(timeSinceLastAddedValue.Seconds()))
+			c.JSON(http.StatusTooManyRequests, responses.Error{
+				Error: fmt.Sprintf("You can only add a value every %d seconds, retry after %f seconds.",
+					project.User.MaxValueInterval,
+					timeSinceLastAddedValue.Seconds(),
+				),
+			})
+
+			return
+		}
+	}
+
 	value := models.Value{
-		Value:     json.Value,
+		Value:     form.Value,
 		CreatedAt: time.Now(),
 
 		Field: *field,
@@ -161,9 +195,9 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 
 	valuesRouterGroup := routerGroup.Group("/values")
 	valuesRouterGroup.Use(sessionMiddleware)
-	valuesRouterGroup.GET("/", getValuesRoute)
 	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
 	externalValuesRouterGroup := routerGroup.Group("/values")
+	externalValuesRouterGroup.GET("/", getValuesRoute)
 	externalValuesRouterGroup.POST("/", addValueRoute)
 }
