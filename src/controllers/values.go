@@ -113,7 +113,7 @@ func deleteValuesRoute(c *gin.Context) {
 
 func addValueRoute(c *gin.Context) {
 	var form requests.AddValue
-	if err := c.BindWith(&form, binding.Form); err != nil {
+	if err := c.ShouldBindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
 	}

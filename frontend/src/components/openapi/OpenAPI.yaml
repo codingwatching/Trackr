@@ -116,6 +116,13 @@ paths:
             application/json:
               schema:  
                 $ref: '#/components/schemas/Error'
+        429:
+          description: A rate-limit error. You will need to wait a bit until you can add values again.
+                       You can view your rate-limit in the [user settings page](/settings).
+          content:
+            application/json:
+              schema:  
+                $ref: '#/components/schemas/Error'
         500:
           description: A server-side error.
           content:

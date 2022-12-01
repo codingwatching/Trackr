@@ -1,7 +1,6 @@
 package controllers_test
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/google/go-querystring/query"
@@ -9,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -23,31 +23,17 @@ func TestGetValuesRoute(t *testing.T) {
 	method, path := "GET", "/api/values/"
 
 	//
-	// Test not logged in path.
-	//
-
-	response, _ := json.Marshal(responses.Error{
-		Error: "Not authorized to access this resource.",
-	})
-	httpRecorder := httptest.NewRecorder()
-	httpRequest, _ := http.NewRequest(method, path, nil)
-	suite.Router.ServeHTTP(httpRecorder, httpRequest)
-
-	assert.Equal(t, http.StatusForbidden, httpRecorder.Code)
-	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	//
 	// Test invalid order parameter path.
 	//
 
 	request, _ := query.Values(requests.GetValues{
 		Order: "invalid",
 	})
-	response, _ = json.Marshal(responses.Error{
+	response, _ := json.Marshal(responses.Error{
 		Error: "Invalid order parameter provided.",
 	})
-	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
+	httpRecorder := httptest.NewRecorder()
+	httpRequest, _ := http.NewRequest(method, path+"?"+request.Encode(), nil)
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
@@ -94,10 +80,32 @@ func TestGetValuesRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
+	// Test invalid project api parameter path.
+	//
+
+	request, _ = query.Values(requests.GetValues{
+		Order:   "asc",
+		Offset:  0,
+		Limit:   0,
+		FieldID: suite.Field.ID,
+	})
+	response, _ = json.Marshal(responses.Error{
+		Error: "Failed to find project, invalid API key.",
+	})
+	httpRecorder = httptest.NewRecorder()
+	httpRequest, _ = http.NewRequest(method, path+"?"+request.Encode(), nil)
+	httpRequest.Header.Add("Cookie", "Session=SessionID")
+	suite.Router.ServeHTTP(httpRecorder, httpRequest)
+
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
+	assert.Equal(t, response, httpRecorder.Body.Bytes())
+
+	//
 	// Test invalid field id parameter path.
 	//
 
 	request, _ = query.Values(requests.GetValues{
+		APIKey:  suite.Project.APIKey,
 		Order:   "asc",
 		Offset:  0,
 		Limit:   0,
@@ -156,6 +164,7 @@ func TestGetValuesRoute(t *testing.T) {
 				}
 
 				request, _ = query.Values(requests.GetValues{
+					APIKey:  suite.Project.APIKey,
 					Order:   order,
 					Offset:  offset,
 					Limit:   limit,
@@ -285,12 +294,13 @@ func TestAddValueRoute(t *testing.T) {
 	// Test empty value path.
 	//
 
-	request, _ := json.Marshal(requests.AddValue{})
+	request, _ := query.Values(requests.AddValue{})
 	response, _ = json.Marshal(responses.Error{
 		Error: "The value cannot be empty.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -300,7 +310,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test invalid api key path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:  "2.00",
 		APIKey: "invalid",
 	})
@@ -308,7 +318,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "Failed to find project, invalid API key.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -318,7 +329,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test invalid field id parameter path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "2.00",
 		APIKey:  suite.Project.APIKey,
 		FieldID: models.Field{}.ID,
@@ -327,7 +338,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "Failed to find field.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -337,7 +349,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test invalid value type path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "invalid",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
@@ -346,7 +358,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "The value must be a floating point number.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -356,7 +369,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test NaN value path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "NaN",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
@@ -365,7 +378,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "The value cannot be NaN nor Infinity.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -375,7 +389,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test -Inf value path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "-Inf",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
@@ -384,7 +398,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "The value cannot be NaN nor Infinity.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -394,7 +409,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test Inf value path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "Inf",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
@@ -403,7 +418,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "The value cannot be NaN nor Infinity.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -413,7 +429,7 @@ func TestAddValueRoute(t *testing.T) {
 	// Test maximum values path.
 	//
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "2.00",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
@@ -422,7 +438,8 @@ func TestAddValueRoute(t *testing.T) {
 		Error: "You have exceeded your max values limit.",
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
@@ -439,14 +456,15 @@ func TestAddValueRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, value)
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "2.00",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
 	})
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
@@ -465,13 +483,14 @@ func TestAddValueRoute(t *testing.T) {
 	suite.User.MaxValues++
 	suite.Service.GetUserService().UpdateUser(suite.User)
 
-	request, _ = json.Marshal(requests.AddValue{
+	request, _ = query.Values(requests.AddValue{
 		Value:   "3.00",
 		APIKey:  suite.Project.APIKey,
 		FieldID: suite.Field.ID,
 	})
 	httpRecorder = httptest.NewRecorder()
-	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
+	httpRequest, _ = http.NewRequest(method, path, strings.NewReader(request.Encode()))
+	httpRequest.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
 	assert.Equal(t, http.StatusTooManyRequests, httpRecorder.Code)
