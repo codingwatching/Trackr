@@ -29,6 +29,7 @@ paths:
           description: The ID of the field you wish to view the values of.
         - in: query
           name: offset
+          required: true
           schema:
             type: integer
             minimum: 0
@@ -36,6 +37,7 @@ paths:
           description: The number of values you wish to offset by.
         - in: query
           name: limit
+          required: true
           schema:
             type: number
             minimum: 0
@@ -43,6 +45,7 @@ paths:
           description: The number of values to show at a time.
         - in: query
           name: order
+          required: true
           schema:
             type: string
             enum: [asc, desc]
