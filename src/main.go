@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -16,8 +15,6 @@ import (
 
 func main() {
 	godotenv.Load()
-
-	fmt.Println(os.Getenv("APP_ENV"))
 
 	var dialector gorm.Dialector
 	if os.Getenv("DB_TYPE") == "sqlite" {
