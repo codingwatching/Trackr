@@ -136,6 +136,11 @@ func logoutRoute(c *gin.Context) {
 }
 
 func registerRoute(c *gin.Context) {
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Registration is currently disabled. Ask your administrator to enable it."})
+		return
+	}
+
 	if isLoggedIn(c) != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "You cannot make a new account while you are currently logged in."})
 		return
