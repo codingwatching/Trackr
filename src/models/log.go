@@ -11,5 +11,5 @@ type Log struct {
 	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 
 	ProjectID *uint
-	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`
+	Project   Project `gorm:"constraint:OnDelete:SET NULL;"`
 }

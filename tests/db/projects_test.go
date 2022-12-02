@@ -89,7 +89,23 @@ func TestUpdateProject(t *testing.T) {
 func TestDeleteProject(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetProjectService().DeleteProject(suite.Project.ID, models.User{})
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, field)
+
+	value, err := suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, value)
+
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, visualization)
+
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, logs[0].ProjectID)
+
+	err = suite.Service.GetProjectService().DeleteProject(suite.Project.ID, models.User{})
 	assert.NotNil(t, err)
 
 	err = suite.Service.GetProjectService().DeleteProject(2, suite.User)
@@ -104,4 +120,20 @@ func TestDeleteProject(t *testing.T) {
 
 	err = suite.Service.GetProjectService().DeleteProject(suite.Project.ID, suite.User)
 	assert.NotNil(t, err)
+
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, field)
+
+	value, err = suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
+
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, visualization)
+
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Nil(t, logs[0].ProjectID)
 }

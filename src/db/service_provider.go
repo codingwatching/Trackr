@@ -1,8 +1,6 @@
 package db
 
 import (
-	"os"
-
 	"gorm.io/gorm"
 
 	"trackr/src/models"
@@ -23,10 +21,6 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	database, err := gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
 		return nil
-	}
-
-	if os.Getenv("DB_TYPE") == "sqlite" {
-		database.Exec("PRAGMA foreign_keys = ON", nil)
 	}
 
 	database.AutoMigrate(&models.User{})

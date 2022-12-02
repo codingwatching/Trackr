@@ -164,7 +164,15 @@ func TestUpdateField(t *testing.T) {
 func TestDeleteField(t *testing.T) {
 	suite := tests.Startup()
 
-	err := suite.Service.GetFieldService().DeleteField(models.Field{})
+	value, err := suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, value)
+
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, visualization)
+
+	err = suite.Service.GetFieldService().DeleteField(models.Field{})
 	assert.NotNil(t, err)
 
 	err = suite.Service.GetFieldService().DeleteField(suite.Field)
@@ -176,4 +184,12 @@ func TestDeleteField(t *testing.T) {
 
 	err = suite.Service.GetFieldService().DeleteField(suite.Field)
 	assert.NotNil(t, err)
+
+	value, err = suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
+
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, visualization)
 }

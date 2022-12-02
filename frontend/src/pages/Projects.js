@@ -94,21 +94,20 @@ const Projects = () => {
         />
       </Box>
 
-      <Divider sx={{ mb: 3 }} />
+      <TableContainer
+        sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
+        component={Box}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Created</TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableHead>
 
-      {projects.length ? (
-        <TableContainer
-          sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
-          component={Box}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Created</TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            </TableHead>
+          {projects.length > 0 && (
             <TableBody>
               {projects
                 .filter((project) =>
@@ -153,26 +152,17 @@ const Projects = () => {
                   </TableRow>
                 ))}
             </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mb: 15,
-          }}
-        >
-          <NightsStayIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
-          <Typography
-            variant="h5"
-            sx={{ userSelect: "none", mb: 2, textAlign: "center" }}
-          >
-            You currently have no projects.
-          </Typography>
-        </Box>
-      )}
+          )}
+        </Table>
+
+        {projects.length === 0 && (
+          <CenteredBox sx={{ py: 5 }}>
+            <Typography variant="h7" sx={{ color: "gray" }}>
+              You currently have no projects.
+            </Typography>
+          </CenteredBox>
+        )}
+      </TableContainer>
     </Container>
   );
 };

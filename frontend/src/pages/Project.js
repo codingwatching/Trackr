@@ -61,7 +61,7 @@ const Project = () => {
           </Box>
         </>
       ) : (
-        <CenteredBox sx={{ mb: 15 }}>
+        <CenteredBox sx={{ mb: 15, color: "#505050" }}>
           <NightsStayIcon sx={{ fontSize: 100, mt: 10, mb: 3 }} />
           <Typography
             variant="h5"

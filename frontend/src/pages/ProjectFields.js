@@ -66,20 +66,20 @@ const ProjectFields = () => {
         />
       </Box>
 
-      {fields.length ? (
-        <TableContainer
-          sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
-          component={Box}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">ID</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Created</TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            </TableHead>
+      <TableContainer
+        sx={{ border: "1px solid #e0e0e0", mb: 2, borderRadius: 1 }}
+        component={Box}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">ID</TableCell>
+              <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Created</TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableHead>
+          {fields.length > 0 && (
             <TableBody>
               {fields
                 .filter((field) =>
@@ -108,15 +108,17 @@ const ProjectFields = () => {
                   </TableRow>
                 ))}
             </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <CenteredBox>
-          <Typography variant="h7" sx={{ color: "gray" }}>
-            You currently have no fields.
-          </Typography>
-        </CenteredBox>
-      )}
+          )}
+        </Table>
+
+        {fields.length === 0 && (
+          <CenteredBox sx={{ py: 5 }}>
+            <Typography variant="h7" sx={{ color: "gray" }}>
+              You currently have no fields.
+            </Typography>
+          </CenteredBox>
+        )}
+      </TableContainer>
     </Container>
   );
 };
