@@ -6,9 +6,16 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.8.0
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
+	gorm.io/driver/sqlite v1.4.3
+	gorm.io/gorm v1.24.0
+)
+
+require (
+	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
+	github.com/golang-sql/sqlexp v0.1.0 // indirect
+	github.com/microsoft/go-mssqldb v0.17.0 // indirect
+	gorm.io/driver/sqlserver v1.4.1 // indirect
 )
 
 require (

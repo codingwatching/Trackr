@@ -13,6 +13,15 @@ const OpenAPI = () => {
     setLoading(false);
   };
 
+  const onRequest = (req) => {
+    req.url = req.url.replace(
+      "http://api_path",
+      process.env.REACT_APP_API_PATH
+    );
+
+    return req;
+  };
+
   return (
     <>
       {loading && (
@@ -20,7 +29,11 @@ const OpenAPI = () => {
           <CircularProgress />
         </CenteredBox>
       )}
-      <SwaggerUI url={SwaggerYaml} onComplete={onComplete} />
+      <SwaggerUI
+        url={SwaggerYaml}
+        onComplete={onComplete}
+        requestInterceptor={onRequest}
+      />
     </>
   );
 };

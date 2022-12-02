@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class VisualizationsAPI {
-  static #BASE_URL = "http://localhost:8080/api/visualizations";
+  static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/visualizations";
 
   static addVisualization(fieldId, metadata) {
     return axios.post(
