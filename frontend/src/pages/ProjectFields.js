@@ -14,9 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Moment from "react-moment";
 import CreateFieldButton from "../components/CreateFieldButton";
 import FieldMenuButton from "../components/FieldMenuButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchBar from "../components/SearchBar";
 
 const ProjectFields = () => {
   const { fields } = useContext(ProjectRouteContext);
@@ -31,38 +29,21 @@ const ProjectFields = () => {
           mb: 2,
         }}
       >
-        <Typography
-          variant="h5"
-          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
-        >
-          Fields
-        </Typography>
-
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          placeholder="Search"
-          sx={{ color: "blue" }}
-          size="small"
-          variant="outlined"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <CreateFieldButton
-          variant={"contained"}
-          sx={{
-            ml: 1,
-            fontSize: 13,
-            background: "#eaecf0",
-            color: "black",
-            "&:hover": { background: "#d5d7db" },
-          }}
+        <SearchBar
+          title="Fields"
+          search={search}
+          setSearch={setSearch}
+          element={
+            <CreateFieldButton
+              variant={"contained"}
+              sx={{
+                fontSize: 13,
+                background: "#eaecf0",
+                color: "black",
+                "&:hover": { background: "#d5d7db" },
+              }}
+            />
+          }
         />
       </Box>
 

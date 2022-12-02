@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import Divider from "@mui/material/Divider";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,16 +13,13 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import Link from "@mui/material/Link";
 import CenteredBox from "../components/CenteredBox";
-import NightsStayIcon from "@mui/icons-material/NightsStay";
 import ErrorIcon from "@mui/icons-material/Error";
 import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
 import CreateProjectButton from "../components/CreateProjectButton";
 import ProjectMenuButton from "../components/ProjectMenuButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchBar from "../components/SearchBar";
 
 const Projects = () => {
   const [projects, setProjects, loading, error] = useProjects();
@@ -60,37 +56,21 @@ const Projects = () => {
           mb: 2,
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
-        >
-          Projects
-        </Typography>
-
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          placeholder="Search"
-          sx={{ mr: 1, color: "blue" }}
-          size="small"
-          variant="outlined"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <CreateProjectButton
-          icon
-          sx={{
-            fontSize: 13,
-            background: "#eaecf0",
-            color: "black",
-            "&:hover": { background: "#d5d7db" },
-          }}
+        <SearchBar
+          title="Projects"
+          search={search}
+          setSearch={setSearch}
+          element={
+            <CreateProjectButton
+              icon
+              sx={{
+                fontSize: 13,
+                background: "#eaecf0",
+                color: "black",
+                "&:hover": { background: "#d5d7db" },
+              }}
+            />
+          }
         />
       </Box>
 
