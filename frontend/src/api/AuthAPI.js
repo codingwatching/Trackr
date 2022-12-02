@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class AuthAPI {
-  static #BASE_URL = "http://localhost:8080/api/auth";
+  static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/auth";
 
   static isLoggedIn() {
     return axios.get(this.#BASE_URL + "/", { withCredentials: true });

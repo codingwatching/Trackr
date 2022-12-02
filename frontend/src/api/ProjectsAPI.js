@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class ProjectsAPI {
-  static #BASE_URL = "http://localhost:8080/api/projects";
+  static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/projects";
 
   static getProjects() {
     return axios.get(this.#BASE_URL + "/", { withCredentials: true });

@@ -1,12 +1,15 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"math"
 	"net/http"
 	"net/mail"
+	"os"
+	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 
 	"trackr/src/common"
 	"trackr/src/forms/requests"
@@ -18,9 +21,6 @@ import (
 const (
 	sessionIdLength = 64
 	sessionCookie   = "Session"
-
-	maxValueInterval = 15
-	maxValues        = 10000
 )
 
 func loginRoute(c *gin.Context) {
@@ -136,6 +136,11 @@ func logoutRoute(c *gin.Context) {
 }
 
 func registerRoute(c *gin.Context) {
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Registration is currently disabled. Ask your administrator to enable it."})
+		return
+	}
+
 	if isLoggedIn(c) != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "You cannot make a new account while you are currently logged in."})
 		return
@@ -188,6 +193,9 @@ func registerRoute(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to generate password."})
 		return
 	}
+
+	maxValues, _ := strconv.ParseInt(os.Getenv("MAX_VALUES"), 10, 64)
+	maxValueInterval, _ := strconv.ParseInt(os.Getenv("MAX_VALUE_INTERVAL"), 10, 64)
 
 	user := models.User{
 		Email:      json.Email,

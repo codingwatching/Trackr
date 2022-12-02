@@ -23,7 +23,6 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 		return nil
 	}
 
-	database.Exec("PRAGMA foreign_keys = ON", nil)
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Session{})
 	database.AutoMigrate(&models.Project{})

@@ -30,7 +30,7 @@ type Suite struct {
 func Startup() *Suite {
 	var suite Suite
 
-	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:"))
+	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:?_foreign_keys=on"))
 	suite.Time = time.Now()
 	suite.User = models.User{
 		ID:               1,

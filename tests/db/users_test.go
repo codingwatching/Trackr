@@ -70,6 +70,38 @@ func TestAddUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	suite := tests.Startup()
 
+	//
+	// Check before we delete if our relationships are correct.
+	//
+
+	project, err := suite.Service.GetProjectService().GetProject(suite.Project.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, project)
+
+	session, _, err := suite.Service.GetSessionService().GetSessionAndUser(suite.Session.ID)
+	assert.Nil(t, err)
+	assert.NotNil(t, session)
+
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, field)
+
+	value, err := suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, value)
+
+	visualization, err := suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.Nil(t, err)
+	assert.NotNil(t, visualization)
+
+	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, len(suite.Logs), len(logs))
+
+	//
+	// Begin delete test.
+	//
+
 	numberOfUsers, err := suite.Service.GetUserService().GetNumberOfUsers(suite.User.Email)
 	assert.Nil(t, err)
 	assert.Equal(t, numberOfUsers, int64(1))
@@ -90,6 +122,34 @@ func TestDeleteUser(t *testing.T) {
 
 	err = suite.Service.GetUserService().DeleteUser(suite.User)
 	assert.NotNil(t, err)
+
+	//
+	// Check if cascade delete works.
+	//
+
+	project, err = suite.Service.GetProjectService().GetProject(suite.Project.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, project)
+
+	session, _, err = suite.Service.GetSessionService().GetSessionAndUser(suite.Session.ID)
+	assert.NotNil(t, err)
+	assert.Nil(t, session)
+
+	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, field)
+
+	value, err = suite.Service.GetValueService().GetValue(suite.Value.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, value)
+
+	visualization, err = suite.Service.GetVisualizationService().GetVisualization(suite.Visualization.ID, suite.User)
+	assert.NotNil(t, err)
+	assert.Nil(t, visualization)
+
+	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
+	assert.Nil(t, err)
+	assert.Equal(t, 0, len(logs))
 }
 
 func TestUpdateUser(t *testing.T) {

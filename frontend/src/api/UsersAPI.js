@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class UsersAPI {
-  static #BASE_URL = "http://localhost:8080/api/users";
+  static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/users";
 
   static getUser() {
     return axios.get(this.#BASE_URL + "/", { withCredentials: true });

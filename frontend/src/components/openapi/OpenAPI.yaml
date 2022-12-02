@@ -7,7 +7,7 @@ info:
     Insomnia, or even right here in the browser.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/
+  - url: http://api_path/
 paths:
   /api/values/:
     get:
@@ -20,13 +20,13 @@ paths:
           required: true
           schema:
             type: string
-          description: The project's API key used to authorize you.
+          description: "**API Key**. The API key that is used to authorize your request."
         - in: query
           name: fieldId
           required: true
           schema:
             type: number
-          description: The ID of the field you wish to view the values of.
+          description: "**Field ID**. Determines which field the values correspond to."
         - in: query
           name: offset
           required: true
@@ -34,7 +34,7 @@ paths:
             type: integer
             minimum: 0
             example: 0
-          description: The number of values you wish to offset by.
+          description: "**Offset**. The number of values you wish to offset by."
         - in: query
           name: limit
           required: true
@@ -42,14 +42,14 @@ paths:
             type: number
             minimum: 0
             example: 100
-          description: The number of values to show at a time.
+          description: "**Limit**. The number of values to show at a time."
         - in: query
           name: order
           required: true
           schema:
             type: string
             enum: [asc, desc]
-          description: The sort order you wish to list the values in.
+          description: "**Order**. The sort order you wish to list the values in."
           example: asc
           
       responses:
@@ -95,13 +95,13 @@ paths:
               properties:
                 apiKey:
                   type: string
-                  description: The project's API key used to authorize you.
+                  description: "**API Key**. The API key that is used to authorize your request." 
                 fieldId:
                   type: number
-                  description: The ID of the field you wish to add a value to.
+                  description: "**Field ID**. Determines which field to add the value to."
                 value:
                   type: number
-                  description: The value you wish to add.
+                  description: "**Value**. The numeric value you wish to add."
               required:
                 - apiKey
                 - fieldId
