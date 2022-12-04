@@ -49,6 +49,7 @@ const SearchBar = ({ title, element, search, setSearch }) => {
               }}
               placeholder="Search"
               sx={{ flexGrow: 1 }}
+              autoFocus
               size="small"
               variant="outlined"
               value={search}
