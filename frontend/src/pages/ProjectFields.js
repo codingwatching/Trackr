@@ -74,7 +74,9 @@ const ProjectFields = () => {
                   >
                     <TableCell align="left">{field.id}</TableCell>
                     <TableCell align="left">{field.name}</TableCell>
-                    <TableCell align="left">{field.numberOfValues}</TableCell>
+                    <TableCell align="left">
+                      {field.numberOfValues.toLocaleString()}
+                    </TableCell>
                     <TableCell align="left">
                       <Tooltip title={field.createdAt}>
                         <Box>
