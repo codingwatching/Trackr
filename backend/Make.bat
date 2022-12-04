@@ -14,9 +14,9 @@ IF "%command%"=="run" (
 )
 
 IF "%command%"=="build" (
-    go build -o bin/trackr src/main.go
+    go build -o bin/trackr.exe src/main.go
 ) ELSE (
     IF "%command%"=="" (
-        go build -o bin/trackr src/main.go
+        go build -o bin/trackr.exe src/main.go
     )
 )
