@@ -18,6 +18,9 @@ jobs:
       with:
         go-version: 1.18
 
+    - name: Navigate to the backend folder
+      run: cd backend
+
     - name: Build
       run: make
 
