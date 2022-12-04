@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -8,12 +9,26 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ValuesAPI from "../api/ValuesAPI";
 
 const DeleteValuesDialog = ({ field, onClose }) => {
+  const { fields, setFields } = useContext(ProjectRouteContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
   const handleDeleteValues = () => {
     ValuesAPI.deleteValues(field.id)
       .then(() => {
+        setFields(
+          fields.map((f) =>
+            f.id === field.id
+              ? {
+                  id: field.id,
+                  createdAt: field.createdAt,
+                  name: field.name,
+                  numberOfValues: 0,
+                }
+              : f
+          )
+        );
+
         onClose();
       })
       .catch((error) => {

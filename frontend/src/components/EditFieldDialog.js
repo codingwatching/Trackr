@@ -23,13 +23,14 @@ const EditFieldDialog = ({ field, onClose }) => {
     const data = new FormData(event.currentTarget);
 
     FieldsAPI.updateField(field.id, data.get("name"))
-      .then((result) => {
+      .then(() => {
         setFields(
           fields.map((f) =>
             f.id === field.id
               ? {
                   id: field.id,
                   createdAt: field.createdAt,
+                  numberOfValues: field.numberOfValues,
                   name: data.get("name"),
                 }
               : f

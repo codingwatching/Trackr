@@ -162,14 +162,16 @@ func TestGetFieldsRoute(t *testing.T) {
 	response, _ = json.Marshal(responses.FieldList{
 		Fields: []responses.Field{
 			{
-				ID:        suite.Field.ID,
-				Name:      suite.Field.Name,
-				CreatedAt: suite.Field.CreatedAt,
+				ID:             suite.Field.ID,
+				Name:           suite.Field.Name,
+				CreatedAt:      suite.Field.CreatedAt,
+				NumberOfValues: 1,
 			},
 			{
-				ID:        newField.ID,
-				Name:      newField.Name,
-				CreatedAt: newField.CreatedAt,
+				ID:             newField.ID,
+				Name:           newField.Name,
+				CreatedAt:      newField.CreatedAt,
+				NumberOfValues: 0,
 			},
 		},
 	})

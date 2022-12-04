@@ -84,10 +84,17 @@ func getFieldsRoute(c *gin.Context) {
 
 	fieldList := make([]responses.Field, len(fields))
 	for index, field := range fields {
+		numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByField(field)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get number of values."})
+			return
+		}
+
 		fieldList[index] = responses.Field{
-			ID:        field.ID,
-			Name:      field.Name,
-			CreatedAt: field.CreatedAt,
+			ID:             field.ID,
+			Name:           field.Name,
+			CreatedAt:      field.CreatedAt,
+			NumberOfValues: numberOfValues,
 		}
 	}
 
