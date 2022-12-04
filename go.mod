@@ -11,6 +11,8 @@ require (
 	gorm.io/gorm v1.24.0
 )
 
+require github.com/gin-contrib/gzip v0.0.6 // indirect
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

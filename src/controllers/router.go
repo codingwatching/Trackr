@@ -3,6 +3,7 @@ package controllers
 import (
 	"os"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 
 	"trackr/src/services"
@@ -32,9 +33,10 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 	serviceProvider = serviceProviderInput
 
 	router := gin.Default()
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(corsMiddleware())
-	routerGroup := router.Group("/api")
 
+	routerGroup := router.Group("/api")
 	sessionMiddleware := initAuthMiddleware(serviceProvider)
 
 	initAuthController(routerGroup, serviceProvider)
