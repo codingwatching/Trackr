@@ -56,6 +56,7 @@ const ProjectFields = () => {
             <TableRow>
               <TableCell align="left">ID</TableCell>
               <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Values</TableCell>
               <TableCell align="left">Created</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
@@ -73,6 +74,7 @@ const ProjectFields = () => {
                   >
                     <TableCell align="left">{field.id}</TableCell>
                     <TableCell align="left">{field.name}</TableCell>
+                    <TableCell align="left">{field.numberOfValues}</TableCell>
                     <TableCell align="left">
                       <Tooltip title={field.createdAt}>
                         <Box>

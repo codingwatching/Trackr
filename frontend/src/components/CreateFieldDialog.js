@@ -30,6 +30,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
           {
             id: result.data.id,
             name: data.get("name"),
+            numberOfValues: 0,
             createdAt: new Date().toISOString(),
           },
         ]);
