@@ -93,7 +93,7 @@ class AddDeviceTest {
         // Verify the enter setup code screen.
         assertNotNull(device.wait(Until.hasObject(ENTER_SETUP_CODE_TITLE), TEN_SECONDS))
         // Enter the setup code.
-        device.findObject(SETUP_CODE_TEXTBOX).setText(SETUP_CODE)
+        device.findObject(SETUP_CODE_TEXTBOX).text = SETUP_CODE
         // Click the next button
         val nextButton: UiObject2 = device.findObject(NEXT_BUTTON)
         assertNotNull(nextButton.wait(Until.clickable(true), TEN_SECONDS))
@@ -111,7 +111,7 @@ class AddDeviceTest {
         // Verify that the device is successfully commissioned and is ready.
         assertNotNull(device.wait(Until.hasObject(DONE_BUTTON), TWO_MINUTES))
         // Enter the device name.
-        device.findObject(DEVICE_NAME_TEXTBOX).setText(DEVICE_NAME)
+        device.findObject(DEVICE_NAME_TEXTBOX).text = DEVICE_NAME
         // Click done.
         device.wait(Until.findObject(DONE_BUTTON), TEN_SECONDS).click()
         // Verify the light is present on Matterhorn
