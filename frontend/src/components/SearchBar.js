@@ -1,3 +1,4 @@
+import { styled } from "@mui/system";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
@@ -6,6 +7,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+const SearchTextField = styled(TextField)({
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#dfe2e7",
+    },
+  },
+});
 
 const SearchBar = ({ title, element, search, setSearch }) => {
   const [isSearching, setIsSearching] = useState(false);
@@ -39,7 +48,7 @@ const SearchBar = ({ title, element, search, setSearch }) => {
               <ArrowBackIcon />
             </IconButton>
 
-            <TextField
+            <SearchTextField
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -49,6 +58,9 @@ const SearchBar = ({ title, element, search, setSearch }) => {
               }}
               placeholder="Search"
               sx={{ flexGrow: 1 }}
+              inputProps={{
+                style: { borderColor: "#e0e0e0" },
+              }}
               autoFocus
               size="small"
               variant="outlined"
@@ -97,7 +109,7 @@ const SearchBar = ({ title, element, search, setSearch }) => {
           {title}
         </Typography>
 
-        <TextField
+        <SearchTextField
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -106,7 +118,8 @@ const SearchBar = ({ title, element, search, setSearch }) => {
             ),
           }}
           placeholder="Search"
-          sx={{ mr: 1, color: "blue" }}
+          border="none"
+          sx={{ mr: 1 }}
           size="small"
           variant="outlined"
           value={search}
