@@ -15,7 +15,14 @@
 -->
 
 <resources>
-    <string name="app_name">GHSAFM</string>
+    <string name="app_name">Trackr</string>
+
+    <!-- Login pages -->
+    <string name="email" translatable="false">unspecified</string>
+    <string name="password" translatable="false">unspecified</string>
+    <string name="login" translatable="false">Login</string>
+    <string name="don_t_have_an_account_sign_in" translatable="false">You dont have an account</string>
+
 
     <!-- Device Types -->
     <string name="device_type_unspecified" translatable="false">unspecified</string>
@@ -78,7 +85,7 @@
     <string name="no_devices_yet">No devices yet</string>
     <string name="codelab">Codelab</string>
     <string name="do_not_show_again">Don\'t show this again</string>
-    <string name="sample_app">Sample App</string>
+    <string name="sample_app">Trackr Home</string>
     <string name="content_description_settings">Settings icon to manage app settings</string>
     <string name="general_settings">General settings</string>
     <string name="developer_utilities">Developer utilities</string>
@@ -92,4 +99,13 @@
 All of the information will be logged in logcat. Use this command  to only view this sample’s app logs:&lt;p>&lt;i>adb logcat --pid=`adb shell pidof -s homesampleapp`&lt;/i></string>
     <string name="about_app">This app provides downloadable code that shows you how to use Matter APIs in your own Android application.&lt;p>&lt;b>This is not an official Google Home app, it was created as a development tool for sample purposes only.&lt;/b>&lt;p>&lt;i>Google Home Sample Application for Matter&lt;p>Version: %1$s&lt;/i></string>
     <string name="unspecified">Unspecified</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 </resources>
