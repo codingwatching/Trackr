@@ -31,10 +31,11 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
     binding = setContentView(this, R.layout.activity_main)
 
-    // Useful to see which preferences are set under the hood by Matter libraries.
-    displayPreferences(this)
+      // Useful to see which preferences are set under the hood by Matter libraries.
+//    displayPreferences(this)
 
     initContextDependentConstants()
   }

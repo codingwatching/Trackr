@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.navigation.findNavController
 import com.google.homesampleapp.databinding.FragmentLoginBinding
 
 import com.google.homesampleapp.R
@@ -117,6 +118,8 @@ class LoginFragment : Fragment() {
         // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
+        view?.findNavController()?.navigate(R.id.action_loginFragment_to_homeFragment)
+
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

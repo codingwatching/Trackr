@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  Copyright 2022 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,4 +22,7 @@
     <dimen name="task_small_size">12sp</dimen>
     <dimen name="no_device_title">20sp</dimen>
     <dimen name="no_device_text">12sp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="fragment_horizontal_margin">16dp</dimen>
+    <dimen name="fragment_vertical_margin">16dp</dimen>
 </resources>
