@@ -24,7 +24,7 @@ const ProjectAPI = () => {
           API
         </Typography>
       </Box>
-      <Typography variant="h7" sx={{ pb: 10 }}>
+      <Typography variant="h7" sx={{ pb: 10, color: "#707070" }}>
         Below is your API key which you can use to access your project's data.
         Keep this key safe in a secret place.
       </Typography>
@@ -66,7 +66,7 @@ const ProjectAPI = () => {
         </Typography>
       </Box>
 
-      <Typography variant="h7">
+      <Typography variant="h7" sx={{ color: "#707070" }}>
         The API provides you with a set of endpoints that allow you to read and
         write data to a field in a project of your choice. The API can be called
         just with any HTTP Client, like Postman, Insomnia, or even right here in

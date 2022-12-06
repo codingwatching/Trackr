@@ -11,7 +11,7 @@ const UserAccount = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant="h5">Account Details</Typography>
-      <Typography variant="h7" sx={{ mb: 2 }}>
+      <Typography variant="h7" sx={{ mb: 2, color: "#707070" }}>
         View your account details and manage your account.
       </Typography>
       <Divider sx={{ mb: 3 }} />

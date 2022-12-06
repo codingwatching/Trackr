@@ -62,7 +62,7 @@ const UserChangePassword = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant="h5">Change Password</Typography>
-      <Typography variant="h7" sx={{ mb: 2 }}>
+      <Typography variant="h7" sx={{ mb: 2, color: "#707070" }}>
         Enter your current password and a new password.
       </Typography>
 
@@ -90,7 +90,7 @@ const UserChangePassword = () => {
           sx={{ mb: 2.5 }}
         />
 
-        <Typography variant="h7" sx={{ mb: 2 }}>
+        <Typography variant="h7" sx={{ mb: 2, color: "#707070" }}>
           Make sure to choose a strong new password.
         </Typography>
 
