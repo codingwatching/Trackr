@@ -112,7 +112,8 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
     //http request dependency
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.12'
+    implementation 'com.squareup.okhttp3:logging-inspector:3.12.12'
 }
 
 protobuf {
