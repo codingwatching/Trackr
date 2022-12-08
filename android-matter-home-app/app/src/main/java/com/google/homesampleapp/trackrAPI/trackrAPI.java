@@ -20,12 +20,12 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class trackrAPI {
-
     //variables
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public int login(){
         //http
+        return -1;
     }
 
     public void createProject(){
