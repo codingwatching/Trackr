@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useProjects } from "../hooks/useProjects";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -8,7 +9,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import ProjectsAPI from "../api/ProjectsAPI";
 
-const DeleteProjectDialog = ({ onClose, project, projects, setProjects }) => {
+const DeleteProjectDialog = ({ onClose, project }) => {
+  const [projects, mutateProjects] = useProjects();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const navigate = useNavigate();
@@ -19,9 +21,7 @@ const DeleteProjectDialog = ({ onClose, project, projects, setProjects }) => {
         onClose();
         navigate("/projects");
 
-        if (setProjects && projects) {
-          setProjects(projects.filter((x) => x.id !== project.id));
-        }
+        mutateProjects(projects.filter((x) => x.id !== project.id));
       })
       .catch((error) => {
         setLoading(false);

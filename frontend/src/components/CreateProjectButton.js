@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { mutate } from "swr";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import ProjectsAPI from "../api/ProjectsAPI";
@@ -22,6 +23,7 @@ const CreateProjectButton = ({ sx, menuItem, icon }) => {
     ProjectsAPI.createProject()
       .then((result) => {
         navigate("/projects/settings/" + result.data.id);
+        mutate("/api/projects");
       })
       .catch((error) => {
         setLoading(false);

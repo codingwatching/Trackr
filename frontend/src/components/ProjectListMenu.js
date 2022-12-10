@@ -1,18 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useProjects } from "../hooks/useProjects";
 import MenuItem from "@mui/material/MenuItem";
-import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ErrorIcon from "@mui/icons-material/Error";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Skeleton from "@mui/material/Skeleton";
 import CreateProjectButton from "./CreateProjectButton";
+import ErrorBoundary from "./ErrorBoundary";
+import LoadingBoundary from "./LoadingBoundary";
+import ProjectListSubMenu from "./ProjectListSubMenu";
 
 const ProjectListMenu = ({ closeSubMenu }) => {
-  const [projects, , loading, error] = useProjects();
   const navigate = useNavigate();
-  const MAX_PROJECTS = 3;
 
   const handleViewAllProjects = (event) => {
     event.preventDefault();
@@ -21,35 +20,31 @@ const ProjectListMenu = ({ closeSubMenu }) => {
     closeSubMenu();
   };
 
-  const handleViewProject = (event, project) => {
-    event.preventDefault();
-
-    navigate("/projects/" + project.id);
-    closeSubMenu();
-  };
-
-  const errorElement = error && (
-    <MenuItem
-      disabled
-      sx={{
-        p: 3,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        color: "red",
-      }}
-    >
-      <ErrorIcon sx={{ fontSize: 30, mb: 1 }} />
-      <Typography
-        variant="subtitle2"
-        sx={{ userSelect: "none", color: "darkred" }}
+  const errorFallback = ({ error }) => (
+    <>
+      <MenuItem
+        disabled
+        sx={{
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          color: "black",
+          maxWidth: "200px",
+          textAlign: "center",
+          whiteSpace: "pre-wrap",
+        }}
       >
-        {error}
-      </Typography>
-    </MenuItem>
+        <ErrorIcon sx={{ fontSize: 30, mb: 1 }} />
+        <Typography variant="subtitle2" sx={{ userSelect: "none" }}>
+          {error}
+        </Typography>
+      </MenuItem>
+      <Divider sx={{ my: 1 }} />
+    </>
   );
 
-  const loadingElement = loading && (
+  const loadingFallback = (
     <>
       <MenuItem disabled sx={{ mb: -0.25 }}>
         <Skeleton variant="text" width={60} height={30} />
@@ -87,47 +82,11 @@ const ProjectListMenu = ({ closeSubMenu }) => {
 
   return (
     <>
-      {errorElement}
-      {loadingElement}
-      {!error && !loading && projects.length > 0 && (
-        <>
-          <MenuItem disabled>
-            <Typography variant="subtitle2">Recent</Typography>
-          </MenuItem>
-          {projects.slice(0, MAX_PROJECTS).map((project) => (
-            <Link
-              href={"/projects/" + project.id}
-              key={project.id}
-              underline="none"
-            >
-              <MenuItem
-                onClick={(event) => handleViewProject(event, project)}
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                <AccountTreeRoundedIcon
-                  sx={{
-                    fontSize: 25,
-                    color: "white",
-                    backgroundColor: "primary.main",
-                    mr: 1.5,
-                    p: 0.25,
-                    borderRadius: 1,
-                  }}
-                />
-
-                <Typography
-                  variant="subtitle2"
-                  color="#2a2a2a"
-                  sx={{ fontWeight: 400 }}
-                >
-                  {project.name}
-                </Typography>
-              </MenuItem>
-            </Link>
-          ))}
-          <Divider sx={{ my: 1 }} />
-        </>
-      )}
+      <ErrorBoundary fallback={errorFallback}>
+        <LoadingBoundary fallback={loadingFallback}>
+          <ProjectListSubMenu closeSubMenu={closeSubMenu} />
+        </LoadingBoundary>
+      </ErrorBoundary>
 
       <Link href={"/projects/"} underline="none">
         <MenuItem

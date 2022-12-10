@@ -15,13 +15,7 @@ import Typography from "@mui/material/Typography";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteProjectDialog from "./DeleteProjectDialog";
 
-const ProjectMenuButton = ({
-  project,
-  projects,
-  setProjects,
-  noSettings,
-  disabled,
-}) => {
+const ProjectMenuButton = ({ project, noSettings, disabled }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogElement, setDialogElement] = useState();
@@ -44,11 +38,7 @@ const ProjectMenuButton = ({
     setAnchorEl(null);
 
     setDialogElement(
-      createElement(
-        DeleteProjectDialog,
-        { project, projects, setProjects, onClose: closeDialog },
-        {}
-      )
+      createElement(DeleteProjectDialog, { project, onClose: closeDialog }, {})
     );
   };
 
