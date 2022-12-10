@@ -1,13 +1,16 @@
+.PHONY: build
 build: bin/
 	go build -o bin/trackr src/main.go
 
-clean: bin/
+.PHONY: clean
+clean: 
 	go mod tidy
-	rm -rf bin/*
 
+.PHONY: run
 run: bin/
 	go run src/main.go
 
+.PHONY: test
 test: bin/
 	go test ./tests/...
 
