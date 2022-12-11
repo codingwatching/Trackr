@@ -21,6 +21,7 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -87,26 +88,6 @@ class DeviceFragment : Fragment() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    // Share Device Step 2.
-    // An activity launcher is registered. It will be launched
-    // at step 3 (in the viewModel) when the user triggers the "Share Device" action and the
-    // Google Play Services (GPS) API (commissioningClient.shareDevice()) returns the IntentSender
-    // to be used to launch the proper activity in GPS.
-    // CODELAB: shareDeviceLauncher definition
-    shareDeviceLauncher =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-          // Share Device Step 5.
-          // The Share Device activity in GPS has completed.
-          val resultCode = result.resultCode
-          Timber.d("Got result for shareDeviceLauncher: resultCode [[${resultCode}]")
-          if (resultCode == RESULT_OK) {
-            viewModel.shareDeviceSucceeded(getString(R.string.share_device_status_success))
-          } else {
-            viewModel.shareDeviceFailed(getString(R.string.status_failed_with, resultCode))
-          }
-        }
-    // CODELAB SECTION END
   }
 
   override fun onCreateView(
@@ -170,29 +151,8 @@ class DeviceFragment : Fragment() {
       true
     }
 
-    // Share Device
-    binding.shareButton.setOnClickListener {
-      val deviceName = selectedDeviceViewModel.selectedDeviceLiveData.value?.device?.name!!
-      if (isDummyDevice(deviceName) && !ALLOW_DEVICE_SHARING_ON_DUMMY_DEVICE) {
-        // Device sharing not allowed on a dummy device.
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Share device $deviceName")
-            .setMessage(getString(R.string.share_dummy_device))
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ -> }
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
-              viewModel.inspectDescriptorCluster(
-                  selectedDeviceViewModel.selectedDeviceLiveData.value!!)
-            }
-            .show()
-      } else {
-        viewModel.shareDevice(requireActivity())
-      }
-    }
-
-    // Change the on/off state of the device
-    binding.onoffSwitch.setOnClickListener {
-      val isOn = binding.onoffSwitch.isChecked
-      viewModel.updateDeviceStateOn(selectedDeviceViewModel.selectedDeviceLiveData.value!!, isOn)
+    binding.trackrButton.setOnClickListener {
+      Log.e("Button:","Connect to tracker button clicked" )
     }
 
     // Remove Device
@@ -238,39 +198,6 @@ class DeviceFragment : Fragment() {
       // TODO: disable the "share device button", update the result text view, etc.
     }
 
-    // The current status of the share device action.
-    viewModel.shareDeviceStatus.observe(viewLifecycleOwner) { status ->
-      binding.shareButton.isEnabled = status !is InProgress
-      // TODO: binding.actionResultTextView.text = status.toString()
-    }
-
-    // Share Device Step 2.
-    // The fragment observes the livedata for shareDeviceIntentSender which
-    // is updated in the ViewModel in step 3 of the Share Device flow.
-    viewModel.shareDeviceIntentSender.observe(viewLifecycleOwner) { sender ->
-      Timber.d("shareDeviceIntentSender.observe is called with sender [${sender}]")
-      if (sender != null) {
-        val deviceId = selectedDeviceViewModel.selectedDeviceIdLiveData.value!!
-        // Share Device Step 4: Launch the activity described in the IntentSender that
-        // was returned in Step 3 where the viewModel calls the GPS API to commission
-        // the device.
-        // TODO: Normally these two calls should be done sequentially
-        // The call would be done as follows:
-        // viewModel.initiateDeviceSharing(
-        //    selectedDeviceViewModel.selectedDeviceIdLiveData.value!!, shareDeviceLauncher, sender)
-        // However, the call to openCommissioningWindowUsingOpenPairingWindowWithPin blocks
-        // forever because the callback is not invoked.
-        // For now, making these 2 calls here.
-        when (OPEN_COMMISSIONING_WINDOW_API) {
-          OpenCommissioningWindowApi.ChipDeviceController ->
-              viewModel.openCommissioningWindowUsingOpenPairingWindowWithPin(deviceId)
-          OpenCommissioningWindowApi.AdministratorCommissioningCluster ->
-              viewModel.openCommissioningWindowWithAdministratorCommissioningCluster(deviceId)
-        }
-        shareDeviceLauncher.launch(IntentSenderRequest.Builder(sender).build())
-      }
-    }
-
     // Observer on the currently selected device
     selectedDeviceViewModel.selectedDeviceIdLiveData.observe(viewLifecycleOwner) { deviceId ->
       Timber.d(
@@ -308,16 +235,9 @@ class DeviceFragment : Fragment() {
       val shapeOnDrawable = getDrawable("device_item_shape_on")
       val shapeDrawable = if (isOnline && isOn) shapeOnDrawable else shapeOffDrawable
 
-      binding.shareLine1TextView.text =
-          getString(R.string.share_device_name, deviceUiModel.device.name)
+
       binding.onOffTextView.text = stateDisplayString(isOnline, isOn)
       binding.stateLayout.background = shapeDrawable
-      if (ON_OFF_SWITCH_DISABLED_WHEN_DEVICE_OFFLINE) {
-        binding.onoffSwitch.isEnabled = isOnline
-      } else {
-        binding.onoffSwitch.isEnabled = true
-      }
-      binding.onoffSwitch.isChecked = isOn
       binding.techInfoDetailsTextView.text =
           getString(
               R.string.share_device_info,
