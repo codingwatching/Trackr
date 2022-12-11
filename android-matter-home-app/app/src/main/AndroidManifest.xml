@@ -16,9 +16,9 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.google.homesampleapp">
 
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- TODO: clarify what specifically requires the permission -->
     <uses-permission android:name="android.permission.BLUETOOTH" />

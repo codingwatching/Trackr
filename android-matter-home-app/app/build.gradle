@@ -61,7 +61,6 @@ android {
             versionNameSuffix = "-targetcommissioner"
         }
     }
-    namespace 'com.google.homesampleapp'
 }
 
 dependencies {
@@ -115,7 +114,6 @@ dependencies {
 
     //http request dependency
     implementation 'com.squareup.okhttp3:okhttp:3.12.12'
-    implementation 'com.squareup.okhttp3:logging-inspector:3.12.12'
 }
 
 protobuf {
