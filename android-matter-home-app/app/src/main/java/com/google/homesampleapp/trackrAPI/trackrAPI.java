@@ -1,11 +1,7 @@
 package com.google.homesampleapp.trackrAPI;
 
 
-import android.app.DownloadManager;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -19,12 +15,21 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+
+
 public class trackrAPI {
     //variables
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final String Url ="";
 
-    public int login(){
+    public static void main(String[] args) throws IOException {
+      login("ksn","sahbd");
+    }
+
+    public static int login(String username, String Password) throws IOException {
         //http
+        String body="{}";
+        post("http:/api/auth/login",body);
         return -1;
     }
 
@@ -43,7 +48,7 @@ public class trackrAPI {
     public void sendData(){
         //http
     }
-//------------------------------------------------------
+    //------------------------------------------------------
 //GET
 //INPUT PARAMETERS: address for the GET request
 //RETURN: response as a string
@@ -82,13 +87,13 @@ public class trackrAPI {
         return retVal;
     }
 
-//------------------------------------------------------
+    //------------------------------------------------------
 //Post
 //INPUT PARAMETERS: url (String): address for the POST request
 //                  payload (String): msg to be posted
 //RETURN: response (String)
 //------------------------------------------------------
-    private String post(String url, String payload) throws IOException{
+    private static String post(String url, String payload) throws IOException{
 
         String retVal = "";
 
@@ -102,6 +107,7 @@ public class trackrAPI {
         try (Response response = client.newCall(request).execute()) {
             retVal = response.body().string();
         } catch (Exception e) {
+            System.out.println(e);
             Log.i("Post Response", "Error while posting request to the client");
             retVal = "Error";
         }
@@ -109,7 +115,7 @@ public class trackrAPI {
         return retVal;
     }
 
-//------------------------------------------------------
+    //------------------------------------------------------
 //Post with Header
 //INPUT PARAMETERS: url (String): address for the POST request
 //                  payload (String): msg to be posted
