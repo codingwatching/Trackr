@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
 import { createContext } from "react";
+import { useParams } from "react-router-dom";
 import ProjectNavBar from "../components/ProjectNavBar";
 import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
@@ -29,7 +29,7 @@ const ProjectRoute = ({ element }) => {
     >
       <ProjectNavBar />
 
-      {/* <LoadingBoundary
+      <LoadingBoundary
         fallback={
           <CenteredBox>
             <CircularProgress />
@@ -37,7 +37,7 @@ const ProjectRoute = ({ element }) => {
         }
       >
         {element}
-      </LoadingBoundary> */}
+      </LoadingBoundary>
     </ErrorBoundary>
   );
 };

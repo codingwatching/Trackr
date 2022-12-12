@@ -1,5 +1,7 @@
-import { useState, useContext } from "react";
-import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { useUpdateProject } from "../hooks/useUpdateProject";
+import { useProject } from "../hooks/useProject";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -8,50 +10,33 @@ import Fade from "@mui/material/Fade";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
-import ProjectsAPI from "../api/ProjectsAPI";
 import Moment from "react-moment";
+import formatError from "../utils/formatError";
 
 const EditProject = () => {
-  const { project, setProject } = useContext(ProjectRouteContext);
-  const [loading, setLoading] = useState(false);
+  const { projectId } = useParams();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
+  const project = useProject(projectId);
+  const [updateProject, updateProjectContext] = useUpdateProject();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    ProjectsAPI.updateProject(
-      project.id,
-      data.get("name"),
-      data.get("description"),
-      false
-    )
-      .then((result) => {
-        setProject({
-          ...project,
-          name: data.get("name"),
-          description: data.get("description"),
-          apiKey: result.data.apiKey,
-          updatedAt: new Date(),
-        });
-
-        setLoading(false);
+    updateProject({
+      id: project.id,
+      name: data.get("name"),
+      description: data.get("description"),
+      resetAPIKey: false,
+    })
+      .then(() => {
         setSuccess("Project settings updated successfully.");
         setError();
       })
       .catch((error) => {
-        setLoading(false);
-        setSuccess();
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to update project settings: " + error.message);
-        }
+        setError(formatError(error));
       });
-
-    setLoading(true);
   };
 
   return (
@@ -104,6 +89,7 @@ const EditProject = () => {
           label="Description"
           name="description"
           required
+          error={error ? true : false}
           multiline
           rows={4}
           defaultValue={project.description}
@@ -122,7 +108,7 @@ const EditProject = () => {
           }}
         >
           <LoadingButton
-            loading={loading}
+            loading={updateProjectContext.isLoading}
             type="submit"
             variant="contained"
             disableElevation
