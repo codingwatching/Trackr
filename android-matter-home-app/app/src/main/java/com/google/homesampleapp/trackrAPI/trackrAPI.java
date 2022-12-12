@@ -25,7 +25,7 @@ public class trackrAPI {
 
     public static void main(String[] args) throws IOException {
       login("kamsaiyed@gmail.com","kamar123");
-//      createProject();
+      createProject();
     }
 
     public static String login(String username, String Password) throws IOException {
@@ -44,9 +44,11 @@ public class trackrAPI {
 
     public static void createProject() throws IOException {
         //http
-        Response response= post(Url+"/api/projects/","{}");
+        Response response= post(Url+"/api/projects/","{}","Session="+sesssionID);
         System.out.println("session="+sesssionID);
-        System.out.println(response);
+//        ResponseBody responseBodyCopy = response.peekBody(Long.MAX_VALUE);
+        String body=response.body().string();
+        System.out.println(body);
     }
 
     public void createField(){
