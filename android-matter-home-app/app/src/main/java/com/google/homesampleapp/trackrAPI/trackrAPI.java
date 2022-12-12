@@ -18,23 +18,35 @@ import okhttp3.ResponseBody;
 
 
 public class trackrAPI {
-    //variables
+    //variables"
+    private static String sesssionID="";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final String Url ="";
+    public static final String Url ="http://localhost:8080";
 
     public static void main(String[] args) throws IOException {
-      login("ksn","sahbd");
+      login("kamsaiyed@gmail.com","kamar123");
+//      createProject();
     }
 
-    public static int login(String username, String Password) throws IOException {
+    public static String login(String username, String Password) throws IOException {
         //http
-        String body="{}";
-        post("http:/api/auth/login",body);
-        return -1;
+
+        String body="{\"email\":\""+username+
+                "\",\"password\":\""+Password+
+                "\",\"rememberMe\":true"+"}";
+        Response response= post(Url+"/api/auth/login",body);
+        String responseHead=response.headers("Set-Cookie").toString();
+        sesssionID=responseHead.substring(responseHead.indexOf("=")+1,responseHead.indexOf(";"));
+
+
+        return sesssionID;
     }
 
-    public void createProject(){
+    public static void createProject() throws IOException {
         //http
+        Response response= post(Url+"/api/projects/","{}");
+        System.out.println("session="+sesssionID);
+        System.out.println(response);
     }
 
     public void createField(){
@@ -93,9 +105,9 @@ public class trackrAPI {
 //                  payload (String): msg to be posted
 //RETURN: response (String)
 //------------------------------------------------------
-    private static String post(String url, String payload) throws IOException{
+    private static Response post(String url, String payload) throws IOException{
 
-        String retVal = "";
+        Response retVal = null;
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, payload);
@@ -103,13 +115,11 @@ public class trackrAPI {
                 .url(url)
                 .post(body)
                 .build();
-
         try (Response response = client.newCall(request).execute()) {
-            retVal = response.body().string();
+            retVal = response;
         } catch (Exception e) {
-            System.out.println(e);
             Log.i("Post Response", "Error while posting request to the client");
-            retVal = "Error";
+            retVal = null;
         }
 
         return retVal;
@@ -122,23 +132,23 @@ public class trackrAPI {
 //                  head (String): Value for the header
 //RETURN: response (String)
 //------------------------------------------------------
-    private String post (String url, String payload, String head) throws IOException{
+    private static Response post(String url, String payload, String head) throws IOException{
 
-        String retVal = "";
+        Response retVal = null;
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, payload);
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", head)
+                .addHeader("Cookie", head)
                 .post(body)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            retVal = response.body().string();
+            retVal = response;
         } catch (Exception e) {
             Log.i("Post Reponse", "Error while posting request to the client");
-            retVal = "Error";
+            retVal = null;
         }
 
         return retVal;
