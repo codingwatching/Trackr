@@ -1,10 +1,10 @@
-import useSWR from "swr";
+import { useQuery } from "react-query";
 import ProjectsAPI from "../api/ProjectsAPI";
 
 export const useProjects = () => {
-  const { data, mutate } = useSWR("/api/projects", ProjectsAPI.getProjects, {
+  const { data } = useQuery(ProjectsAPI.QUERY_KEY, ProjectsAPI.getProjects, {
     suspense: true,
   });
 
-  return [data, mutate];
+  return data.data.projects;
 };

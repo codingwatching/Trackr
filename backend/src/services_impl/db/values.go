@@ -7,14 +7,14 @@ import (
 	"trackr/src/models"
 )
 
-type ValueServiceDB struct {
-	database *gorm.DB
+type ValueService struct {
+	DB *gorm.DB
 }
 
-func (service *ValueServiceDB) GetValues(field models.Field, user models.User, order string, offset int, limit int) ([]models.Value, error) {
+func (service *ValueService) GetValues(field models.Field, user models.User, order string, offset int, limit int) ([]models.Value, error) {
 	var values []models.Value
 
-	result := service.database.Model(&models.Value{})
+	result := service.DB.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 
@@ -43,10 +43,10 @@ func (service *ValueServiceDB) GetValues(field models.Field, user models.User, o
 	return values, nil
 }
 
-func (service *ValueServiceDB) GetNumberOfValuesByUser(user models.User) (int64, error) {
+func (service *ValueService) GetNumberOfValuesByUser(user models.User) (int64, error) {
 	var count int64
 
-	result := service.database.Model(&models.User{})
+	result := service.DB.Model(&models.User{})
 	result = result.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
@@ -61,10 +61,10 @@ func (service *ValueServiceDB) GetNumberOfValuesByUser(user models.User) (int64,
 	return count, nil
 }
 
-func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int64, error) {
+func (service *ValueService) GetNumberOfValuesByField(field models.Field) (int64, error) {
 	var count int64
 
-	result := service.database.Model(&models.User{})
+	result := service.DB.Model(&models.User{})
 	result = result.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Where("`fields`.`id` = ?", field.ID)
@@ -77,10 +77,10 @@ func (service *ValueServiceDB) GetNumberOfValuesByField(field models.Field) (int
 	return count, nil
 }
 
-func (service *ValueServiceDB) GetLastAddedValue(user models.User) (*models.Value, error) {
+func (service *ValueService) GetLastAddedValue(user models.User) (*models.Value, error) {
 	var value models.Value
 
-	result := service.database.Model(&models.Value{})
+	result := service.DB.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.Order("`values`.`created_at` DESC")
@@ -93,10 +93,10 @@ func (service *ValueServiceDB) GetLastAddedValue(user models.User) (*models.Valu
 	return &value, nil
 }
 
-func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Value, error) {
+func (service *ValueService) GetValue(id uint, user models.User) (*models.Value, error) {
 	var value models.Value
 
-	result := service.database.Model(&models.Value{})
+	result := service.DB.Model(&models.Value{})
 	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.First(&value, "`values`.`id` = ? AND `projects`.`user_id` = ?", id, user.ID)
@@ -108,16 +108,16 @@ func (service *ValueServiceDB) GetValue(id uint, user models.User) (*models.Valu
 	return &value, nil
 }
 
-func (service *ValueServiceDB) AddValue(value models.Value) error {
-	if result := service.database.Create(&value); result.Error != nil {
+func (service *ValueService) AddValue(value models.Value) error {
+	if result := service.DB.Create(&value); result.Error != nil {
 		return result.Error
 	}
 
 	return nil
 }
 
-func (service *ValueServiceDB) DeleteValues(field models.Field) error {
-	result := service.database.Delete(&models.Value{}, "field_id = ?", field.ID)
+func (service *ValueService) DeleteValues(field models.Field) error {
+	result := service.DB.Delete(&models.Value{}, "field_id = ?", field.ID)
 	if result.Error != nil {
 		return result.Error
 	}

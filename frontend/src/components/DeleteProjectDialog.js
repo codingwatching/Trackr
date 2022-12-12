@@ -1,46 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useProjects } from "../hooks/useProjects";
+import { useDeleteProject } from "../hooks/useDeleteProject";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
-import ProjectsAPI from "../api/ProjectsAPI";
+import formatError from "../utils/formatError";
 
 const DeleteProjectDialog = ({ onClose, project }) => {
-  const [projects, mutateProjects] = useProjects();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [deleteProject, deleteProjectContext] = useDeleteProject();
   const navigate = useNavigate();
 
   const handleDeleteProject = () => {
-    ProjectsAPI.deleteProject(project.id)
-      .then(() => {
-        onClose();
-        navigate("/projects");
-
-        mutateProjects(projects.filter((x) => x.id !== project.id));
-      })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to delete project: " + error.message);
-        }
-      });
-
-    setLoading(true);
+    deleteProject(project.id).then(() => {
+      onClose();
+      navigate("/projects");
+    });
   };
 
-  return error ? (
+  return deleteProjectContext.isError ? (
     <>
       <DialogTitle>Error</DialogTitle>
       <DialogContent>
-        <DialogContentText>{error}</DialogContentText>
+        <DialogContentText>
+          {formatError(deleteProjectContext.error)}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={onClose}>
@@ -57,16 +42,18 @@ const DeleteProjectDialog = ({ onClose, project }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ mb: 1.5, mr: 1 }}>
-        {!loading && (
-          <Button autoFocus onClick={onClose}>
-            Cancel
-          </Button>
-        )}
+        <Button
+          autoFocus
+          onClick={onClose}
+          disabled={deleteProjectContext.isLoading}
+        >
+          Cancel
+        </Button>
         <LoadingButton
           color="error"
           variant="outlined"
           onClick={handleDeleteProject}
-          loading={loading}
+          loading={deleteProjectContext.isLoading}
         >
           Yes, delete it
         </LoadingButton>

@@ -7,7 +7,7 @@ import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import TextButton from "./TextButton";
 
 const RecentProjectsSubList = () => {
-  const [projects] = useProjects();
+  const projects = useProjects();
   const navigate = useNavigate();
 
   return projects.length === 0 ? (

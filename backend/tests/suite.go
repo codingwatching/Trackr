@@ -7,9 +7,9 @@ import (
 	"gorm.io/driver/sqlite"
 
 	"trackr/src/controllers"
-	"trackr/src/db"
 	"trackr/src/models"
 	"trackr/src/services"
+	"trackr/src/services_impl"
 )
 
 type Suite struct {
@@ -30,7 +30,7 @@ type Suite struct {
 func Startup() *Suite {
 	var suite Suite
 
-	suite.Service = db.InitServiceProvider(sqlite.Open(":memory:?_foreign_keys=on"))
+	suite.Service = services_impl.InitServiceProvider(sqlite.Open(":memory:?_foreign_keys=on"))
 	suite.Time = time.Now()
 	suite.User = models.User{
 		ID:               1,

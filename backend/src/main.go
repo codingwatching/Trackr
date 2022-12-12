@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"trackr/src/controllers"
-	"trackr/src/db"
+	"trackr/src/services_impl"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	serviceProvider := db.InitServiceProvider(dialector)
+	serviceProvider := services_impl.InitServiceProvider(dialector)
 	router := controllers.InitRouter(serviceProvider)
 	router.Run()
 }

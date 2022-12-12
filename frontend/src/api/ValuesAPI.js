@@ -3,7 +3,7 @@ import axios from "axios";
 class ValuesAPI {
   static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/values";
 
-  static getValues(apiKey, fieldId, order, offset, limit) {
+  static getValues = (apiKey, fieldId, order, offset, limit) => {
     return axios.get(this.#BASE_URL + "/", {
       params: {
         apiKey,
@@ -14,13 +14,13 @@ class ValuesAPI {
       },
       withCredentials: true,
     });
-  }
+  };
 
-  static deleteValues(fieldId) {
+  static deleteValues = (fieldId) => {
     return axios.delete(this.#BASE_URL + "/" + fieldId, {
       withCredentials: true,
     });
-  }
+  };
 }
 
 export default ValuesAPI;

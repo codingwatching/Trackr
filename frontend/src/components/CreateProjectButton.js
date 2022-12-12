@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { mutate } from "swr";
+import { useCreateProject } from "../hooks/useCreateProject";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
-import ProjectsAPI from "../api/ProjectsAPI";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
@@ -12,44 +11,35 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import formatError from "../utils/formatError";
 
 const CreateProjectButton = ({ sx, menuItem, icon }) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [error, setError] = useState();
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [createProject, createProjectContext] = useCreateProject();
 
   const handleOnClick = () => {
-    ProjectsAPI.createProject()
+    createProject()
       .then((result) => {
         navigate("/projects/settings/" + result.data.id);
-        mutate("/api/projects");
+        menuItem();
       })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to create new project: " + error.message);
-        }
-
-        setDialogOpen(true);
+      .catch(() => {
+        setErrorDialogOpen(true);
       });
-
-    setLoading(true);
   };
 
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
+  const handleCloseErrorDialog = () => {
+    setErrorDialogOpen(false);
+    menuItem();
   };
 
   return (
     <>
       {menuItem ? (
         <MenuItem
+          disabled={createProjectContext.isLoading}
           onClick={() => {
-            menuItem();
             handleOnClick();
           }}
           sx={{ py: 1, pr: 8, alignItems: "start" }}
@@ -66,7 +56,7 @@ const CreateProjectButton = ({ sx, menuItem, icon }) => {
         <LoadingButton
           sx={sx}
           startIcon={icon && <AddRoundedIcon />}
-          loading={loading}
+          loading={createProjectContext.isLoading}
           type="submit"
           variant="contained"
           onClick={handleOnClick}
@@ -76,13 +66,15 @@ const CreateProjectButton = ({ sx, menuItem, icon }) => {
         </LoadingButton>
       )}
 
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>{"Error"}</DialogTitle>
+      <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog}>
+        <DialogTitle>Error</DialogTitle>
         <DialogContent>
-          <DialogContentText>{error}</DialogContentText>
+          <DialogContentText>
+            {formatError(createProjectContext.error)}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleCloseDialog}>
+          <Button autoFocus onClick={handleCloseErrorDialog}>
             Okay
           </Button>
         </DialogActions>

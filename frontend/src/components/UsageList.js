@@ -1,14 +1,13 @@
-import { useUser } from "../hooks/useUser";
 import Box from "@mui/material/Box";
-import LinearProgress from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import CenteredBox from "../components/CenteredBox";
 import ErrorIcon from "@mui/icons-material/Error";
+import ErrorBoundary from "./ErrorBoundary";
+import LoadingBoundary from "./LoadingBoundary";
+import UsageSubList from "./UsageSubList";
 
 const UsageList = () => {
-  const [user, , loading, error] = useUser();
-
   return (
     <Box
       sx={{
@@ -31,134 +30,29 @@ const UsageList = () => {
           gap: "10px",
         }}
       >
-        {error ? (
-          <CenteredBox>
-            <ErrorIcon sx={{ fontSize: 50, mb: 2 }} />
-            <Typography
-              variant="h7"
-              sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
-            >
-              {error}
-            </Typography>
-          </CenteredBox>
-        ) : loading ? (
-          <CenteredBox>
-            <CircularProgress />
-          </CenteredBox>
-        ) : (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "8px", flex: 1 }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flex: {
-                  sm: 1,
-                  xs: 1,
-                  md: 0.5,
-                },
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 1,
-                px: 5,
-                py: 8,
-                background: "white",
-                boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
-              }}
-            >
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "start",
-                  mb: 1,
-                  color: "#585858",
-                }}
+        <ErrorBoundary
+          fallback={({ error }) => (
+            <CenteredBox>
+              <ErrorIcon sx={{ fontSize: 50, mb: 2 }} />
+              <Typography
+                variant="h7"
+                sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flex: 1,
-                    pr: 1.5,
-                  }}
-                >
-                  <Typography variant="h7">
-                    {user.numberOfValues.toLocaleString()}
-                  </Typography>
-                  <Typography variant="h7" sx={{ mx: 0.5 }}>
-                    /
-                  </Typography>
-                  <Typography variant="h7">
-                    {user.maxValues.toLocaleString()}
-                  </Typography>
-                </Box>
-
-                <Typography variant="h7" sx={{ textAlign: "center" }}>
-                  {((user.numberOfValues / user.maxValues) * 100).toFixed(2)}%
-                  used
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={(user.numberOfValues / user.maxValues) * 100}
-                sx={{ width: "100%", mb: 1 }}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flex: {
-                  xs: 1,
-                  sm: 1,
-                  md: 0.25,
-                },
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 1,
-                px: 2,
-                py: 8,
-                background: "white",
-                boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
-              }}
-            >
-              <Typography variant="h5">
-                {user.numberOfValues.toLocaleString()}
+                {error}
               </Typography>
-              <Typography variant="h5" sx={{ color: "gray" }}>
-                values
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flex: {
-                  sm: 1,
-                  xs: 1,
-                  md: 0.25,
-                },
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 1,
-                px: 2,
-                py: 8,
-                background: "white",
-                boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
-              }}
-            >
-              <Typography variant="h5">
-                {user.numberOfFields.toLocaleString()}
-              </Typography>
-              <Typography variant="h5" sx={{ color: "gray" }}>
-                fields
-              </Typography>
-            </Box>
-          </Box>
-        )}
+            </CenteredBox>
+          )}
+        >
+          <LoadingBoundary
+            fallback={
+              <CenteredBox>
+                <CircularProgress />
+              </CenteredBox>
+            }
+          >
+            <UsageSubList />
+          </LoadingBoundary>
+        </ErrorBoundary>
       </Box>
     </Box>
   );

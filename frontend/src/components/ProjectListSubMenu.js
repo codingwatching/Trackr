@@ -8,7 +8,7 @@ import Link from "@mui/material/Link";
 
 const ProjectListSubMenu = ({ closeSubMenu }) => {
   const MAX_PROJECTS = 3;
-  const [projects] = useProjects();
+  const projects = useProjects();
   const navigate = useNavigate();
 
   const handleViewProject = (event, project) => {

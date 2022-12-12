@@ -1,4 +1,4 @@
-import { SWRConfig } from "swr";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProjectRoute from "./routes/ProjectRoute";
@@ -14,11 +14,11 @@ import ProjectFields from "./pages/ProjectFields";
 import UserAccount from "./pages/UserAccount";
 import UserChangePassword from "./pages/UserChangePassword";
 import UserLogs from "./pages/UserLogs";
-import UserSettingsRoute from "./routes/UserSettingsRoute";
+import UserRoute from "./routes/UserRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
-let theme = createTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#4184e9",
@@ -32,15 +32,18 @@ let theme = createTheme({
   },
 });
 
-const swrConfig = {
-  revalidateIfStale: false,
-  revalidateOnFocus: false,
-  revalidateOnReconnect: false,
-};
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   return (
-    <SWRConfig value={swrConfig}>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -57,7 +60,7 @@ const App = () => {
               path="/settings/"
               element={
                 <AuthorizedRoute
-                  element={<UserSettingsRoute element={<UserAccount />} />}
+                  element={<UserRoute element={<UserAccount />} />}
                 />
               }
             />
@@ -65,9 +68,7 @@ const App = () => {
               path="/settings/changepassword"
               element={
                 <AuthorizedRoute
-                  element={
-                    <UserSettingsRoute element={<UserChangePassword />} />
-                  }
+                  element={<UserRoute element={<UserChangePassword />} />}
                 />
               }
             />
@@ -75,7 +76,7 @@ const App = () => {
               path="/settings/logs"
               element={
                 <AuthorizedRoute
-                  element={<UserSettingsRoute element={<UserLogs />} />}
+                  element={<UserRoute element={<UserLogs />} />}
                 />
               }
             />
@@ -118,7 +119,7 @@ const App = () => {
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
-    </SWRConfig>
+    </QueryClientProvider>
   );
 };
 
