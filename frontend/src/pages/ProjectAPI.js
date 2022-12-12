@@ -1,5 +1,5 @@
-import { ProjectRouteContext } from "../routes/ProjectRoute";
-import { useContext } from "react";
+import { useParams } from "react-router-dom";
+import { useProject } from "../hooks/useProject";
 import OpenAPI from "../components/openapi/OpenAPI";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -8,7 +8,8 @@ import Divider from "@mui/material/Divider";
 import ResetAPIKeyButton from "../components/ResetAPIKeyButton";
 
 const ProjectAPI = () => {
-  const { project } = useContext(ProjectRouteContext);
+  const { projectId } = useParams();
+  const project = useProject(projectId);
 
   return (
     <Container sx={{ mt: 3, pb: 3 }}>
