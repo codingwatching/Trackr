@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteProjectDialog from "./DeleteProjectDialog";
 
-const ProjectMenuButton = ({ project, noSettings, disabled }) => {
+const ProjectMenuButton = ({ project, noSettings }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogElement, setDialogElement] = useState();
@@ -55,7 +55,7 @@ const ProjectMenuButton = ({ project, noSettings, disabled }) => {
 
   return (
     <>
-      <IconButton onClick={openDropdownMenu} disabled={disabled}>
+      <IconButton onClick={openDropdownMenu}>
         <MoreVert />
       </IconButton>
 

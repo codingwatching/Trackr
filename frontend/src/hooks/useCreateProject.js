@@ -5,7 +5,7 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation(() => ProjectsAPI.createProject(), {
     onSuccess: () => {
-      queryClient.invalidateQueries(ProjectsAPI.QUERY_KEY);
+      queryClient.removeQueries(ProjectsAPI.QUERY_KEY, { exact: true });
     },
   });
 
