@@ -27,17 +27,19 @@ const ProjectRoute = ({ element }) => {
         </CenteredBox>
       )}
     >
-      <ProjectNavBar />
+      <ProjectRouteContext.Provider value={parseInt(projectId)}>
+        <ProjectNavBar />
 
-      <LoadingBoundary
-        fallback={
-          <CenteredBox>
-            <CircularProgress />
-          </CenteredBox>
-        }
-      >
-        {element}
-      </LoadingBoundary>
+        <LoadingBoundary
+          fallback={
+            <CenteredBox>
+              <CircularProgress />
+            </CenteredBox>
+          }
+        >
+          {element}
+        </LoadingBoundary>
+      </ProjectRouteContext.Provider>
     </ErrorBoundary>
   );
 };

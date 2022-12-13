@@ -1,5 +1,5 @@
-import { ProjectRouteContext } from "../routes/ProjectRoute";
-import { useContext, useState } from "react";
+import { useCreateField } from "../hooks/useCreateField";
+import formatError from "../utils/formatError";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -11,50 +11,24 @@ import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TextField from "@mui/material/TextField";
-import FieldsAPI from "../api/FieldsAPI";
+import { useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 
 const CreateFieldDialog = ({ onBack, onClose }) => {
-  const { project, fields, setFields } = useContext(ProjectRouteContext);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const projectId = useContext(ProjectRouteContext);
+  const [createField, createFieldContext] = useCreateField();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const data = new FormData(event.currentTarget);
 
-    FieldsAPI.addField(project.id, data.get("name"))
-      .then((result) => {
-        setFields([
-          ...fields,
-          {
-            id: result.data.id,
-            name: data.get("name"),
-            numberOfValues: 0,
-            createdAt: new Date().toISOString(),
-          },
-        ]);
-
-        setLoading(false);
-
-        if (onBack) {
-          onBack();
-        } else {
-          onClose();
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to add field: " + error.message);
-        }
-      });
-
-    setLoading(true);
-    setError();
+    createField({ projectId, name: data.get("name") }).then(() => {
+      if (onBack) {
+        onBack();
+      } else {
+        onClose();
+      }
+    });
   };
 
   return (
@@ -64,7 +38,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
           <IconButton
             color="primary"
             sx={{ mr: 1 }}
-            disabled={loading}
+            disabled={createFieldContext.isLoading}
             onClick={onBack}
           >
             <ArrowBackIcon />
@@ -73,10 +47,10 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
         Add Field
       </DialogTitle>
       <DialogContent sx={{ mb: -2 }}>
-        {error && (
+        {createFieldContext.isError && (
           <Fade in>
             <Alert severity="error" sx={{ mb: 1 }}>
-              {error}
+              {formatError(createFieldContext.error)}
             </Alert>
           </Fade>
         )}
@@ -86,7 +60,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
         </DialogContentText>
 
         <TextField
-          error={error ? true : false}
+          error={createFieldContext.isError}
           margin="normal"
           required
           fullWidth
@@ -98,7 +72,7 @@ const CreateFieldDialog = ({ onBack, onClose }) => {
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
         <LoadingButton
-          loading={loading}
+          loading={createFieldContext.isLoading}
           type="submit"
           disableElevation
           autoFocus

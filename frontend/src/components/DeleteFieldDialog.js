@@ -1,75 +1,52 @@
 import { ProjectRouteContext } from "../routes/ProjectRoute";
-import { useContext, useState } from "react";
+import { useDeleteField } from "../hooks/useDeleteField";
+import { useContext } from "react";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
-import FieldsAPI from "../api/FieldsAPI";
+import Fade from "@mui/material/Fade";
+import Alert from "@mui/material/Alert";
+import formatError from "../utils/formatError";
 
 const DeleteFieldDialog = ({ onClose, field }) => {
-  const { fields, setFields, visualizations, setVisualizations } =
-    useContext(ProjectRouteContext);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const projectId = useContext(ProjectRouteContext);
+  const [deleteField, deleteFieldContext] = useDeleteField(projectId);
 
   const handleDeleteField = () => {
-    FieldsAPI.deleteField(field.id)
-      .then(() => {
-        onClose();
-
-        if (setFields && fields) {
-          setFields(fields.filter((x) => x.id !== field.id));
-          setVisualizations(
-            visualizations.filter((x) => x.fieldId !== field.id)
-          );
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to delete field: " + error.message);
-        }
-      });
-
-    setLoading(true);
+    deleteField(field.id).then(() => onClose());
   };
 
-  return error ? (
-    <>
-      <DialogTitle>Error</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{error}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={onClose}>
-          Okay
-        </Button>
-      </DialogActions>
-    </>
-  ) : (
+  return (
     <>
       <DialogTitle>Delete Field</DialogTitle>
       <DialogContent>
+        {deleteFieldContext.isError && (
+          <Fade in>
+            <Alert severity="error" sx={{ mb: 1 }}>
+              {formatError(deleteFieldContext.error)}
+            </Alert>
+          </Fade>
+        )}
         <DialogContentText variant="h7">
           Are you sure you want to delete the "{field.name}" field?
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ mb: 1.5, mr: 1 }}>
-        {!loading && (
-          <Button autoFocus onClick={onClose}>
-            Cancel
-          </Button>
-        )}
+        <Button
+          autoFocus
+          onClick={onClose}
+          disabled={deleteFieldContext.isLoading}
+        >
+          Cancel
+        </Button>
         <LoadingButton
           color="error"
           variant="outlined"
           onClick={handleDeleteField}
-          loading={loading}
+          loading={deleteFieldContext.isLoading}
         >
           Yes, delete it
         </LoadingButton>

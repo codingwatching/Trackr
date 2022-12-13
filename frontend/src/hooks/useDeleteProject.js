@@ -8,9 +8,11 @@ export const useDeleteProject = () => {
     {
       onSuccess: (_, projectId) => {
         queryClient.setQueryData(ProjectsAPI.QUERY_KEY, (oldData) => {
-          oldData.data.projects = oldData.data.projects.filter(
-            (project) => project.id !== projectId
-          );
+          if (oldData) {
+            oldData.data.projects = oldData.data.projects.filter(
+              (project) => project.id !== projectId
+            );
+          }
 
           return oldData;
         });

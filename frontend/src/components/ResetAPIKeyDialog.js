@@ -1,6 +1,7 @@
 import { useProject } from "../hooks/useProject";
-import { useParams } from "react-router-dom";
 import { useUpdateProject } from "../hooks/useUpdateProject";
+import { useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import Button from "@mui/material/Button";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,8 +13,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import formatError from "../utils/formatError";
 
 const ResetAPIKeyDialog = ({ onClose }) => {
-  const { projectId } = useParams();
   const [updateProject, updateProjectContext] = useUpdateProject();
+  const projectId = useContext(ProjectRouteContext);
   const project = useProject(projectId);
 
   const handleResetAPIKey = () => {

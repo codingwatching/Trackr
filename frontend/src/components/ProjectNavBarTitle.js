@@ -1,12 +1,13 @@
-import { useParams } from "react-router-dom";
 import { useProject } from "../hooks/useProject";
+import { useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import ProjectMenuButton from "./ProjectMenuButton";
 
 const ProjectNavBarTitle = () => {
-  const { projectId } = useParams();
+  const projectId = useContext(ProjectRouteContext);
   const project = useProject(projectId);
 
   return (

@@ -1,7 +1,7 @@
 import { useUpdateProject } from "../hooks/useUpdateProject";
 import { useProject } from "../hooks/useProject";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -14,11 +14,11 @@ import Moment from "react-moment";
 import formatError from "../utils/formatError";
 
 const EditProject = () => {
-  const { projectId } = useParams();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
-  const project = useProject(projectId);
   const [updateProject, updateProjectContext] = useUpdateProject();
+  const projectId = useContext(ProjectRouteContext);
+  const project = useProject(projectId);
 
   const handleSubmit = (event) => {
     event.preventDefault();

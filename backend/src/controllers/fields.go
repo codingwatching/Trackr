@@ -116,16 +116,13 @@ func updateFieldRoute(c *gin.Context) {
 		return
 	}
 
-	wasModified := false
-
-	if json.Name != "" {
-		field.Name = json.Name
-		wasModified = true
+	if json.Name == "" {
+		c.JSON(http.StatusBadRequest, responses.Error{Error: "The name of a field cannot be empty."})
+		return
 	}
 
-	if wasModified {
-		field.UpdatedAt = time.Now()
-	}
+	field.Name = json.Name
+	field.UpdatedAt = time.Now()
 
 	if err := serviceProvider.GetFieldService().UpdateField(*field); err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update field."})

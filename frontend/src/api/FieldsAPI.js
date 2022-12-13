@@ -2,6 +2,7 @@ import axios from "axios";
 
 class FieldsAPI {
   static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/fields";
+  static QUERY_KEY = "fields";
 
   static getFields = (projectId) => {
     return axios.get(this.#BASE_URL + "/" + projectId, {
@@ -9,7 +10,7 @@ class FieldsAPI {
     });
   };
 
-  static addField = (projectId, name) => {
+  static createField = (projectId, name) => {
     return axios.post(
       this.#BASE_URL + "/",
       { projectId, name },

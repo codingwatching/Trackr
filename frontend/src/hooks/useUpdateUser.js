@@ -9,11 +9,13 @@ export const useUpdateUser = () => {
     {
       onSuccess: (_, { firstName, lastName }) =>
         queryClient.setQueryData(UsersAPI.QUERY_KEY, (oldData) => {
-          oldData.data = {
-            ...oldData.data,
-            firstName,
-            lastName,
-          };
+          if (oldData) {
+            oldData.data = {
+              ...oldData.data,
+              firstName,
+              lastName,
+            };
+          }
 
           return oldData;
         }),

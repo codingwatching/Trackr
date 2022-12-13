@@ -6,6 +6,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Fade from "@mui/material/Fade";
+import Alert from "@mui/material/Alert";
 import formatError from "../utils/formatError";
 
 const DeleteProjectDialog = ({ onClose, project }) => {
@@ -19,24 +21,17 @@ const DeleteProjectDialog = ({ onClose, project }) => {
     });
   };
 
-  return deleteProjectContext.isError ? (
-    <>
-      <DialogTitle>Error</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          {formatError(deleteProjectContext.error)}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={onClose}>
-          Okay
-        </Button>
-      </DialogActions>
-    </>
-  ) : (
+  return (
     <>
       <DialogTitle>Delete Project</DialogTitle>
       <DialogContent>
+        {deleteProjectContext.isError && (
+          <Fade in>
+            <Alert severity="error" sx={{ mb: 1 }}>
+              {formatError(deleteProjectContext.error)}
+            </Alert>
+          </Fade>
+        )}
         <DialogContentText variant="h7">
           Are you sure you want to delete the "{project.name}" project?
         </DialogContentText>

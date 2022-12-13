@@ -1,9 +1,6 @@
-import {
-  useLocation,
-  matchPath,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLocation, matchPath, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -23,7 +20,7 @@ import LoadingBoundary from "./LoadingBoundary";
 import ProjectNavBarTitle from "./ProjectNavBarTitle";
 
 const ProjectNavBar = ({ project, loading }) => {
-  const { projectId } = useParams();
+  const projectId = useContext(ProjectRouteContext);
   const location = useLocation();
   const navigate = useNavigate();
 
