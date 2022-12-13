@@ -20,12 +20,18 @@ import okhttp3.ResponseBody;
 public class trackrAPI {
     //variables"
     private static String sesssionID="";
+    private static int projID =-1;
+    private static int fieldId=-1;
+    private static int VisulizationId=-1;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final String Url ="http://localhost:8080";
 
     public static void main(String[] args) throws IOException {
       login("kamsaiyed@gmail.com","kamar123");
       createProject();
+      createField();
+      createVisualization();
+      sendData();
     }
 
     public static String login(String username, String Password) throws IOException {
@@ -42,32 +48,75 @@ public class trackrAPI {
         return sesssionID;
     }
 
-    public static void createProject() throws IOException {
+    public static int createProject() throws IOException {
         //http
         Response response= post(Url+"/api/projects/","{}","Session="+sesssionID);
-        System.out.println("session="+sesssionID);
-//        ResponseBody responseBodyCopy = response.peekBody(Long.MAX_VALUE);
         String body=response.body().string();
-        System.out.println(body);
+        if(body!=null){
+            body=body.substring(6,body.length()-1);
+        }
+        System.out.println(Integer.parseInt(body));
+        projID=Integer.parseInt(body);
+        return projID;
     }
 
-    public void createField(){
+    public static int createField() throws IOException {
         //http
+        String body="{\"ProjectID\":"+projID+
+                ",\"Name\":\"Temperature\"}";
+
+        Response response= post(Url+"/api/fields/",body,"Session="+sesssionID);
+        String resp=response.body().string();
+        if(resp!=null){
+            resp=resp.substring(6,resp.length()-1);
+        }
+        System.out.println(Integer.parseInt(resp));
+        fieldId=Integer.parseInt(resp);
+        return fieldId;
+
     }
 
-    public void createVisualization(){
+    public static int createVisualization() throws IOException {
         //http
+        String body="{\"FieldID\":"+fieldId+
+                ",\"Metadata\":\"Temperature Visulization\"}";
+
+        Response response= post(Url+"/api/visualizations/",body,"Session="+sesssionID);
+        String resp=response.body().string();
+        if(resp!=null){
+            resp=resp.substring(6,resp.length()-1);
+        }
+        System.out.println(Integer.parseInt(resp));
+        VisulizationId=Integer.parseInt(resp);
+        return VisulizationId;
     }
 
-    public void sendData(){
-        //http
+    public static void sendData() throws IOException {
+        // get the project api key using projectID already stored
+
+        String ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
+        System.out.println(ret);
+
+
+//        //http
+//        String body="{\"FieldID\":"+fieldId+
+//                ",\"Metadata\":\"Temperature Visulization\"}";
+//
+//        Response response= post(Url+"/api/values/",body,"Session="+sesssionID);
+//        String resp=response.body().string();
+//        if(resp!=null){
+//            resp=resp.substring(6,resp.length()-1);
+//        }
+//        System.out.println(Integer.parseInt(resp));
+//        VisulizationId=Integer.parseInt(resp);
+//        return VisulizationId;
     }
     //------------------------------------------------------
 //GET
 //INPUT PARAMETERS: address for the GET request
 //RETURN: response as a string
 //------------------------------------------------------
-    private String get(String url) throws IOException{
+    private static String get(String url,String head) throws IOException{
 
         String retVal = "";
 
@@ -75,6 +124,7 @@ public class trackrAPI {
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Cookie", head)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -85,8 +135,8 @@ public class trackrAPI {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                try(ResponseBody responseBody = response.body()) {
-
+                try {
+                    ResponseBody responseBody = response.body();
                     if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
                     Headers responseHeaders = response.headers();
@@ -94,6 +144,9 @@ public class trackrAPI {
                     for (int i=0;  i < responseHeaders.size(); i++){
                         Log.i(responseHeaders.name(i), responseHeaders.value(i));
                     }
+                } catch (Exception e) {
+                    Log.i("get Response", "Error while getting request to the client");
+
                 }
             }
         });
@@ -117,7 +170,8 @@ public class trackrAPI {
                 .url(url)
                 .post(body)
                 .build();
-        try (Response response = client.newCall(request).execute()) {
+        try  {
+            Response response = client.newCall(request).execute();
             retVal = response;
         } catch (Exception e) {
             Log.i("Post Response", "Error while posting request to the client");
@@ -146,7 +200,8 @@ public class trackrAPI {
                 .post(body)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
+        try {
+            Response response = client.newCall(request).execute();
             retVal = response;
         } catch (Exception e) {
             Log.i("Post Reponse", "Error while posting request to the client");
