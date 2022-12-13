@@ -19,7 +19,6 @@ const VisualizationsEditor = ({
   onAddField,
 
   visualizationType,
-
   visualization,
   metadata,
 }) => {

@@ -8,6 +8,12 @@ const Table = {
   editor: TableEditor,
   view: TableView,
 
+  deserialize: (metadata) => {
+    const sort = metadata?.sort || "asc";
+
+    return { sort };
+  },
+
   serialize: (sort) => {
     return JSON.stringify({
       name: Table.name,

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useQuery } from "react-query";
 import ValuesAPI from "../api/ValuesAPI";
 
 export const useValues = (apiKey, fieldId, order, offset, limit) => {
@@ -6,37 +7,15 @@ export const useValues = (apiKey, fieldId, order, offset, limit) => {
   offset = offset || 0;
   limit = limit || 0;
 
-  const [values, setValues] = useState([]);
-  const [totalValues, setTotalValues] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const { data, remove } = useQuery(
+    [ValuesAPI.QUERY_KEY, apiKey, fieldId, order, offset, limit],
+    () => ValuesAPI.getValues(apiKey, fieldId, order, offset, limit),
+    {
+      suspense: true,
+    }
+  );
 
-  useEffect(() => {
-    setLoading(true);
-    setValues([]);
-    setError();
+  useEffect(remove, [remove]);
 
-    ValuesAPI.getValues(apiKey, fieldId, order, offset, limit)
-      .then((result) => {
-        setLoading(false);
-        setError();
-        setValues(result.data.values);
-        setTotalValues(result.data.totalValues);
-      })
-      .catch((error) => {
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to load values: " + error.message);
-        }
-
-        setLoading(false);
-        setValues([]);
-        setTotalValues(0);
-      });
-
-    return () => {};
-  }, [apiKey, fieldId, order, offset, limit]);
-
-  return [values, totalValues, loading, error];
+  return [data.data.values, data.data.totalValues];
 };

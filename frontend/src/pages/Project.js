@@ -1,6 +1,7 @@
 import { ProjectRouteContext } from "../routes/ProjectRoute";
 import { useContext } from "react";
 import { createVisualizationElement } from "../components/visualizations/Visualizations";
+import { useVisualizations } from "../hooks/useVisualizations";
 import CreateVisualizationButton from "../components/CreateVisualizationButton";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -10,7 +11,8 @@ import Box from "@mui/material/Box";
 import CenteredBox from "../components/CenteredBox";
 
 const Project = () => {
-  const { visualizations } = useContext(ProjectRouteContext);
+  const projectId = useContext(ProjectRouteContext);
+  const visualizations = useVisualizations(projectId);
 
   return (
     <Container sx={{ mt: 2.5 }}>

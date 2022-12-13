@@ -34,6 +34,15 @@ const Graph = {
   editor: GraphEditor,
   view: GraphView,
 
+  deserialize: (metadata) => {
+    const color = metadata?.color || "rgb(255, 99, 132)";
+    const graphType = metadata?.graphType || "line";
+    const graphFunction = metadata?.graphFunction || "none";
+    const graphTimestep = metadata?.graphTimestep || "";
+
+    return { color, graphType, graphFunction, graphTimestep };
+  },
+
   serialize: (color, graphType, graphFunction, graphTimestep) => {
     return JSON.stringify({
       name: Graph.name,
