@@ -1,14 +1,19 @@
+import { useProject } from "../hooks/useProject";
+import { Suspense, useContext, lazy } from "react";
 import { ProjectRouteContext } from "../routes/ProjectRoute";
-import { useContext } from "react";
-import OpenAPI from "../components/openapi/OpenAPI";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import CenteredBox from "../components/CenteredBox";
 import Divider from "@mui/material/Divider";
 import ResetAPIKeyButton from "../components/ResetAPIKeyButton";
 
+const OpenAPI = lazy(() => import("../components/openapi/OpenAPI"));
+
 const ProjectAPI = () => {
-  const { project } = useContext(ProjectRouteContext);
+  const projectId = useContext(ProjectRouteContext);
+  const project = useProject(projectId);
 
   return (
     <Container sx={{ mt: 3, pb: 3 }}>
@@ -74,7 +79,15 @@ const ProjectAPI = () => {
       </Typography>
       <Box sx={{ my: 3 }} />
 
-      <OpenAPI />
+      <Suspense
+        fallback={
+          <CenteredBox>
+            <CircularProgress />
+          </CenteredBox>
+        }
+      >
+        <OpenAPI />
+      </Suspense>
     </Container>
   );
 };

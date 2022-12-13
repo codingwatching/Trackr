@@ -1,12 +1,11 @@
-import { useContext } from "react";
-import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
+import { useUser } from "../hooks/useUser";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import EditUserButton from "../components/EditUserButton";
 
 const UserAccount = () => {
-  const { user } = useContext(UserSettingsRouteContext);
+  const user = useUser();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

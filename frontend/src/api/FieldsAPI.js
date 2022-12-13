@@ -2,14 +2,15 @@ import axios from "axios";
 
 class FieldsAPI {
   static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/fields";
+  static QUERY_KEY = "fields";
 
-  static getFields(projectId) {
+  static getFields = (projectId) => {
     return axios.get(this.#BASE_URL + "/" + projectId, {
       withCredentials: true,
     });
-  }
+  };
 
-  static addField(projectId, name) {
+  static createField = (projectId, name) => {
     return axios.post(
       this.#BASE_URL + "/",
       { projectId, name },
@@ -17,9 +18,9 @@ class FieldsAPI {
         withCredentials: true,
       }
     );
-  }
+  };
 
-  static updateField(id, name) {
+  static updateField = (id, name) => {
     return axios.put(
       this.#BASE_URL + "/",
       { id, name },
@@ -27,13 +28,13 @@ class FieldsAPI {
         withCredentials: true,
       }
     );
-  }
+  };
 
-  static deleteField(fieldId) {
+  static deleteField = (fieldId) => {
     return axios.delete(this.#BASE_URL + "/" + fieldId, {
       withCredentials: true,
     });
-  }
+  };
 }
 
 export default FieldsAPI;

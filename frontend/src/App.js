@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProjectRoute from "./routes/ProjectRoute";
@@ -13,11 +14,11 @@ import ProjectFields from "./pages/ProjectFields";
 import UserAccount from "./pages/UserAccount";
 import UserChangePassword from "./pages/UserChangePassword";
 import UserLogs from "./pages/UserLogs";
-import UserSettingsRoute from "./routes/UserSettingsRoute";
+import UserRoute from "./routes/UserRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
-let theme = createTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#4184e9",
@@ -31,83 +32,94 @@ let theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 const App = () => {
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
 
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route
-            path="/projects/"
-            element={<AuthorizedRoute element={<Projects />} />}
-          />
-          <Route
-            path="/settings/"
-            element={
-              <AuthorizedRoute
-                element={<UserSettingsRoute element={<UserAccount />} />}
-              />
-            }
-          />
-          <Route
-            path="/settings/changepassword"
-            element={
-              <AuthorizedRoute
-                element={<UserSettingsRoute element={<UserChangePassword />} />}
-              />
-            }
-          />
-          <Route
-            path="/settings/logs"
-            element={
-              <AuthorizedRoute
-                element={<UserSettingsRoute element={<UserLogs />} />}
-              />
-            }
-          />
-          <Route
-            path="/projects/settings/:projectId"
-            element={
-              <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectSettings />} />}
-              />
-            }
-          />
-          <Route
-            path="/projects/:projectId"
-            element={
-              <AuthorizedRoute
-                element={<ProjectRoute element={<Project />} />}
-              />
-            }
-          />
-          <Route
-            path="/projects/api/:projectId"
-            element={
-              <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectAPI />} />}
-              />
-            }
-          />
-          <Route
-            path="/projects/fields/:projectId"
-            element={
-              <AuthorizedRoute
-                element={<ProjectRoute element={<ProjectFields />} />}
-              />
-            }
-          />
-          <Route
-            path="/"
-            element={<AuthorizedRoute element={<Dashboard />} />}
-          />
-        </Routes>
-      </ThemeProvider>
-    </BrowserRouter>
+            <Route
+              path="/projects/"
+              element={<AuthorizedRoute element={<Projects />} />}
+            />
+            <Route
+              path="/settings/"
+              element={
+                <AuthorizedRoute
+                  element={<UserRoute element={<UserAccount />} />}
+                />
+              }
+            />
+            <Route
+              path="/settings/changepassword"
+              element={
+                <AuthorizedRoute
+                  element={<UserRoute element={<UserChangePassword />} />}
+                />
+              }
+            />
+            <Route
+              path="/settings/logs"
+              element={
+                <AuthorizedRoute
+                  element={<UserRoute element={<UserLogs />} />}
+                />
+              }
+            />
+            <Route
+              path="/projects/settings/:projectId"
+              element={
+                <AuthorizedRoute
+                  element={<ProjectRoute element={<ProjectSettings />} />}
+                />
+              }
+            />
+            <Route
+              path="/projects/:projectId"
+              element={
+                <AuthorizedRoute
+                  element={<ProjectRoute element={<Project />} />}
+                />
+              }
+            />
+            <Route
+              path="/projects/api/:projectId"
+              element={
+                <AuthorizedRoute
+                  element={<ProjectRoute element={<ProjectAPI />} />}
+                />
+              }
+            />
+            <Route
+              path="/projects/fields/:projectId"
+              element={
+                <AuthorizedRoute
+                  element={<ProjectRoute element={<ProjectFields />} />}
+                />
+              }
+            />
+            <Route
+              path="/"
+              element={<AuthorizedRoute element={<Dashboard />} />}
+            />
+          </Routes>
+        </ThemeProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 

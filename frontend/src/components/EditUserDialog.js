@@ -1,5 +1,5 @@
-import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
-import { useContext, useState } from "react";
+import { useUser } from "../hooks/useUser";
+import { useUpdateUser } from "../hooks/useUpdateUser";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,41 +10,20 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
-import UsersAPI from "../api/UsersAPI";
+import formatError from "../utils/formatError";
 
 const EditUserDialog = ({ onClose }) => {
-  const { setUser, user } = useContext(UserSettingsRouteContext);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const [updateUser, updateUserContext] = useUpdateUser();
+  const user = useUser();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const data = new FormData(event.currentTarget);
 
-    UsersAPI.updateUser(data.get("firstName"), data.get("lastName"))
-      .then(() => {
-        setUser({
-          ...user,
-          firstName: data.get("firstName"),
-          lastName: data.get("lastName"),
-        });
-        setLoading(false);
-
-        onClose();
-      })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to change name: " + error.message);
-        }
-      });
-
-    setLoading(true);
-    setError();
+    updateUser({
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+    }).then(() => onClose());
   };
 
   return (
@@ -53,10 +32,10 @@ const EditUserDialog = ({ onClose }) => {
         Edit name
       </DialogTitle>
       <DialogContent sx={{ mb: -2 }}>
-        {error && (
+        {updateUserContext.isError && (
           <Fade in>
             <Alert severity="error" sx={{ mb: 1 }}>
-              {error}
+              {formatError(updateUserContext.error)}
             </Alert>
           </Fade>
         )}
@@ -65,7 +44,7 @@ const EditUserDialog = ({ onClose }) => {
         </DialogContentText>
 
         <TextField
-          error={error ? true : false}
+          error={updateUserContext.isError}
           margin="normal"
           required
           fullWidth
@@ -77,7 +56,7 @@ const EditUserDialog = ({ onClose }) => {
         />
 
         <TextField
-          error={error ? true : false}
+          error={updateUserContext.isError}
           margin="normal"
           required
           fullWidth
@@ -93,7 +72,7 @@ const EditUserDialog = ({ onClose }) => {
           Cancel
         </Button>
         <LoadingButton
-          loading={loading}
+          loading={updateUserContext.isLoading}
           variant="contained"
           type="submit"
           disableElevation

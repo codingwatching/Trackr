@@ -244,20 +244,16 @@ func TestUpdateFieldRoute(t *testing.T) {
 	request, _ = json.Marshal(requests.UpdateField{
 		ID: 1,
 	})
-
-	response, _ = json.Marshal(responses.Empty{})
+	response, _ = json.Marshal(responses.Error{
+		Error: "The name of a field cannot be empty.",
+	})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
 	suite.Router.ServeHTTP(httpRecorder, httpRequest)
 
-	assert.Equal(t, http.StatusOK, httpRecorder.Code)
+	assert.Equal(t, http.StatusBadRequest, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
-
-	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
-	assert.Nil(t, err)
-	assert.NotNil(t, field)
-	assert.Equal(t, suite.Field.Name, field.Name)
 
 	//
 	// Test updating name path.
@@ -277,7 +273,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	field, err = suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
+	field, err := suite.Service.GetFieldService().GetField(suite.Field.ID, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, field)
 	assert.Equal(t, "New Field Name", field.Name)

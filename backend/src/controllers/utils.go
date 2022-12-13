@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 
 	"trackr/src/common"
 	"trackr/src/models"

@@ -5,6 +5,10 @@ IF not exist bin\ (
     mkdir bin
 )
 
+IF "%command%"=="clean" (
+    go mod tidy
+)
+
 IF "%command%"=="test" (
     go test ./tests/...
 )

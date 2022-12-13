@@ -1,15 +1,13 @@
-import {
-  useLocation,
-  matchPath,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLocation, matchPath, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ProjectRouteContext } from "../routes/ProjectRoute";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MoreVert from "@mui/icons-material/MoreVert";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -18,10 +16,11 @@ import HomeIcon from "@mui/icons-material/Home";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import SettingsIcon from "@mui/icons-material/Settings";
-import ProjectMenuButton from "./ProjectMenuButton";
+import LoadingBoundary from "./LoadingBoundary";
+import ProjectNavBarTitle from "./ProjectNavBarTitle";
 
 const ProjectNavBar = ({ project, loading }) => {
-  const { projectId } = useParams();
+  const projectId = useContext(ProjectRouteContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -72,60 +71,51 @@ const ProjectNavBar = ({ project, loading }) => {
             py: 3,
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              mb: (loading || project.description) && "auto",
-              pt: (loading || project.description) && "2px",
-            }}
-          >
-            <AccountTreeRoundedIcon
-              sx={{ fontSize: 30, mr: 2, color: "primary.main" }}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
-              flexGrow: 1,
-            }}
-          >
-            {loading ? (
+          <LoadingBoundary
+            fallback={
               <>
-                <Skeleton
-                  variant="text"
-                  width={200}
-                  height={46}
-                  sx={{ mt: -1 }}
-                />
-                <Skeleton
-                  variant="text"
-                  width={280}
-                  height={30}
-                  sx={{ mt: -1, mb: -0.4 }}
-                />
-              </>
-            ) : (
-              <>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "black", flexGrow: 1, wordBreak: "break-all" }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    mb: "auto",
+                    pt: "2px",
+                  }}
                 >
-                  {project.name}
-                </Typography>
-                <Typography
-                  variant="h7"
-                  sx={{ color: "gray", flexGrow: 1, wordBreak: "break-all" }}
-                >
-                  {project.description}
-                </Typography>
-              </>
-            )}
-          </Box>
+                  <AccountTreeRoundedIcon
+                    sx={{ fontSize: 30, mr: 2, color: "primary.main" }}
+                  />
+                </Box>
 
-          <ProjectMenuButton project={project} noSettings disabled={loading} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "start",
+                    flexGrow: 1,
+                  }}
+                >
+                  <Skeleton
+                    variant="text"
+                    width={200}
+                    height={46}
+                    sx={{ mt: -1 }}
+                  />
+                  <Skeleton
+                    variant="text"
+                    width={280}
+                    height={30}
+                    sx={{ mt: -1, mb: -0.4 }}
+                  />
+                </Box>
+
+                <IconButton disabled>
+                  <MoreVert />
+                </IconButton>
+              </>
+            }
+          >
+            <ProjectNavBarTitle />
+          </LoadingBoundary>
         </Box>
 
         <Divider />

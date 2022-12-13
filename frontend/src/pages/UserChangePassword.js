@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
-import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
+import { useUser } from "../hooks/useUser";
+import { useState } from "react";
+import { useUpdateUser } from "../hooks/useUpdateUser";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -7,11 +8,10 @@ import Fade from "@mui/material/Fade";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
-import UsersAPI from "../api/UsersAPI";
 
 const UserChangePassword = () => {
-  const { user } = useContext(UserSettingsRouteContext);
-  const [loading, setLoading] = useState(false);
+  const user = useUser();
+  const [updateUser, updateUserContext] = useUpdateUser();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
 
@@ -34,29 +34,20 @@ const UserChangePassword = () => {
       return;
     }
 
-    UsersAPI.updateUser(
-      user.firstName,
-      user.lastName,
-      data.get("currentPassword"),
-      data.get("newPassword")
-    )
+    updateUser({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      currentPassword: data.get("currentPassword"),
+      newPassword: data.get("newPassword"),
+    })
       .then(() => {
-        setLoading(false);
         setSuccess("Password changed successfully.");
         setError();
       })
       .catch((error) => {
-        setLoading(false);
         setSuccess();
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to update password: " + error.message);
-        }
+        setError(error?.response?.data?.error);
       });
-
-    setLoading(true);
   };
 
   return (
@@ -68,7 +59,7 @@ const UserChangePassword = () => {
 
       {(error || success) && (
         <Fade in={error || success ? true : false}>
-          <Alert severity={error ? "error" : "success"} sx={{ mb: 2, mt: -1 }}>
+          <Alert severity={error ? "error" : "success"} sx={{ mb: 3 }}>
             {error || success}
           </Alert>
         </Fade>
@@ -85,7 +76,7 @@ const UserChangePassword = () => {
           label="Current Password"
           name="currentPassword"
           error={error ? true : false}
-          disabled={loading}
+          disabled={updateUserContext.isLoading}
           required
           sx={{ mb: 2.5 }}
         />
@@ -99,7 +90,7 @@ const UserChangePassword = () => {
           label="New Password"
           name="newPassword"
           error={error ? true : false}
-          disabled={loading}
+          disabled={updateUserContext.isLoading}
           required
           sx={{ mb: 2 }}
         />
@@ -109,7 +100,7 @@ const UserChangePassword = () => {
           label="Confirm New Password"
           name="repeatNewPassword"
           error={error ? true : false}
-          disabled={loading}
+          disabled={updateUserContext.isLoading}
           required
         />
 
@@ -124,7 +115,7 @@ const UserChangePassword = () => {
           }}
         >
           <LoadingButton
-            loading={loading}
+            loading={updateUserContext.isLoading}
             type="submit"
             variant="contained"
             disableElevation
