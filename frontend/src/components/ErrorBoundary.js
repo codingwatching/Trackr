@@ -1,7 +1,12 @@
 import { Component, createElement } from "react";
+import formatError from "../utils/formatError";
 
 class ErrorBoundary extends Component {
-  state = { error: null };
+  constructor(props) {
+    super(props);
+
+    this.state = { error: null };
+  }
 
   static getDerivedStateFromError(error) {
     return {
@@ -9,10 +14,14 @@ class ErrorBoundary extends Component {
     };
   }
 
+  reset() {
+    this.setState({ error: null });
+  }
+
   render() {
     if (this.state.error) {
       return createElement(this.props.fallback, {
-        error: this.state.error.toString(),
+        error: formatError(this.state.error),
       });
     }
 

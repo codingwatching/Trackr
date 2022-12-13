@@ -41,7 +41,6 @@ const SearchBar = ({ title, element, search, setSearch }) => {
               }}
               sx={{
                 mr: 1,
-                background: "#eaecf0",
                 color: "black",
               }}
             >
@@ -83,7 +82,6 @@ const SearchBar = ({ title, element, search, setSearch }) => {
               sx={{
                 mr: 1,
                 color: "black",
-                background: "#eaecf0",
               }}
             >
               <SearchIcon />

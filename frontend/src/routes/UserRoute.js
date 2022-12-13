@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "react-query";
 import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
@@ -12,14 +12,18 @@ import LoadingBoundary from "../components/LoadingBoundary";
 import UsersAPI from "../api/UsersAPI";
 
 const UserSettingsRoute = ({ element }) => {
+  const errorBoundaryRef = useRef();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     queryClient.prefetchQuery(UsersAPI.QUERY_KEY, UsersAPI.getUser);
-  });
+
+    errorBoundaryRef.current.reset();
+  }, []);
 
   return (
     <ErrorBoundary
+      ref={errorBoundaryRef}
       fallback={({ error }) => (
         <CenteredBox>
           <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />

@@ -78,8 +78,7 @@ const UsageSubList = () => {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 1,
-          px: 2,
-          py: 8,
+          p: 8,
           background: "white",
           boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
         }}
@@ -104,8 +103,7 @@ const UsageSubList = () => {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 1,
-          px: 2,
-          py: 8,
+          p: 8,
           background: "white",
           boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
         }}

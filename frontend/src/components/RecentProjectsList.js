@@ -37,7 +37,7 @@ const RecentProjectsList = () => {
               <ErrorIcon sx={{ fontSize: 50, mb: 2 }} />
               <Typography
                 variant="h7"
-                sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
+                sx={{ userSelect: "none", textAlign: "center" }}
               >
                 {error}
               </Typography>

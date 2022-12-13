@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "react-query";
+import FieldsAPI from "../api/FieldsAPI";
 import ProjectsAPI from "../api/ProjectsAPI";
+import VisualizationsAPI from "../api/VisualizationsAPI";
 
 export const useDeleteProject = () => {
   const queryClient = useQueryClient();
@@ -7,15 +9,10 @@ export const useDeleteProject = () => {
     (projectId) => ProjectsAPI.deleteProject(projectId),
     {
       onSuccess: (_, projectId) => {
-        queryClient.setQueryData(ProjectsAPI.QUERY_KEY, (oldData) => {
-          if (oldData) {
-            oldData.data.projects = oldData.data.projects.filter(
-              (project) => project.id !== projectId
-            );
-          }
-
-          return oldData;
-        });
+        queryClient.resetQueries(ProjectsAPI.QUERY_KEY, { exact: true });
+        queryClient.resetQueries([ProjectsAPI.QUERY_KEY, projectId]);
+        queryClient.resetQueries([VisualizationsAPI.QUERY_KEY, projectId]);
+        queryClient.resetQueries([FieldsAPI.QUERY_KEY, projectId]);
       },
     }
   );

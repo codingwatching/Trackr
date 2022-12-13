@@ -1,5 +1,5 @@
-import { createContext, useEffect } from "react";
-import { useQueryClient } from "react-query";
+import { createContext, useEffect, useRef } from "react";
+import { useQueryClient, useQueryErrorResetBoundary } from "react-query";
 import { useParams } from "react-router-dom";
 import ProjectNavBar from "../components/ProjectNavBar";
 import CenteredBox from "../components/CenteredBox";
@@ -17,6 +17,7 @@ export const ProjectRouteContext = createContext();
 const ProjectRoute = ({ element }) => {
   const params = useParams();
   const projectId = parseInt(params.projectId);
+  const errorBoundaryRef = useRef();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -29,10 +30,13 @@ const ProjectRoute = ({ element }) => {
     queryClient.prefetchQuery([VisualizationsAPI.QUERY_KEY, projectId], () =>
       VisualizationsAPI.getVisualizations(projectId)
     );
+
+    errorBoundaryRef.current.reset();
   }, [queryClient, projectId]);
 
   return (
     <ErrorBoundary
+      ref={errorBoundaryRef}
       fallback={({ error }) => (
         <CenteredBox>
           <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
