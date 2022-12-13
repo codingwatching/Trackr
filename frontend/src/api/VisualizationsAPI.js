@@ -4,7 +4,7 @@ class VisualizationsAPI {
   static #BASE_URL = process.env.REACT_APP_API_PATH + "/api/visualizations";
   static QUERY_KEY = "visualizations";
 
-  static addVisualization = (fieldId, metadata) => {
+  static createVisualization = (fieldId, metadata) => {
     return axios.post(
       this.#BASE_URL + "/",
       { fieldId, metadata },

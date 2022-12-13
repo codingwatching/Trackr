@@ -1,4 +1,7 @@
 import { ProjectRouteContext } from "../../routes/ProjectRoute";
+import { useFields } from "../../hooks/useFields";
+import { useUpdateVisualization } from "../../hooks/useUpdateVisualization";
+import { useCreateVisualization } from "../../hooks/useCreateVisualization";
 import { createElement, useContext, useState, useRef } from "react";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -11,7 +14,7 @@ import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FieldListMenu from "../FieldListMenu";
-import VisualizationsAPI from "../../api/VisualizationsAPI";
+import formatError from "../../utils/formatError";
 
 const VisualizationsEditor = ({
   onBack,
@@ -22,11 +25,16 @@ const VisualizationsEditor = ({
   visualization,
   metadata,
 }) => {
-  const { fields, visualizations, setVisualizations } =
-    useContext(ProjectRouteContext);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const projectId = useContext(ProjectRouteContext);
+  const fields = useFields(projectId);
+
   const [fieldId, setFieldId] = useState(visualization?.fieldId || "");
+  const [error, setError] = useState();
+  const [createVisualization, createVisualizationContext] =
+    useCreateVisualization(projectId);
+  const [updateVisualization, updateVisualizationContext] =
+    useUpdateVisualization(projectId);
+
   const editorRef = useRef();
 
   const handleChangeField = (event) => {
@@ -46,67 +54,22 @@ const VisualizationsEditor = ({
       return;
     }
 
+    const fieldName = fields.find((field) => field.id === fieldId).name;
+
     if (visualization) {
-      VisualizationsAPI.updateVisualization(visualization.id, fieldId, metadata)
-        .then(() => {
-          setVisualizations(
-            visualizations.map((v) =>
-              v === visualization
-                ? {
-                    id: visualization.id,
-                    fieldId: fieldId,
-                    fieldName: fields.find((field) => field.id === fieldId)
-                      .name,
-                    metadata: metadata,
-                    createdAt: visualization.createdAt,
-                    updatedAt: new Date().toISOString(),
-                  }
-                : v
-            )
-          );
-
-          setLoading(false);
-          onClose();
-        })
-        .catch((error) => {
-          setLoading(false);
-
-          if (error?.response?.data?.error) {
-            setError(error.response.data.error);
-          } else {
-            setError("Failed to update visualization: " + error.message);
-          }
-        });
+      updateVisualization({
+        id: visualization.id,
+        fieldId,
+        fieldName,
+        metadata,
+      })
+        .then(onClose)
+        .catch((error) => setError(formatError(error)));
     } else {
-      VisualizationsAPI.addVisualization(fieldId, metadata)
-        .then((result) => {
-          setVisualizations([
-            ...visualizations,
-            {
-              id: result.data.id,
-              fieldId: fieldId,
-              fieldName: fields.find((field) => field.id === fieldId).name,
-              metadata: metadata,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            },
-          ]);
-
-          setLoading(false);
-          onClose();
-        })
-        .catch((error) => {
-          setLoading(false);
-
-          if (error?.response?.data?.error) {
-            setError(error.response.data.error);
-          } else {
-            setError("Failed to add visualization: " + error.message);
-          }
-        });
+      createVisualization({ fieldId, metadata })
+        .then(onClose)
+        .catch((error) => setError(formatError(error)));
     }
-
-    setLoading(true);
   };
 
   return (
@@ -116,7 +79,10 @@ const VisualizationsEditor = ({
           <IconButton
             color="primary"
             sx={{ mr: 1 }}
-            disabled={loading}
+            disabled={
+              createVisualizationContext.isLoading ||
+              updateVisualizationContext.isLoading
+            }
             onClick={onBack}
           >
             <ArrowBackIcon />
@@ -155,14 +121,23 @@ const VisualizationsEditor = ({
         )}
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
-        <Button onClick={onClose} disabled={loading}>
+        <Button
+          onClick={onClose}
+          disabled={
+            createVisualizationContext.isLoading ||
+            updateVisualizationContext.isLoading
+          }
+        >
           Cancel
         </Button>
         <LoadingButton
           variant="contained"
           disableElevation
           autoFocus
-          loading={loading}
+          loading={
+            createVisualizationContext.isLoading ||
+            updateVisualizationContext.isLoading
+          }
           onClick={handleSubmit}
         >
           {onBack ? "Create" : "Save"}

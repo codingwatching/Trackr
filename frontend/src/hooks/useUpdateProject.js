@@ -9,7 +9,7 @@ export const useUpdateProject = () => {
     },
     {
       onSuccess: (result, { id, name, description }) => {
-        queryClient.setQueryData(ProjectsAPI.QUERY_KEY + id, (oldData) => {
+        queryClient.setQueryData([ProjectsAPI.QUERY_KEY, id], (oldData) => {
           if (oldData) {
             oldData.data = {
               ...oldData.data,
