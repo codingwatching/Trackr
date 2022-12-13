@@ -16,7 +16,7 @@ const DeleteFieldDialog = ({ onClose, field }) => {
   const [deleteField, deleteFieldContext] = useDeleteField(projectId);
 
   const handleDeleteField = () => {
-    deleteField(field.id).then(() => onClose());
+    deleteField(field.id).then(onClose);
   };
 
   return (

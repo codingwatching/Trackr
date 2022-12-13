@@ -16,7 +16,7 @@ const DeleteValuesDialog = ({ field, onClose }) => {
   const [deleteValues, deleteValuesContext] = useDeleteValues(projectId);
 
   const handleDeleteValues = () => {
-    deleteValues(field.id).then(() => onClose());
+    deleteValues(field.id).then(onClose);
   };
 
   return (

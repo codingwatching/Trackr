@@ -16,8 +16,6 @@ const UserSettingsRoute = ({ element }) => {
 
   useEffect(() => {
     queryClient.prefetchQuery(UsersAPI.QUERY_KEY, UsersAPI.getUser);
-
-    return () => {};
   });
 
   return (

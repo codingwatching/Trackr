@@ -45,7 +45,7 @@ const ProjectRoute = ({ element }) => {
         </CenteredBox>
       )}
     >
-      <ProjectRouteContext.Provider value={parseInt(projectId)}>
+      <ProjectRouteContext.Provider value={projectId}>
         <ProjectNavBar />
 
         <LoadingBoundary
