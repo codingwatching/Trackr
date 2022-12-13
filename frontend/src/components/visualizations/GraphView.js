@@ -1,6 +1,6 @@
 import { ProjectRouteContext } from "../../routes/ProjectRoute";
 import { useFields } from "../../hooks/useFields";
-import { useContext } from "react";
+import { useContext, lazy } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -8,10 +8,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
 import LoadingBoundary from "../LoadingBoundary";
-import GraphSubView from "./GraphSubView";
 import Graph from "./Graph";
 import ErrorBoundary from "../ErrorBoundary";
 
+const GraphSubView = lazy(() => import("./GraphSubView"));
 const GraphView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId } = visualization;
   const { graphFunction, graphTimestep } = Graph.deserialize(metadata);

@@ -1,5 +1,5 @@
 import { ProjectRouteContext } from "../../routes/ProjectRoute";
-import { useContext } from "react";
+import { useContext, lazy } from "react";
 import { useFields } from "../../hooks/useFields";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,8 +9,8 @@ import CenteredBox from "../CenteredBox";
 import VisualizationMenuButton from "../VisualizationMenuButton";
 import ErrorBoundary from "../ErrorBoundary";
 import LoadingBoundary from "../LoadingBoundary";
-import TableSubView from "./TableSubView";
 
+const TableSubView = lazy(() => import("./TableSubView"));
 const TableView = ({ visualizationType, visualization, metadata }) => {
   const { fieldId } = visualization;
 

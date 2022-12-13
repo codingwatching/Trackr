@@ -1,5 +1,5 @@
 import { createContext, useEffect, useRef } from "react";
-import { useQueryClient, useQueryErrorResetBoundary } from "react-query";
+import { useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import ProjectNavBar from "../components/ProjectNavBar";
 import CenteredBox from "../components/CenteredBox";

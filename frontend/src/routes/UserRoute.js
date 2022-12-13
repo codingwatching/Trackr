@@ -19,7 +19,7 @@ const UserSettingsRoute = ({ element }) => {
     queryClient.prefetchQuery(UsersAPI.QUERY_KEY, UsersAPI.getUser);
 
     errorBoundaryRef.current.reset();
-  }, []);
+  }, [queryClient]);
 
   return (
     <ErrorBoundary
