@@ -19,6 +19,8 @@ package com.google.homesampleapp.data
 import android.content.Context
 import com.google.homesampleapp.Device
 import com.google.homesampleapp.Devices
+import com.google.homesampleapp.chip.ChipClient
+import com.google.homesampleapp.chip.ClustersHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Inject
@@ -37,6 +39,8 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
 
   // The datastore managed by DevicesRepository.
   private val devicesDataStore = context.devicesDataStore
+  private val clusters = ClustersHelper(ChipClient(context))
+  private val deviceIds = mutableListOf<Long>()
 
   // The Flow to read data from the DataStore.
   val devicesFlow: Flow<Devices> =
@@ -60,8 +64,12 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
   }
 
   suspend fun addDevice(device: Device) {
+    println("******\nAdding Device\n*****")
     Timber.d("addDevice: device [${device}]")
     devicesDataStore.updateData { devices -> devices.toBuilder().addDevices(device).build() }
+    deviceIds.add(device.deviceId)
+    println("Device Ids: " + device.deviceId)
+    callLastId()
   }
 
   suspend fun updateDevice(device: Device) {
@@ -79,6 +87,7 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
     devicesDataStore.updateData { devicesList ->
       devicesList.toBuilder().removeDevices(index).build()
     }
+    deviceIds.remove(deviceId)
   }
 
   suspend fun getLastDeviceId(): Long {
@@ -113,4 +122,26 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
     }
     return -1
   }
+  suspend fun callThisId(nodeId: Long){
+    println("callThisId() called")
+    println("Device ID: " + nodeId + " has temperature: " +clusters.readApplicationBasicClusterAttributeList(nodeId, 0))
+    println("Device ID: " + nodeId + " has temperature: " + clusters.readApplicationBasicClusterAttributeList(nodeId, 1))
+  }
+
+
+  suspend fun callLastId(){
+    println("callLastId() called")
+    val id = getLastDeviceId()
+    val temp: Long = 96637565
+    println("Device ID: " + id + " has temperature: " +clusters.readApplicationBasicClusterAttributeList(id, 0))
+    println("Device ID: " + id + " has temperature: " + clusters.readApplicationBasicClusterAttributeList(id, 1))
+  }
+
+//  suspend fun iterateThroughIds(){
+//    println("iterateThroughIds() called")
+//    for (id in deviceIds){
+//      println("**************** IterateThroughIds called d******")
+//      println("Device ID: " + id + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(id, 0))
+//    }
+//  }
 }
