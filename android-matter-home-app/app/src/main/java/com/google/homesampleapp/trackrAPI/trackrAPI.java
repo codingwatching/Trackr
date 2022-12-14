@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -32,9 +33,14 @@ public class trackrAPI {
       createProject();
       createField();
       createVisualization();
-      sendData(2);
+//      sendData(2);
     }
+    public static void setup() throws IOException {
+        createProject();
+        createField();
+        createVisualization();
 
+    }
     public static String login(String username, String Password) throws IOException {
         //http
 
@@ -63,8 +69,8 @@ public class trackrAPI {
 
     public static int createField() throws IOException {
         //http
-        String body="{\"ProjectID\":"+projID+
-                ",\"Name\":\"Temperature\"}";
+        String body="{\"projectId\":"+projID+
+                ",\"name\":\"Temperature\"}";
 
         Response response= post(Url+"/api/fields/",body,"Session="+sesssionID);
         String resp=response.body().string();
@@ -79,16 +85,14 @@ public class trackrAPI {
 
     public static int createVisualization() throws IOException {
         //http
-        String body="{\"FieldID\":"+fieldId+
-                ",\"Metadata\":\"Temperature Visulization\"}";
-
-        Response response= post(Url+"/api/visualizations/",body,"Session="+sesssionID);
+        String body="{\"fieldId\":"+fieldId+",\"metadata\":\"{\"name\":\"Graph\",\"color\":\"rgba(68, 155, 245)\",\"graphType\":\"line\",\"graphFunction\":\"none\",\"graphTimestep\":\"\"}\"}";
+//        String body="{\"fieldId\":
+//                ",\"metadata\":{\"name\":\"Graph\",\"color\":\"rgba(68, 155, 245)\",\"graphType\":\"line\",\"graphFunction\":\"none\",\"graphTimestep\":\"\"}}";
+        System.out.println(body);
+        Response response= post(Url+"/api/visualizations/", body,"Session="+sesssionID);
         String resp=response.body().string();
-        if(resp!=null){
-            resp=resp.substring(6,resp.length()-1);
-        }
-        System.out.println(Integer.parseInt(resp));
-        VisulizationId=Integer.parseInt(resp);
+        System.out.println(resp);
+//        VisulizationId=Integer.parseInt(resp);
         return VisulizationId;
     }
 
@@ -100,13 +104,8 @@ public class trackrAPI {
         String getBody=ret.body().string();
         projApiKey= getBody.substring(getBody.indexOf("apiKey")+9,getBody.indexOf("createdAt")-3);
 
-        //http
-        String body="{\"Value\":\""+"invalid"+
-                "\",\"APIKey\":"+projApiKey+
-                ",\"FieldID\":"+fieldId+
-                "}";
-        System.out.println(body);
-        Response response= post(Url+"/api/values/",body,"Session="+sesssionID);
+        // call the
+        Response response= postAddValue(Url+"/api/values/","Session="+sesssionID);
         String resp=response.body().string();
         System.out.println(resp);
 
@@ -125,7 +124,6 @@ public class trackrAPI {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", head)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
 
 
@@ -183,10 +181,35 @@ public class trackrAPI {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", head)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .post(body)
                 .build();
 
+        try {
+            Response response = client.newCall(request).execute();
+            retVal = response;
+        } catch (Exception e) {
+            Log.i("Post Reponse", "Error while posting request to the client");
+            retVal = null;
+        }
+
+        return retVal;
+    }
+    private static Response postAddValue(String url, String head) throws IOException{
+
+        Response retVal = null;
+
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder()
+                .addEncoded("value", "2.00")
+                .addEncoded("apiKey", projApiKey)
+                .addEncoded("fieldId", String.valueOf(fieldId))
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", head)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .post(formBody)
+                .build();
         try {
             Response response = client.newCall(request).execute();
             retVal = response;
