@@ -1,6 +1,7 @@
 package com.google.homesampleapp.trackrAPI;
 
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class trackrAPI {
     private static int VisulizationId=-1;
     private static String projApiKey="";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final String Url ="http://localhost:8080";
+    public static final String Url ="https://localhost:8080";
 
 //    public static void main(String[] args) throws IOException {
 //      login("kamsaiyed@gmail.com","kamar123");
@@ -45,6 +46,13 @@ public class trackrAPI {
         createVisualization();
 
     }
+//    public String loginHelper(String username, String Password) throws IOException {
+//        String[] param = new String[3];
+//        param[0]="login";
+//        param[1]=username;
+//        param[2]=Password;
+//        return new asyncClass().execute("login",username,Password);
+//    }
     public static String login(String username, String Password) throws IOException {
         //http
 
@@ -52,8 +60,11 @@ public class trackrAPI {
                 "\",\"password\":\""+Password+
                 "\",\"rememberMe\":true"+"}";
         Response response= post(Url+"/api/auth/login",body);
-        String responseHead=response.headers("Set-Cookie").toString();
-        sesssionID=responseHead.substring(responseHead.indexOf("=")+1,responseHead.indexOf(";"));
+        if(response!=null){
+            String responseHead=response.headers("Set-Cookie").toString();
+            sesssionID=responseHead.substring(responseHead.indexOf("=")+1,responseHead.indexOf(";"));
+
+        }
 
 
         return sesssionID;
@@ -122,7 +133,7 @@ public class trackrAPI {
 //------------------------------------------------------
     private static Response get(String url,String head) throws IOException{
 
-        Response retVal = null;
+        final Response[] retVal = {null};
 
         OkHttpClient client = new OkHttpClient();
 
@@ -133,14 +144,31 @@ public class trackrAPI {
 
 
         try  {
-            Response response = client.newCall(request).execute();
-            retVal = response;
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException {
+                    try (ResponseBody responseBody = response.body()) {
+                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+                        Headers responseHeaders = response.headers();
+                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                        }
+
+                        System.out.println(responseBody.string());
+                    }
+                    retVal[0] = response;
+                }
+            });
         } catch (Exception e) {
             Log.i("Post Response", "Error while posting request to the client");
-            retVal = null;
+            retVal[0] = null;
         }
 
-        return retVal;
+        return retVal[0];
     }
 
     //------------------------------------------------------
@@ -151,7 +179,7 @@ public class trackrAPI {
 //------------------------------------------------------
     private static Response post(String url, String payload) throws IOException{
 
-        Response retVal = null;
+        final Response[] retVal = {null};
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, payload);
@@ -160,14 +188,32 @@ public class trackrAPI {
                 .post(body)
                 .build();
         try  {
-            Response response = client.newCall(request).execute();
-            retVal = response;
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException {
+                    try (ResponseBody responseBody = response.body()) {
+                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+                        Headers responseHeaders = response.headers();
+                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                        }
+
+                        System.out.println(responseBody.string());
+                    }
+                    retVal[0] = response;
+                }
+            });
+
         } catch (Exception e) {
             Log.i("Post Response", "Error while posting request to the client");
-            retVal = null;
+            retVal[0] = null;
         }
 
-        return retVal;
+        return retVal[0];
     }
 
     //------------------------------------------------------
@@ -179,7 +225,7 @@ public class trackrAPI {
 //------------------------------------------------------
     private static Response post(String url, String payload, String head) throws IOException{
 
-        Response retVal = null;
+        final Response[] retVal = {null};
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, payload);
@@ -190,18 +236,36 @@ public class trackrAPI {
                 .build();
 
         try {
-            Response response = client.newCall(request).execute();
-            retVal = response;
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException {
+                    try (ResponseBody responseBody = response.body()) {
+                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+                        Headers responseHeaders = response.headers();
+                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                        }
+
+                        System.out.println(responseBody.string());
+                    }
+                    retVal[0] = response;
+                }
+            });
+
         } catch (Exception e) {
             Log.i("Post Reponse", "Error while posting request to the client");
-            retVal = null;
+            retVal[0] = null;
         }
 
-        return retVal;
+        return retVal[0];
     }
     private static Response postAddValue(String url, String head) throws IOException{
 
-        Response retVal = null;
+        final Response[] retVal = {null};
 
         OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
@@ -216,14 +280,37 @@ public class trackrAPI {
                 .post(formBody)
                 .build();
         try {
-            Response response = client.newCall(request).execute();
-            retVal = response;
+            client.newCall(request).enqueue(new Callback() {
+                @Override public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override public void onResponse(Call call, Response response) throws IOException {
+                    try (ResponseBody responseBody = response.body()) {
+                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+                        Headers responseHeaders = response.headers();
+                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                        }
+
+                        System.out.println(responseBody.string());
+                    }
+                    retVal[0] = response;
+                }
+            });
+
         } catch (Exception e) {
             Log.i("Post Reponse", "Error while posting request to the client");
-            retVal = null;
+            retVal[0] = null;
         }
 
-        return retVal;
+        return retVal[0];
     }
+    private class asyncClass extends AsyncTask<String, String, String> {
 
+        protected String doInBackground(String... strings) {
+            return null;
+        }
+    }
 }

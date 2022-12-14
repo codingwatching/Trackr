@@ -1,14 +1,13 @@
 package com.google.homesampleapp.ui.login
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
+import com.google.homesampleapp.R
 import com.google.homesampleapp.data.LoginRepository
 import com.google.homesampleapp.data.Result
 import com.google.homesampleapp.trackrAPI.trackrAPI
-
-import com.google.homesampleapp.R
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -21,8 +20,9 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     fun login(username: String, password: String) {   //  check if the password is correct here
         // can be launched in a separate asynchronous job
         val result = loginRepository.login(username, password)
+
         // trackr login (username, password)
-        if (trackrAPI.login(username,password)!=null) {
+        if (trackrAPI.login(username,password)!="" && result is Result.Success) {
             _loginResult.value =
                 LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
         } else {
