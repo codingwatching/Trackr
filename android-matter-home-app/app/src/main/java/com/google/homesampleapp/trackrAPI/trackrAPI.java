@@ -62,8 +62,8 @@ public class trackrAPI {
                 "\",\"password\":\""+Password+
                 "\",\"rememberMe\":true"+"}";
         Response response= post(Url+"/api/auth/login",body);
-        System.out.println("RESPONSE"+response);
-        if(response!=null){
+        System.out.println("RESPONSE"+response.headers());
+        if(response.code()==200){
             String responseHead=response.headers("Set-Cookie").toString();
             sesssionID=responseHead.substring(responseHead.indexOf("=")+1,responseHead.indexOf(";"));
             System.out.println("If respo not null");
@@ -77,7 +77,7 @@ public class trackrAPI {
         //http
         Response response= post(Url+"/api/projects/","{}","Session="+sesssionID);
         String body=response.body().string();
-        if(body!=null){
+        if(response.code()==200){
             body=body.substring(6,body.length()-1);
         }
 //        System.out.println(Integer.parseInt(body));
@@ -93,7 +93,7 @@ public class trackrAPI {
 
         Response response= post(Url+"/api/fields/",body,"Session="+sesssionID);
         String resp=response.body().string();
-        if(resp!=null){
+        if(response.code()==200){
             resp=resp.substring(6,resp.length()-1);
         }
 //        System.out.println(Integer.parseInt(resp));
@@ -108,7 +108,7 @@ public class trackrAPI {
         String body="{\"fieldId\":"+fieldId+",\"metadata\":\"{\\\"name\\\":\\\"Graph\\\",\\\"color\\\":\\\"rgba(68, 155, 245)\\\",\\\"graphType\\\":\\\"line\\\",\\\"graphFunction\\\":\\\"none\\\",\\\"graphTimestep\\\":\\\"\\\"}\"}";
         Response response= post(Url+"/api/visualizations/", body,"Session="+sesssionID);
         String resp=response.body().string();
-        if(resp!=null){
+        if(response.code()==200){
             resp=resp.substring(6,resp.length()-1);
         }
         VisulizationId=Integer.parseInt(resp);
@@ -118,7 +118,7 @@ public class trackrAPI {
 
     public static void sendData(float value) throws IOException, InterruptedException {
         // get the project api key using projectID already stored
-        if(projApiKey==""){
+        if(projApiKey.equals("")){
             Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
 
             String getBody=ret.body().string();
