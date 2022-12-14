@@ -23,6 +23,7 @@ public class trackrAPI {
     private static int projID =-1;
     private static int fieldId=-1;
     private static int VisulizationId=-1;
+    private static String projApiKey="";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final String Url ="http://localhost:8080";
 
@@ -31,7 +32,7 @@ public class trackrAPI {
       createProject();
       createField();
       createVisualization();
-      sendData();
+      sendData(2);
     }
 
     public static String login(String username, String Password) throws IOException {
@@ -91,65 +92,50 @@ public class trackrAPI {
         return VisulizationId;
     }
 
-    public static void sendData() throws IOException {
+    public static void sendData(float value) throws IOException {
         // get the project api key using projectID already stored
 
-        String ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
-        System.out.println(ret);
+        Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
 
+        String getBody=ret.body().string();
+        projApiKey= getBody.substring(getBody.indexOf("apiKey")+9,getBody.indexOf("createdAt")-3);
 
-//        //http
-//        String body="{\"FieldID\":"+fieldId+
-//                ",\"Metadata\":\"Temperature Visulization\"}";
-//
-//        Response response= post(Url+"/api/values/",body,"Session="+sesssionID);
-//        String resp=response.body().string();
-//        if(resp!=null){
-//            resp=resp.substring(6,resp.length()-1);
-//        }
-//        System.out.println(Integer.parseInt(resp));
-//        VisulizationId=Integer.parseInt(resp);
-//        return VisulizationId;
+        //http
+        String body="{\"Value\":\""+"invalid"+
+                "\",\"APIKey\":"+projApiKey+
+                ",\"FieldID\":"+fieldId+
+                "}";
+        System.out.println(body);
+        Response response= post(Url+"/api/values/",body,"Session="+sesssionID);
+        String resp=response.body().string();
+        System.out.println(resp);
+
     }
     //------------------------------------------------------
 //GET
 //INPUT PARAMETERS: address for the GET request
 //RETURN: response as a string
 //------------------------------------------------------
-    private static String get(String url,String head) throws IOException{
+    private static Response get(String url,String head) throws IOException{
 
-        String retVal = "";
+        Response retVal = null;
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", head)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    ResponseBody responseBody = response.body();
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                    Headers responseHeaders = response.headers();
-
-                    for (int i=0;  i < responseHeaders.size(); i++){
-                        Log.i(responseHeaders.name(i), responseHeaders.value(i));
-                    }
-                } catch (Exception e) {
-                    Log.i("get Response", "Error while getting request to the client");
-
-                }
-            }
-        });
+        try  {
+            Response response = client.newCall(request).execute();
+            retVal = response;
+        } catch (Exception e) {
+            Log.i("Post Response", "Error while posting request to the client");
+            retVal = null;
+        }
 
         return retVal;
     }
@@ -197,6 +183,7 @@ public class trackrAPI {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Cookie", head)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .post(body)
                 .build();
 
