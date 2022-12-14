@@ -54,6 +54,7 @@ import com.google.homesampleapp.stateDisplayString
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import timber.log.Timber
+import com.google.homesampleapp.trackrAPI.trackrAPI
 
 /**
  * The Device Fragment shows all the information about the device that was selected in the Home
@@ -153,6 +154,7 @@ class DeviceFragment : Fragment() {
 
     binding.trackrButton.setOnClickListener {
       Log.e("Button:","Connect to tracker button clicked" )
+      trackrAPI.setup();
     }
 
     // Remove Device
