@@ -2,9 +2,11 @@ package com.google.homesampleapp.trackrAPI;
 
 
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +29,7 @@ public class trackrAPI {
     private static int VisulizationId=-1;
     private static String projApiKey="";
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final String Url ="https://localhost:8080";
+    public static final String Url ="https://trackr.vldr.org";
 
 //    public static void main(String[] args) throws IOException {
 //      login("kamsaiyed@gmail.com","kamar123");
@@ -40,7 +42,7 @@ public class trackrAPI {
 //
 //
 //    }
-    public static void setup() throws IOException {
+    public static void setup() throws IOException, InterruptedException {
         createProject();
         createField();
         createVisualization();
@@ -53,24 +55,25 @@ public class trackrAPI {
 //        param[2]=Password;
 //        return new asyncClass().execute("login",username,Password);
 //    }
-    public static String login(String username, String Password) throws IOException {
+    public static String login(String username, String Password) throws IOException, InterruptedException {
         //http
 
         String body="{\"email\":\""+username+
                 "\",\"password\":\""+Password+
                 "\",\"rememberMe\":true"+"}";
         Response response= post(Url+"/api/auth/login",body);
+        System.out.println("RESPONSE"+response);
         if(response!=null){
             String responseHead=response.headers("Set-Cookie").toString();
             sesssionID=responseHead.substring(responseHead.indexOf("=")+1,responseHead.indexOf(";"));
-
+            System.out.println("If respo not null");
         }
-
-
+        System.out.println(sesssionID);
+        response.body().close();
         return sesssionID;
     }
 
-    public static int createProject() throws IOException {
+    public static int createProject() throws IOException, InterruptedException {
         //http
         Response response= post(Url+"/api/projects/","{}","Session="+sesssionID);
         String body=response.body().string();
@@ -79,10 +82,11 @@ public class trackrAPI {
         }
 //        System.out.println(Integer.parseInt(body));
         projID=Integer.parseInt(body);
+        response.body().close();
         return projID;
     }
 
-    public static int createField() throws IOException {
+    public static int createField() throws IOException, InterruptedException {
         //http
         String body="{\"projectId\":"+projID+
                 ",\"name\":\"Temperature\"}";
@@ -94,11 +98,12 @@ public class trackrAPI {
         }
 //        System.out.println(Integer.parseInt(resp));
         fieldId=Integer.parseInt(resp);
+        response.body().close();
         return fieldId;
 
     }
 
-    public static int createVisualization() throws IOException {
+    public static int createVisualization() throws IOException, InterruptedException {
         //http
         String body="{\"fieldId\":"+fieldId+",\"metadata\":\"{\\\"name\\\":\\\"Graph\\\",\\\"color\\\":\\\"rgba(68, 155, 245)\\\",\\\"graphType\\\":\\\"line\\\",\\\"graphFunction\\\":\\\"none\\\",\\\"graphTimestep\\\":\\\"\\\"}\"}";
         Response response= post(Url+"/api/visualizations/", body,"Session="+sesssionID);
@@ -107,10 +112,11 @@ public class trackrAPI {
             resp=resp.substring(6,resp.length()-1);
         }
         VisulizationId=Integer.parseInt(resp);
+        response.body().close();
         return VisulizationId;
     }
 
-    public static void sendData(float value) throws IOException {
+    public static void sendData(float value) throws IOException, InterruptedException {
         // get the project api key using projectID already stored
         if(projApiKey==""){
             Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
@@ -123,7 +129,7 @@ public class trackrAPI {
         // call the
         Response response= postAddValue(Url+"/api/values/","Session="+sesssionID);
         String resp=response.body().string();
-//        System.out.println(resp);
+        response.body().close();
 
     }
     //------------------------------------------------------
@@ -131,7 +137,7 @@ public class trackrAPI {
 //INPUT PARAMETERS: address for the GET request
 //RETURN: response as a string
 //------------------------------------------------------
-    private static Response get(String url,String head) throws IOException{
+    private static Response get(String url,String head) throws IOException, InterruptedException {
 
         final Response[] retVal = {null};
 
@@ -143,31 +149,25 @@ public class trackrAPI {
                 .build();
 
 
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         try  {
+
             client.newCall(request).enqueue(new Callback() {
                 @Override public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
                 }
 
                 @Override public void onResponse(Call call, Response response) throws IOException {
-                    try (ResponseBody responseBody = response.body()) {
-                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                        Headers responseHeaders = response.headers();
-                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                        }
-
-                        System.out.println(responseBody.string());
-                    }
                     retVal[0] = response;
+                    countDownLatch.countDown();
                 }
             });
+
         } catch (Exception e) {
             Log.i("Post Response", "Error while posting request to the client");
             retVal[0] = null;
         }
-
+        countDownLatch.await();
         return retVal[0];
     }
 
@@ -177,7 +177,7 @@ public class trackrAPI {
 //                  payload (String): msg to be posted
 //RETURN: response (String)
 //------------------------------------------------------
-    private static Response post(String url, String payload) throws IOException{
+    private static Response post(String url, String payload) throws IOException, InterruptedException {
 
         final Response[] retVal = {null};
 
@@ -187,24 +187,17 @@ public class trackrAPI {
                 .url(url)
                 .post(body)
                 .build();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         try  {
+
             client.newCall(request).enqueue(new Callback() {
                 @Override public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
                 }
 
                 @Override public void onResponse(Call call, Response response) throws IOException {
-                    try (ResponseBody responseBody = response.body()) {
-                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                        Headers responseHeaders = response.headers();
-                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                        }
-
-                        System.out.println(responseBody.string());
-                    }
-                    retVal[0] = response;
+                        retVal[0] = response;
+                        countDownLatch.countDown();
                 }
             });
 
@@ -212,7 +205,7 @@ public class trackrAPI {
             Log.i("Post Response", "Error while posting request to the client");
             retVal[0] = null;
         }
-
+        countDownLatch.await();
         return retVal[0];
     }
 
@@ -223,7 +216,7 @@ public class trackrAPI {
 //                  head (String): Value for the header
 //RETURN: response (String)
 //------------------------------------------------------
-    private static Response post(String url, String payload, String head) throws IOException{
+    private static Response post(String url, String payload, String head) throws IOException, InterruptedException {
 
         final Response[] retVal = {null};
 
@@ -235,35 +228,28 @@ public class trackrAPI {
                 .post(body)
                 .build();
 
-        try {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        try  {
+
             client.newCall(request).enqueue(new Callback() {
                 @Override public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
                 }
 
                 @Override public void onResponse(Call call, Response response) throws IOException {
-                    try (ResponseBody responseBody = response.body()) {
-                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                        Headers responseHeaders = response.headers();
-                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                        }
-
-                        System.out.println(responseBody.string());
-                    }
                     retVal[0] = response;
+                    countDownLatch.countDown();
                 }
             });
 
         } catch (Exception e) {
-            Log.i("Post Reponse", "Error while posting request to the client");
+            Log.i("Post Response", "Error while posting request to the client");
             retVal[0] = null;
         }
-
+        countDownLatch.await();
         return retVal[0];
     }
-    private static Response postAddValue(String url, String head) throws IOException{
+    private static Response postAddValue(String url, String head) throws IOException, InterruptedException {
 
         final Response[] retVal = {null};
 
@@ -279,38 +265,26 @@ public class trackrAPI {
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .post(formBody)
                 .build();
-        try {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        try  {
+
             client.newCall(request).enqueue(new Callback() {
                 @Override public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
                 }
 
                 @Override public void onResponse(Call call, Response response) throws IOException {
-                    try (ResponseBody responseBody = response.body()) {
-                        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                        Headers responseHeaders = response.headers();
-                        for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                            System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                        }
-
-                        System.out.println(responseBody.string());
-                    }
                     retVal[0] = response;
+                    countDownLatch.countDown();
                 }
             });
 
         } catch (Exception e) {
-            Log.i("Post Reponse", "Error while posting request to the client");
+            Log.i("Post Response", "Error while posting request to the client");
             retVal[0] = null;
         }
-
+        countDownLatch.await();
         return retVal[0];
     }
-//    private class asyncClass extends AsyncTask<String, String, String> {
-//
-//        protected String doInBackground(String... strings) {
-//            return null;
-//        }
-//    }
+
 }

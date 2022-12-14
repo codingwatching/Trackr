@@ -20,9 +20,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     fun login(username: String, password: String) {   //  check if the password is correct here
         // can be launched in a separate asynchronous job
         val result = loginRepository.login(username, password)
-
+        val ret =trackrAPI.login(username,password)
+        println("HERE     $ret")
         // trackr login (username, password)
-        if (trackrAPI.login(username,password)!="" && result is Result.Success) {
+        if (!ret.equals("") && result is Result.Success) {
             _loginResult.value =
                 LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
         } else {
