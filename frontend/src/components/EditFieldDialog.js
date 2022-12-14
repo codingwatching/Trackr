@@ -1,5 +1,6 @@
 import { ProjectRouteContext } from "../routes/ProjectRoute";
-import { useContext, useState } from "react";
+import { useUpdateField } from "../hooks/useUpdateField";
+import { useContext } from "react";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,47 +11,19 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
 import Fade from "@mui/material/Fade";
 import TextField from "@mui/material/TextField";
-import FieldsAPI from "../api/FieldsAPI";
+import formatError from "../utils/formatError";
 
 const EditFieldDialog = ({ field, onClose }) => {
-  const { fields, setFields } = useContext(ProjectRouteContext);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const projectId = useContext(ProjectRouteContext);
+  const [updateField, updateFieldContext] = useUpdateField(projectId);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const data = new FormData(event.currentTarget);
 
-    FieldsAPI.updateField(field.id, data.get("name"))
-      .then((result) => {
-        setFields(
-          fields.map((f) =>
-            f.id === field.id
-              ? {
-                  id: field.id,
-                  createdAt: field.createdAt,
-                  name: data.get("name"),
-                }
-              : f
-          )
-        );
-
-        setLoading(false);
-        onClose();
-      })
-      .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to rename field: " + error.message);
-        }
-      });
-
-    setLoading(true);
-    setError();
+    updateField({ id: field.id, name: data.get("name") }).then(() => {
+      onClose();
+    });
   };
 
   return (
@@ -59,10 +32,10 @@ const EditFieldDialog = ({ field, onClose }) => {
         Rename Field
       </DialogTitle>
       <DialogContent sx={{ mb: -2 }}>
-        {error && (
+        {updateFieldContext.isError && (
           <Fade in>
             <Alert severity="error" sx={{ mb: 1 }}>
-              {error}
+              {formatError(updateFieldContext.error)}
             </Alert>
           </Fade>
         )}
@@ -72,7 +45,7 @@ const EditFieldDialog = ({ field, onClose }) => {
         </DialogContentText>
 
         <TextField
-          error={error ? true : false}
+          error={updateFieldContext.isError}
           margin="normal"
           required
           fullWidth
@@ -84,11 +57,15 @@ const EditFieldDialog = ({ field, onClose }) => {
         />
       </DialogContent>
       <DialogActions sx={{ pb: 3, pr: 3 }}>
-        <Button autoFocus onClick={onClose}>
+        <Button
+          autoFocus
+          onClick={onClose}
+          disabled={updateFieldContext.isLoading}
+        >
           Cancel
         </Button>
         <LoadingButton
-          loading={loading}
+          loading={updateFieldContext.isLoading}
           variant="contained"
           type="submit"
           disableElevation

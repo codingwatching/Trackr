@@ -1,35 +1,14 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import ProjectsAPI from "../api/ProjectsAPI";
 
 export const useProject = (projectId) => {
-  const [project, setProject] = useState();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const { data } = useQuery(
+    [ProjectsAPI.QUERY_KEY, projectId],
+    () => ProjectsAPI.getProject(projectId),
+    {
+      suspense: true,
+    }
+  );
 
-  useEffect(() => {
-    setLoading(true);
-    setProject();
-    setError();
-
-    ProjectsAPI.getProject(projectId)
-      .then((result) => {
-        setLoading(false);
-        setError();
-        setProject(result.data);
-      })
-      .catch((error) => {
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to load project: " + error.message);
-        }
-
-        setLoading(false);
-        setProject();
-      });
-
-    return () => {};
-  }, [projectId]);
-
-  return [project, setProject, loading, error];
+  return data.data;
 };

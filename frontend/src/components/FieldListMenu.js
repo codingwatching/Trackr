@@ -1,5 +1,6 @@
 import { ProjectRouteContext } from "../routes/ProjectRoute";
 import { useContext, useState } from "react";
+import { useFields } from "../hooks/useFields";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -8,7 +9,8 @@ import FormControl from "@mui/material/FormControl";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const FieldListMenu = ({ onChange, onAddField, selectedFieldId }) => {
-  const { fields } = useContext(ProjectRouteContext);
+  const projectId = useContext(ProjectRouteContext);
+  const fields = useFields(projectId);
   const [open, setOpen] = useState(false);
 
   return (

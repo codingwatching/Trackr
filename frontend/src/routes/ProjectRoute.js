@@ -1,81 +1,68 @@
+import { createContext, useEffect, useRef } from "react";
+import { useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useProject } from "../hooks/useProject";
-import { useFields } from "../hooks/useFields";
-import { useVisualizations } from "../hooks/useVisualizations";
-import { createContext } from "react";
 import ProjectNavBar from "../components/ProjectNavBar";
 import CenteredBox from "../components/CenteredBox";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
+import ErrorBoundary from "../components/ErrorBoundary";
+import LoadingBoundary from "../components/LoadingBoundary";
+import ProjectsAPI from "../api/ProjectsAPI";
+import FieldsAPI from "../api/FieldsAPI";
+import VisualizationsAPI from "../api/VisualizationsAPI";
 
 export const ProjectRouteContext = createContext();
 
 const ProjectRoute = ({ element }) => {
-  const { projectId } = useParams();
-  const [project, setProject, loadingProject, errorProject] =
-    useProject(projectId);
-  const [fields, setFields, loadingFields, errorFields] = useFields(projectId);
-  const [
-    visualizations,
-    setVisualizations,
-    loadingVisualizations,
-    errorVisualizations,
-  ] = useVisualizations(projectId);
+  const params = useParams();
+  const projectId = parseInt(params.projectId);
+  const errorBoundaryRef = useRef();
+  const queryClient = useQueryClient();
 
-  if (errorProject) {
-    return (
-      <CenteredBox>
-        <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
-        <Typography
-          variant="h5"
-          sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
-        >
-          {errorProject}
-        </Typography>
-      </CenteredBox>
+  useEffect(() => {
+    queryClient.prefetchQuery([ProjectsAPI.QUERY_KEY, projectId], () =>
+      ProjectsAPI.getProject(projectId)
     );
-  }
+    queryClient.prefetchQuery([FieldsAPI.QUERY_KEY, projectId], () =>
+      FieldsAPI.getFields(projectId)
+    );
+    queryClient.prefetchQuery([VisualizationsAPI.QUERY_KEY, projectId], () =>
+      VisualizationsAPI.getVisualizations(projectId)
+    );
+
+    errorBoundaryRef.current.reset();
+  }, [queryClient, projectId]);
 
   return (
-    <>
-      <ProjectNavBar loading={loadingProject} project={project} />
-      {loadingProject || loadingFields || loadingVisualizations ? (
+    <ErrorBoundary
+      ref={errorBoundaryRef}
+      fallback={({ error }) => (
         <CenteredBox>
-          <CircularProgress />
-        </CenteredBox>
-      ) : errorFields || errorVisualizations ? (
-        <CenteredBox sx={{ pt: 5, pb: 8, px: 1 }}>
           <ErrorIcon sx={{ fontSize: 100, mb: 3 }} />
           <Typography
             variant="h5"
-            sx={{
-              userSelect: "none",
-              display: "flex",
-              flexDirection: "column",
-              textAlign: "center",
-            }}
+            sx={{ mb: 10, userSelect: "none", textAlign: "center" }}
           >
-            <Box>{errorFields}</Box>
-            <Box>{errorVisualizations}</Box>
+            {error}
           </Typography>
         </CenteredBox>
-      ) : (
-        <ProjectRouteContext.Provider
-          value={{
-            project,
-            setProject,
-            fields,
-            setFields,
-            visualizations,
-            setVisualizations,
-          }}
+      )}
+    >
+      <ProjectRouteContext.Provider value={projectId}>
+        <ProjectNavBar />
+
+        <LoadingBoundary
+          fallback={
+            <CenteredBox>
+              <CircularProgress />
+            </CenteredBox>
+          }
         >
           {element}
-        </ProjectRouteContext.Provider>
-      )}
-    </>
+        </LoadingBoundary>
+      </ProjectRouteContext.Provider>
+    </ErrorBoundary>
   );
 };
 

@@ -1,17 +1,16 @@
-import { useContext } from "react";
-import { UserSettingsRouteContext } from "../routes/UserSettingsRoute";
+import { useUser } from "../hooks/useUser";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import EditUserButton from "../components/EditUserButton";
 
 const UserAccount = () => {
-  const { user } = useContext(UserSettingsRouteContext);
+  const user = useUser();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Typography variant="h5">Account Details</Typography>
-      <Typography variant="h7" sx={{ mb: 2 }}>
+      <Typography variant="h7" sx={{ mb: 2, color: "#707070" }}>
         View your account details and manage your account.
       </Typography>
       <Divider sx={{ mb: 3 }} />

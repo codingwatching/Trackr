@@ -1,5 +1,6 @@
 import { ProjectRouteContext } from "../routes/ProjectRoute";
 import { useState, useContext } from "react";
+import { useFields } from "../hooks/useFields";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -17,8 +18,9 @@ import FieldMenuButton from "../components/FieldMenuButton";
 import SearchBar from "../components/SearchBar";
 
 const ProjectFields = () => {
-  const { fields } = useContext(ProjectRouteContext);
   const [search, setSearch] = useState("");
+  const projectId = useContext(ProjectRouteContext);
+  const fields = useFields(projectId);
 
   return (
     <Container sx={{ mt: 3 }}>
@@ -56,6 +58,7 @@ const ProjectFields = () => {
             <TableRow>
               <TableCell align="left">ID</TableCell>
               <TableCell align="left">Name</TableCell>
+              <TableCell align="left">Values</TableCell>
               <TableCell align="left">Created</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
@@ -73,6 +76,9 @@ const ProjectFields = () => {
                   >
                     <TableCell align="left">{field.id}</TableCell>
                     <TableCell align="left">{field.name}</TableCell>
+                    <TableCell align="left">
+                      {field.numberOfValues.toLocaleString()}
+                    </TableCell>
                     <TableCell align="left">
                       <Tooltip title={field.createdAt}>
                         <Box>

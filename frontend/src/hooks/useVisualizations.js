@@ -1,35 +1,14 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import VisualizationsAPI from "../api/VisualizationsAPI";
 
 export const useVisualizations = (projectId) => {
-  const [visualizations, setVisualizations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const { data } = useQuery(
+    [VisualizationsAPI.QUERY_KEY, projectId],
+    () => VisualizationsAPI.getVisualizations(projectId),
+    {
+      suspense: true,
+    }
+  );
 
-  useEffect(() => {
-    setLoading(true);
-    setVisualizations([]);
-    setError();
-
-    VisualizationsAPI.getVisualizations(projectId)
-      .then((result) => {
-        setLoading(false);
-        setError();
-        setVisualizations(result.data.visualizations);
-      })
-      .catch((error) => {
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to load visualizations: " + error.message);
-        }
-
-        setLoading(false);
-        setVisualizations([]);
-      });
-
-    return () => {};
-  }, [projectId]);
-
-  return [visualizations, setVisualizations, loading, error];
+  return data.data.visualizations;
 };
