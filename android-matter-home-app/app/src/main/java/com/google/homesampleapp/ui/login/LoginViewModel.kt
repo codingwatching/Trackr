@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import com.google.homesampleapp.data.LoginRepository
 import com.google.homesampleapp.data.Result
+import com.google.homesampleapp.trackrAPI.trackrAPI
 
 import com.google.homesampleapp.R
 
@@ -21,7 +22,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         // can be launched in a separate asynchronous job
         val result = loginRepository.login(username, password)
         // trackr login (username, password)
-        if (result is Result.Success) {
+        if (trackrAPI.login(username,password)!=null) {
             _loginResult.value =
                 LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
         } else {

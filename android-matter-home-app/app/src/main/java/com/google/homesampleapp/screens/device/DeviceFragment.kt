@@ -57,6 +57,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
+import com.google.homesampleapp.trackrAPI.trackrAPI
 
 /**
  * The Device Fragment shows all the information about the device that was selected in the Home
@@ -154,29 +155,9 @@ class DeviceFragment : Fragment() {
       true
     }
 
-    // Share Device
-    binding.shareButton.setOnClickListener {
-      val deviceName = selectedDeviceViewModel.selectedDeviceLiveData.value?.device?.name!!
-      if (isDummyDevice(deviceName) && !ALLOW_DEVICE_SHARING_ON_DUMMY_DEVICE) {
-        // Device sharing not allowed on a dummy device.
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Share device $deviceName")
-            .setMessage(getString(R.string.share_dummy_device))
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ -> }
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
-              viewModel.inspectDescriptorCluster(
-                  selectedDeviceViewModel.selectedDeviceLiveData.value!!)
-            }
-            .show()
-      } else {
-        viewModel.shareDevice(requireActivity())
-      }
-    }
-
-    // Change the on/off state of the device
-    binding.onoffSwitch.setOnClickListener {
-      val isOn = binding.onoffSwitch.isChecked
-      viewModel.updateDeviceStateOn(selectedDeviceViewModel.selectedDeviceLiveData.value!!, isOn)
+    binding.trackrButton.setOnClickListener {
+      Log.e("Button:","Connect to tracker button clicked" )
+      trackrAPI.setup();
     }
 
     // Remove Device

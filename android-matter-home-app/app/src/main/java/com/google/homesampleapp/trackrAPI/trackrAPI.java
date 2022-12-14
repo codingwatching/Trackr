@@ -28,13 +28,17 @@ public class trackrAPI {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final String Url ="http://localhost:8080";
 
-    public static void main(String[] args) throws IOException {
-      login("kamsaiyed@gmail.com","kamar123");
-      createProject();
-      createField();
-      createVisualization();
+//    public static void main(String[] args) throws IOException {
+//      login("kamsaiyed@gmail.com","kamar123");
+//      createProject();
+//      createField();
+//      createVisualization();
 //      sendData(2);
-    }
+////      sendData(4);
+////      sendData(5);
+//
+//
+//    }
     public static void setup() throws IOException {
         createProject();
         createField();
@@ -62,7 +66,7 @@ public class trackrAPI {
         if(body!=null){
             body=body.substring(6,body.length()-1);
         }
-        System.out.println(Integer.parseInt(body));
+//        System.out.println(Integer.parseInt(body));
         projID=Integer.parseInt(body);
         return projID;
     }
@@ -77,7 +81,7 @@ public class trackrAPI {
         if(resp!=null){
             resp=resp.substring(6,resp.length()-1);
         }
-        System.out.println(Integer.parseInt(resp));
+//        System.out.println(Integer.parseInt(resp));
         fieldId=Integer.parseInt(resp);
         return fieldId;
 
@@ -85,29 +89,30 @@ public class trackrAPI {
 
     public static int createVisualization() throws IOException {
         //http
-        String body="{\"fieldId\":"+fieldId+",\"metadata\":\"{\"name\":\"Graph\",\"color\":\"rgba(68, 155, 245)\",\"graphType\":\"line\",\"graphFunction\":\"none\",\"graphTimestep\":\"\"}\"}";
-//        String body="{\"fieldId\":
-//                ",\"metadata\":{\"name\":\"Graph\",\"color\":\"rgba(68, 155, 245)\",\"graphType\":\"line\",\"graphFunction\":\"none\",\"graphTimestep\":\"\"}}";
-        System.out.println(body);
+        String body="{\"fieldId\":"+fieldId+",\"metadata\":\"{\\\"name\\\":\\\"Graph\\\",\\\"color\\\":\\\"rgba(68, 155, 245)\\\",\\\"graphType\\\":\\\"line\\\",\\\"graphFunction\\\":\\\"none\\\",\\\"graphTimestep\\\":\\\"\\\"}\"}";
         Response response= post(Url+"/api/visualizations/", body,"Session="+sesssionID);
         String resp=response.body().string();
-        System.out.println(resp);
-//        VisulizationId=Integer.parseInt(resp);
+        if(resp!=null){
+            resp=resp.substring(6,resp.length()-1);
+        }
+        VisulizationId=Integer.parseInt(resp);
         return VisulizationId;
     }
 
     public static void sendData(float value) throws IOException {
         // get the project api key using projectID already stored
+        if(projApiKey==""){
+            Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
 
-        Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
+            String getBody=ret.body().string();
+            projApiKey= getBody.substring(getBody.indexOf("apiKey")+9,getBody.indexOf("createdAt")-3);
 
-        String getBody=ret.body().string();
-        projApiKey= getBody.substring(getBody.indexOf("apiKey")+9,getBody.indexOf("createdAt")-3);
+        }
 
         // call the
         Response response= postAddValue(Url+"/api/values/","Session="+sesssionID);
         String resp=response.body().string();
-        System.out.println(resp);
+//        System.out.println(resp);
 
     }
     //------------------------------------------------------
@@ -200,7 +205,7 @@ public class trackrAPI {
 
         OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
-                .addEncoded("value", "2.00")
+                .addEncoded("value", String.valueOf(2.00))
                 .addEncoded("apiKey", projApiKey)
                 .addEncoded("fieldId", String.valueOf(fieldId))
                 .build();
