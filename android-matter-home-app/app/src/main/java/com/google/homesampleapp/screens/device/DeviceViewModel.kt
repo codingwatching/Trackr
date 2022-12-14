@@ -17,14 +17,7 @@
 package com.google.homesampleapp.screens.device
 
 import android.content.IntentSender
-import android.os.SystemClock
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import com.google.android.gms.home.matter.Matter
-import com.google.android.gms.home.matter.commissioning.CommissioningWindow
-import com.google.android.gms.home.matter.commissioning.ShareDeviceRequest
-import com.google.android.gms.home.matter.common.DeviceDescriptor
-import com.google.android.gms.home.matter.common.Discriminator
 import com.google.homesampleapp.DISCRIMINATOR
 import com.google.homesampleapp.ITERATION
 import com.google.homesampleapp.OPEN_COMMISSIONING_WINDOW_DURATION_SECONDS
@@ -49,17 +42,20 @@ import timber.log.Timber
 /** The ViewModel for the Device Fragment. See [DeviceFragment] for additional information. */
 @HiltViewModel
 class DeviceViewModel
+
 @Inject
 constructor(
     private val devicesRepository: DevicesRepository,
     private val devicesStateRepository: DevicesStateRepository,
     private val chipClient: ChipClient,
     private val clustersHelper: ClustersHelper,
-    private val tempReader: TempReader
 ) : ViewModel() {
 
   // Controls whether a periodic ping to the device is enabled or not.
   private var devicePeriodicPingEnabled: Boolean = true
+  private var tempReader: TempReader = TempReader()
+
+
 
   /** The current status of the share device action sent via [shareDevice]. */
   private val _shareDeviceStatus = MutableLiveData<TaskStatus>(TaskStatus.NotStarted)
@@ -97,12 +93,13 @@ constructor(
    * After using the sender, [consumeShareDeviceIntentSender] should be called to avoid receiving
    * the sender again after a configuration change.
    */
-  suspend fun shareDevice(activity: FragmentActivity) {
-    val deviceIds =   tempReader.getIdsFromDevices(devicesRepository.getAllDevices())
-    for ( id in deviceIds) {
-      println("Temperature of device: " + id + " = " + tempReader.temperatureReader(id, 0))
-    }
-  }
+//  suspend fun shareDevice(activity: FragmentActivity) {
+//    //tempReader = new
+//    val deviceIds =   tempReader.getIdsFromDevices(devicesRepository.getAllDevices())
+//    for ( id in deviceIds) {
+//      println("Temperature of device: " + id + " = " + tempReader.temperatureReader(id, 0))
+//    }
+//  }
 
   // Called by the fragment in Step 5 of the Device Sharing flow.
   fun shareDeviceSucceeded(message: String) {
@@ -130,6 +127,16 @@ constructor(
   fun removeDevice(deviceId: Long) {
     Timber.d("**************** remove device ****** [${deviceId}]")
     viewModelScope.launch { devicesRepository.removeDevice(deviceId) }
+  }
+
+  fun printData(){
+    println("PrintData called")
+    viewModelScope.launch { devicesRepository.callLastId() }
+  }
+
+  fun getTempData(id: Long){
+    println("getTempData() called")
+    viewModelScope.launch { devicesRepository.callThisId(id) }
   }
 
   fun updateDeviceStateOn(deviceUiModel: DeviceUiModel, isOn: Boolean) {

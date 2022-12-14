@@ -42,6 +42,7 @@ import com.google.homesampleapp.OpenCommissioningWindowApi
 import com.google.homesampleapp.PERIODIC_UPDATE_INTERVAL_DEVICE_SCREEN_SECONDS
 import com.google.homesampleapp.R
 import com.google.homesampleapp.TaskStatus.InProgress
+import com.google.homesampleapp.data.DevicesRepository
 import com.google.homesampleapp.data.DevicesStateRepository
 import com.google.homesampleapp.databinding.FragmentDeviceBinding
 import com.google.homesampleapp.displayString
@@ -174,23 +175,8 @@ class DeviceFragment : Fragment() {
 
     // Share Device
     binding.shareButton.setOnClickListener {
-      val deviceName = selectedDeviceViewModel.selectedDeviceLiveData.value?.device?.name!!
-      if (isDummyDevice(deviceName) && !ALLOW_DEVICE_SHARING_ON_DUMMY_DEVICE) {
-        // Device sharing not allowed on a dummy device.
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Share device $deviceName")
-            .setMessage(getString(R.string.share_dummy_device))
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ -> }
-            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
-              viewModel.inspectDescriptorCluster(
-                  selectedDeviceViewModel.selectedDeviceLiveData.value!!)
-            }
-            .show()
-      } else {
-          GlobalScope.launch {
-              viewModel.shareDevice(requireActivity())
-          }
-      }
+        println("Button clicked")
+        viewModel.printData()
     }
 
     // Change the on/off state of the device

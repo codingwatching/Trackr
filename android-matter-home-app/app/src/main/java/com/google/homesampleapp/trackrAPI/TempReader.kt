@@ -14,8 +14,8 @@ import java.util.*
 import javax.inject.Inject
 
 
-@InstallIn(SingletonComponent::class)
-@Module
+//@InstallIn(SingletonComponent::class)
+//@Module
 class TempReader {
 
 
@@ -32,18 +32,16 @@ class TempReader {
         return devicesRepository.getLastDeviceId()
     }
 
-    @Provides
+    //@Provides
     suspend fun temperatureReader(deviceId: Long, endpoint: Int): Int?{
         return clusters.readTemperatureClusterVendorIDAttribute(deviceId, endpoint)
     }
 
-    @Provides
     //device methods
     fun getDeviceId(device: Device): Long{
         return device.deviceId
     }
 
-    @Provides
     fun getIdsFromDevices(devices: Devices): MutableList<Long>{
 
         val listOfDevices = devices.devicesList
