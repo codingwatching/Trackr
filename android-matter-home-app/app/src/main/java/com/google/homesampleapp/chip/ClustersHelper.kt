@@ -290,7 +290,44 @@ class ClustersHelper @Inject constructor(private val chipClient: ChipClient) {
   private fun getBasicClusterForDevice(devicePtr: Long, endpoint: Int): ChipClusters.BasicCluster {
     return ChipClusters.BasicCluster(devicePtr, endpoint)
   }
+    
+ // -----------------------------------------------------------------------------------------------
+ // Temperature devices
+  
+  suspend fun readTemperatureClusterVendorIDAttribute(deviceId: Long, endpoint: Int): Int? {
+      System.out.println("readTemperatureClusterVendorIDAttribute() called")
+      System.out.println("Devices "+ deviceId)
 
+      val connectedDevicePtr = 
+          try {
+              chipClient.getConnectedDevicePointer(deviceId)
+
+
+          } catch (e: IllegalStateException) {
+              Timber.e("Can't get connectedTemperatureDevicePointer.")
+              e.printStackTrace()
+              return null
+          }
+      
+      return suspendCoroutine { continuation ->
+          getTemperatureClusterForDevice(connectedDevicePtr, endpoint)
+              .readMeasuredValueAttribute(
+                  object : ChipClusters.TemperatureMeasurementCluster.MeasuredValueAttributeCallback {
+                      override fun onSuccess(value: Int?) {
+                          continuation.resume(value)
+                      }
+
+                      override fun onError(ex: Exception) {
+                          continuation.resumeWithException(ex)
+                      }
+                  }
+              )
+      }
+  }
+
+  private fun getTemperatureClusterForDevice(devicePtr: Long, endpoint: Int): ChipClusters.TemperatureMeasurementCluster {
+      return ChipClusters.TemperatureMeasurementCluster(devicePtr, endpoint)
+  }
   // -----------------------------------------------------------------------------------------------
   // OnOffCluster functions
 

@@ -77,6 +77,7 @@ constructor(
     private val devicesStateRepository: DevicesStateRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val clustersHelper: ClustersHelper,
+
 ) : ViewModel() {
 
   // Controls whether a periodic ping to the devices is enabled or not.

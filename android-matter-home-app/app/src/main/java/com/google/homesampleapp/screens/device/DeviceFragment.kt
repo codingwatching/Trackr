@@ -43,6 +43,7 @@ import com.google.homesampleapp.OpenCommissioningWindowApi
 import com.google.homesampleapp.PERIODIC_UPDATE_INTERVAL_DEVICE_SCREEN_SECONDS
 import com.google.homesampleapp.R
 import com.google.homesampleapp.TaskStatus.InProgress
+import com.google.homesampleapp.data.DevicesRepository
 import com.google.homesampleapp.data.DevicesStateRepository
 import com.google.homesampleapp.databinding.FragmentDeviceBinding
 import com.google.homesampleapp.displayString
@@ -52,6 +53,8 @@ import com.google.homesampleapp.lifeCycleEvent
 import com.google.homesampleapp.screens.shared.SelectedDeviceViewModel
 import com.google.homesampleapp.stateDisplayString
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
 import com.google.homesampleapp.trackrAPI.trackrAPI

@@ -17,14 +17,7 @@
 package com.google.homesampleapp.screens.device
 
 import android.content.IntentSender
-import android.os.SystemClock
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import com.google.android.gms.home.matter.Matter
-import com.google.android.gms.home.matter.commissioning.CommissioningWindow
-import com.google.android.gms.home.matter.commissioning.ShareDeviceRequest
-import com.google.android.gms.home.matter.common.DeviceDescriptor
-import com.google.android.gms.home.matter.common.Discriminator
 import com.google.homesampleapp.DISCRIMINATOR
 import com.google.homesampleapp.ITERATION
 import com.google.homesampleapp.OPEN_COMMISSIONING_WINDOW_DURATION_SECONDS
@@ -37,6 +30,7 @@ import com.google.homesampleapp.data.DevicesRepository
 import com.google.homesampleapp.data.DevicesStateRepository
 import com.google.homesampleapp.isDummyDevice
 import com.google.homesampleapp.screens.home.DeviceUiModel
+import com.google.homesampleapp.trackrAPI.TempReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -48,16 +42,20 @@ import timber.log.Timber
 /** The ViewModel for the Device Fragment. See [DeviceFragment] for additional information. */
 @HiltViewModel
 class DeviceViewModel
+
 @Inject
 constructor(
     private val devicesRepository: DevicesRepository,
     private val devicesStateRepository: DevicesStateRepository,
     private val chipClient: ChipClient,
-    private val clustersHelper: ClustersHelper
+    private val clustersHelper: ClustersHelper,
 ) : ViewModel() {
 
   // Controls whether a periodic ping to the device is enabled or not.
   private var devicePeriodicPingEnabled: Boolean = true
+  private var tempReader: TempReader = TempReader()
+
+
 
   /** Generic status about actions processed in this screen. */
   private val _statusInfo = MutableLiveData("")
@@ -70,6 +68,37 @@ constructor(
   fun removeDevice(deviceId: Long) {
     Timber.d("**************** remove device ****** [${deviceId}]")
     viewModelScope.launch { devicesRepository.removeDevice(deviceId) }
+  }
+
+  fun printData(){
+    println("PrintData called")
+    viewModelScope.launch { devicesRepository.callLastId() }
+  }
+
+  fun getTempData(id: Long){
+    println("getTempData() called")
+    viewModelScope.launch { devicesRepository.callThisId(id) }
+  }
+
+  fun updateDeviceStateOn(deviceUiModel: DeviceUiModel, isOn: Boolean) {
+    Timber.d("updateDeviceStateOn: isOn [${isOn}]")
+    val deviceId = deviceUiModel.device.deviceId
+    viewModelScope.launch {
+      if (isDummyDevice(deviceUiModel.device.name)) {
+        Timber.d("Handling test device")
+        devicesStateRepository.updateDeviceState(deviceId, true, isOn)
+      } else {
+        // CODELAB: toggle
+        Timber.d("Handling real device")
+        try {
+          clustersHelper.setOnOffDeviceStateOnOffCluster(deviceUiModel.device.deviceId, isOn, 1)
+          devicesStateRepository.updateDeviceState(deviceUiModel.device.deviceId, true, isOn)
+        } catch (e: Throwable) {
+          Timber.e("Failed setting on/off state")
+        }
+        // CODELAB SECTION END
+      }
+    }
   }
 
   // -----------------------------------------------------------------------------------------------
