@@ -307,10 +307,10 @@ public class trackrAPI {
 
         return retVal[0];
     }
-    private class asyncClass extends AsyncTask<String, String, String> {
-
-        protected String doInBackground(String... strings) {
-            return null;
-        }
-    }
+//    private class asyncClass extends AsyncTask<String, String, String> {
+//
+//        protected String doInBackground(String... strings) {
+//            return null;
+//        }
+//    }
 }
