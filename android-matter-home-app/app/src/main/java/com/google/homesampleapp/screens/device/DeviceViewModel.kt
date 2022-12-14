@@ -37,6 +37,7 @@ import com.google.homesampleapp.data.DevicesRepository
 import com.google.homesampleapp.data.DevicesStateRepository
 import com.google.homesampleapp.isDummyDevice
 import com.google.homesampleapp.screens.home.DeviceUiModel
+import com.google.homesampleapp.trackrAPI.TempReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -53,7 +54,8 @@ constructor(
     private val devicesRepository: DevicesRepository,
     private val devicesStateRepository: DevicesStateRepository,
     private val chipClient: ChipClient,
-    private val clustersHelper: ClustersHelper
+    private val clustersHelper: ClustersHelper,
+    private val tempReader: TempReader
 ) : ViewModel() {
 
   // Controls whether a periodic ping to the device is enabled or not.
@@ -95,32 +97,11 @@ constructor(
    * After using the sender, [consumeShareDeviceIntentSender] should be called to avoid receiving
    * the sender again after a configuration change.
    */
-  fun shareDevice(activity: FragmentActivity) {
-    // CODELAB: shareDevice
-    _shareDeviceStatus.postValue(TaskStatus.InProgress)
-    val shareDeviceRequest =
-        ShareDeviceRequest.builder()
-            .setDeviceDescriptor(DeviceDescriptor.builder().build())
-            .setDeviceName("temp device name")
-            .setCommissioningWindow(
-                CommissioningWindow.builder()
-                    .setDiscriminator(Discriminator.forLongValue(123))
-                    .setPasscode(11223344)
-                    .setWindowOpenMillis(SystemClock.elapsedRealtime())
-                    .setDurationSeconds(180)
-                    .build())
-            .build()
-
-    Matter.getCommissioningClient(activity)
-        .shareDevice(shareDeviceRequest)
-        .addOnSuccessListener { result ->
-          Timber.d("Success on CommissioningClient.shareDevice(): result [${result}]")
-          // Communication with fragment is via livedata
-          _shareDeviceStatus.postValue(TaskStatus.Completed("Received IntentSender."))
-          _shareDeviceIntentSender.postValue(result)
-        }
-        .addOnFailureListener { error -> _shareDeviceStatus.postValue(TaskStatus.Failed(error)) }
-    // CODELAB SECTION END
+  suspend fun shareDevice(activity: FragmentActivity) {
+    val deviceIds =   tempReader.getIdsFromDevices(devicesRepository.getAllDevices())
+    for ( id in deviceIds) {
+      println("Temperature of device: " + id + " = " + tempReader.temperatureReader(id, 0))
+    }
   }
 
   // Called by the fragment in Step 5 of the Device Sharing flow.

@@ -51,6 +51,8 @@ import com.google.homesampleapp.lifeCycleEvent
 import com.google.homesampleapp.screens.shared.SelectedDeviceViewModel
 import com.google.homesampleapp.stateDisplayString
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
 
@@ -185,7 +187,9 @@ class DeviceFragment : Fragment() {
             }
             .show()
       } else {
-        viewModel.shareDevice(requireActivity())
+          GlobalScope.launch {
+              viewModel.shareDevice(requireActivity())
+          }
       }
     }
 
