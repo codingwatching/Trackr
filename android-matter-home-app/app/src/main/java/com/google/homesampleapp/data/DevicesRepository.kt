@@ -70,7 +70,7 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
     devicesDataStore.updateData { devices -> devices.toBuilder().addDevices(device).build() }
     deviceIds.add(id)
     println("Device Ids: " + id)
-    callThisId(id)
+    //callThisId(id)
   }
 
   suspend fun updateDevice(device: Device) {

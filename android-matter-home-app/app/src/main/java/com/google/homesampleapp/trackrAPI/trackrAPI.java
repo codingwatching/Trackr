@@ -46,8 +46,8 @@ public class trackrAPI {
         createProject();
         createField();
         createVisualization();
-        sendData(21);
-        sendData(22);
+//        sendData(21);
+//        sendData(22);
 
     }
 //    public String loginHelper(String username, String Password) throws IOException {
@@ -119,6 +119,7 @@ public class trackrAPI {
     }
 
     public static void sendData(float value) throws IOException, InterruptedException {
+        System.out.println("Send data invoked: " + value);
         // get the project api key using projectID already stored
         if(projApiKey.equals("")){
             Response ret = get(Url+"/api/projects/"+projID,"Session="+sesssionID);
@@ -129,7 +130,7 @@ public class trackrAPI {
         }
 
         // call the
-        Response response= postAddValue(Url+"/api/values/","Session="+sesssionID);
+        Response response= postAddValue(Url+"/api/values/","Session="+sesssionID, value);
         String resp=response.body().string();
         response.body().close();
 
@@ -251,13 +252,13 @@ public class trackrAPI {
         countDownLatch.await();
         return retVal[0];
     }
-    private static Response postAddValue(String url, String head) throws IOException, InterruptedException {
+    private static Response postAddValue(String url, String head, float value) throws IOException, InterruptedException {
 
         final Response[] retVal = {null};
 
         OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
-                .addEncoded("value", String.valueOf(2.00))
+                .addEncoded("value", String.valueOf(value))
                 .addEncoded("apiKey", projApiKey)
                 .addEncoded("fieldId", String.valueOf(fieldId))
                 .build();
