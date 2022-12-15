@@ -46,7 +46,7 @@ public class trackrAPI {
         createProject();
         createField();
         createVisualization();
-//        sendData(21);
+        sendData(21);
 //        sendData(22);
 
     }

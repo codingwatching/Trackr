@@ -142,7 +142,7 @@ class DeviceFragment : Fragment() {
 
     binding.newtempbut.setOnClickListener {
       Timber.d("newtempbut.setOnClickListener")
-      val temp: Float? =  binding.newtemp as? Float
+      val temp: Float? =  binding.newtemp.text.toString() as? Float
       if(temp!=null){
           trackrAPI.sendData(temp)
       }
