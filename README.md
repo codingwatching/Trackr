@@ -4,7 +4,7 @@
 
 ---
 
-A platform for makers, hobbyists, students, and professionals to easily store and visualize data recorded from internet-connected devices like Arduinos and Raspberry Pis.
+A platform for makers, hobbyists, students, and professionals to easily store and visualize data recorded from internet-connected devices like [Arduinos] and [Raspberry Pis].
 
 - [Motivation](#motivation)
 - [Features](#features)
@@ -101,5 +101,7 @@ To run the tests:
 
 For more information, see ...
 
+[raspberry pis]: https://www.raspberrypi.org/
+[arduinos]: https://www.arduino.cc/
 [nodejs]: https://nodejs.org/en/
 [go]: https://go.dev/
