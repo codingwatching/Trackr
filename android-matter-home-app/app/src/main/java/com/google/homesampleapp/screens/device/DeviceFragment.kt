@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
 import com.google.homesampleapp.trackrAPI.trackrAPI
+import kotlinx.coroutines.runBlocking
 
 /**
  * The Device Fragment shows all the information about the device that was selected in the Home
@@ -75,6 +76,7 @@ import com.google.homesampleapp.trackrAPI.trackrAPI
 class DeviceFragment : Fragment() {
 
   @Inject internal lateinit var devicesStateRepository: DevicesStateRepository
+    @Inject internal lateinit var devicesRepository: DevicesRepository
 
   // Fragment binding.
   private lateinit var binding: FragmentDeviceBinding
@@ -143,7 +145,6 @@ class DeviceFragment : Fragment() {
       val temp: Float? =  binding.newtemp as? Float
       if(temp!=null){
           trackrAPI.sendData(temp)
-
       }
     }
 
@@ -168,8 +169,12 @@ class DeviceFragment : Fragment() {
     binding.trackrButton.setOnClickListener {
       Log.e("Button:","Connect to tracker button clicked" )
       trackrAPI.setup();
+//        runBlocking{
+//            devicesRepository.readCurrentTemperature(123241);
+//        }
+//        System.out.println("Blocking Request finished")
     }
-
+20
     // Remove Device
     binding.removeButton.setOnClickListener {
       val deviceId = selectedDeviceViewModel.selectedDeviceIdLiveData.value

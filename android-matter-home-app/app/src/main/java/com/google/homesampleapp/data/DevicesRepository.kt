@@ -44,15 +44,15 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
 
   // The Flow to read data from the DataStore.
   val devicesFlow: Flow<Devices> =
-      devicesDataStore.data.catch { exception ->
-        // dataStore.data throws an IOException when an error is encountered when reading data
-        if (exception is IOException) {
-          Timber.e(exception, "Error reading devices.")
-          emit(Devices.getDefaultInstance())
-        } else {
-          throw exception
-        }
+    devicesDataStore.data.catch { exception ->
+      // dataStore.data throws an IOException when an error is encountered when reading data
+      if (exception is IOException) {
+        Timber.e(exception, "Error reading devices.")
+        emit(Devices.getDefaultInstance())
+      } else {
+        throw exception
       }
+    }
 
   suspend fun incrementAndReturnLastDeviceId(): Long {
     val newLastDeviceId = devicesFlow.first().lastDeviceId + 1
@@ -66,10 +66,11 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
   suspend fun addDevice(device: Device) {
     println("******\nAdding Device\n*****")
     Timber.d("addDevice: device [${device}]")
+    val id = device.deviceId
     devicesDataStore.updateData { devices -> devices.toBuilder().addDevices(device).build() }
-    deviceIds.add(device.deviceId)
-    println("Device Ids: " + device.deviceId)
-    callLastId()
+    deviceIds.add(id)
+    println("Device Ids: " + id)
+    callThisId(id)
   }
 
   suspend fun updateDevice(device: Device) {
@@ -124,24 +125,24 @@ class DevicesRepository @Inject constructor(@ApplicationContext context: Context
   }
   suspend fun callThisId(nodeId: Long){
     println("callThisId() called")
-    println("Device ID: " + nodeId + " has temperature: " +clusters.readApplicationBasicClusterAttributeList(nodeId, 0))
-    println("Device ID: " + nodeId + " has temperature: " + clusters.readApplicationBasicClusterAttributeList(nodeId, 1))
+    println("Device ID: $nodeId")
+    println(clusters.readTemperatureClusterVendorIDAttribute(nodeId, 0))
+    //println("Device ID: " + nodeId + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(nodeId, 1))
   }
 
 
   suspend fun callLastId(){
     println("callLastId() called")
     val id = getLastDeviceId()
-    val temp: Long = 96637565
-    println("Device ID: " + id + " has temperature: " +clusters.readApplicationBasicClusterAttributeList(id, 0))
-    println("Device ID: " + id + " has temperature: " + clusters.readApplicationBasicClusterAttributeList(id, 1))
+    //val temp: Long = 27736816
+    println("Device ID: " + id + " has temperature: " +clusters.readTemperatureClusterVendorIDAttribute(id, 0))
+    println("Device ID: " + id + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(id, 1))
   }
 
-//  suspend fun iterateThroughIds(){
-//    println("iterateThroughIds() called")
-//    for (id in deviceIds){
-//      println("**************** IterateThroughIds called d******")
-//      println("Device ID: " + id + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(id, 0))
-//    }
-//  }
+  suspend fun readCurrentTemperature(nodeId: Long){
+    println("readCurrentTemperature() called")
+    println("**************** readCurrentTemperature called d******")
+    println("0: Device ID: " + nodeId + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(nodeId, 0))
+    println("1: Device ID: " + nodeId + " has temperature: " + clusters.readTemperatureClusterVendorIDAttribute(nodeId, 1))
+  }
 }
