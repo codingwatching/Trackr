@@ -11,10 +11,11 @@ import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
 import ProjectFields from "./pages/ProjectFields";
-import UserAccount from "./pages/UserAccount";
-import UserChangePassword from "./pages/UserChangePassword";
-import UserLogs from "./pages/UserLogs";
-import UserRoute from "./routes/UserRoute";
+import Account from "./pages/Account";
+import ChangePassword from "./pages/ChangePassword";
+import Logs from "./pages/Logs";
+import About from "./pages/About";
+import SettingsRoute from "./routes/SettingsRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 
@@ -60,7 +61,7 @@ const App = () => {
               path="/settings/"
               element={
                 <AuthorizedRoute
-                  element={<UserRoute element={<UserAccount />} />}
+                  element={<SettingsRoute element={<Account />} />}
                 />
               }
             />
@@ -68,7 +69,7 @@ const App = () => {
               path="/settings/changepassword"
               element={
                 <AuthorizedRoute
-                  element={<UserRoute element={<UserChangePassword />} />}
+                  element={<SettingsRoute element={<ChangePassword />} />}
                 />
               }
             />
@@ -76,7 +77,15 @@ const App = () => {
               path="/settings/logs"
               element={
                 <AuthorizedRoute
-                  element={<UserRoute element={<UserLogs />} />}
+                  element={<SettingsRoute element={<Logs />} />}
+                />
+              }
+            />
+            <Route
+              path="/settings/about"
+              element={
+                <AuthorizedRoute
+                  element={<SettingsRoute element={<About />} />}
                 />
               }
             />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRegister } from "../hooks/useRegister";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -13,12 +14,12 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import AuthAPI from "../api/AuthAPI";
 import FormBox from "../components/FormBox";
+import formatError from "../utils/formatError";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [register, registerContext] = useRegister();
   const [error, setError] = useState();
 
   const handleSubmit = (event) => {
@@ -30,26 +31,18 @@ const Register = () => {
       return;
     }
 
-    AuthAPI.register(
-      data.get("email"),
-      data.get("password"),
-      data.get("firstName"),
-      data.get("lastName")
-    )
+    register({
+      email: data.get("email"),
+      password: data.get("password"),
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+    })
       .then(() => {
         navigate("/login");
       })
       .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          setError(error.response.data.error);
-        } else {
-          setError("Failed to sign up: " + error.message);
-        }
+        setError(formatError(error));
       });
-
-    setLoading(true);
   };
 
   return (
@@ -63,7 +56,7 @@ const Register = () => {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           {error && (
-            <Fade in={error ? true : false}>
+            <Fade in>
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
               </Alert>
@@ -125,7 +118,7 @@ const Register = () => {
           </Grid>
 
           <LoadingButton
-            loading={loading}
+            loading={registerContext.isLoading}
             type="submit"
             fullWidth
             variant="contained"

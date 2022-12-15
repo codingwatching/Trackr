@@ -9,7 +9,7 @@ import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-const UserChangePassword = () => {
+const ChangePassword = () => {
   const user = useUser();
   const [updateUser, updateUserContext] = useUpdateUser();
   const [error, setError] = useState();
@@ -133,4 +133,4 @@ const UserChangePassword = () => {
   );
 };
 
-export default UserChangePassword;
+export default ChangePassword;

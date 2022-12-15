@@ -1,5 +1,6 @@
 import { useLocation, matchPath, useNavigate } from "react-router-dom";
 import { useState, cloneElement } from "react";
+import { useLogout } from "../hooks/useLogout";
 import AppBar from "@mui/material/AppBar";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
@@ -18,7 +19,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Logo from "./Logo";
-import AuthAPI from "../api/AuthAPI";
 import ProjectListMenu from "./ProjectListMenu";
 
 const pages = [
@@ -34,9 +34,12 @@ const pages = [
 const NavBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElSubMenu, setAnchorElSubMenu] = useState(null);
+
+  const [logout, logoutContext] = useLogout();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -70,7 +73,7 @@ const NavBar = () => {
   };
 
   const handleLogout = () => {
-    AuthAPI.logout().then(() => {
+    logout().then(() => {
       navigate("/login");
     });
   };
@@ -260,7 +263,10 @@ const NavBar = () => {
                   Settings
                 </MenuItem>
               </Link>
-              <MenuItem onClick={handleLogout}>
+              <MenuItem
+                onClick={handleLogout}
+                disabled={logoutContext.isLoading}
+              >
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>

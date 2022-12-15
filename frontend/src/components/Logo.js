@@ -2,10 +2,10 @@ import * as React from "react";
 import Typography from "@mui/material/Typography";
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 
-const Logo = () => {
+const Logo = ({ sxIcon, sxText }) => {
   return (
     <>
-      <InsertChartIcon sx={{ color: "primary.main", mr: 1 }} />
+      <InsertChartIcon sx={{ color: "primary.main", mr: 1, ...sxIcon }} />
       <Typography
         variant="h6"
         noWrap
@@ -15,6 +15,7 @@ const Logo = () => {
           color: "black",
           userSelect: "none",
           textDecoration: "none",
+          ...sxText,
         }}
       >
         trackr

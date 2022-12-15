@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import EditUserButton from "../components/EditUserButton";
 
-const UserAccount = () => {
+const Account = () => {
   const user = useUser();
 
   return (
@@ -96,4 +96,4 @@ const UserAccount = () => {
   );
 };
 
-export default UserAccount;
+export default Account;
