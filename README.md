@@ -6,7 +6,7 @@
 
 A platform for makers, hobbyists, students, and professionals to easily store and visualize data recorded from internet-connected devices like Arduinos and Raspberry Pis.
 
-- [Motivation](#problem-statement)
+- [Motivation](#motivation)
 - [Features](#features)
 - [Building and Running](#building-and-running)
   - [Backend](#backend)
