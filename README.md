@@ -1,17 +1,16 @@
-<p align="center">
-  <img src='logo.svg?raw=true' width='50%'>
-</p>
+<img src='logo.svg?raw=true' width='50%'>
 
 ---
 
 A platform for makers, hobbyists, students, and professionals to easily store and visualize data recorded from internet-connected devices like Arduinos and Raspberry Pis.
 
-- [Mission Statement](#mission-statement)
+- [Problem Statement](#problem-statement)
 - [How to Build and Run](#how-to-build-and-run)
   - [Backend](#backend)
   - [Frontend](#frontend)
+- [Architecture](#architecture)
 
-## Mission Statement
+## Problem Statement
 
 There exists a community of makers, students, hobbyists, and professionals who create and design systems that are capable of collecting sensor data like humidity, temperature, and atmospheric pressure.
 
@@ -70,6 +69,10 @@ To run the frontend, make sure you have [NodeJS] installed.
 1. From the root directory, navigate to the `frontend/` directory.
 2. Type `make run`
 3. Press `Control + C` on your keyboard to exit.
+
+## Architecture
+
+![Architecture diagram showing a presentation layer, business layer and data layer](arch.svg)
 
 [nodejs]: https://nodejs.org/en/
 [go]: https://go.dev/
