@@ -6,12 +6,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import ErrorIcon from "@mui/icons-material/ErrorOutline";
-import UserSettingsSidebar from "../components/UserSettingsSidebar";
+import SettingsSidebar from "../components/SettingsSidebar";
 import ErrorBoundary from "../components/ErrorBoundary";
 import LoadingBoundary from "../components/LoadingBoundary";
 import UsersAPI from "../api/UsersAPI";
 
-const UserSettingsRoute = ({ element }) => {
+const SettingsRoute = ({ element }) => {
   const errorBoundaryRef = useRef();
   const queryClient = useQueryClient();
 
@@ -48,7 +48,7 @@ const UserSettingsRoute = ({ element }) => {
           }}
         >
           <Box sx={{ flex: 0.25, mb: { xs: 2, sm: 2, md: 0 } }}>
-            <UserSettingsSidebar />
+            <SettingsSidebar />
           </Box>
           <Box sx={{ flex: 0.75, px: { xs: 0, sm: 0, md: 3 } }}>{element}</Box>
         </Container>
@@ -57,4 +57,4 @@ const UserSettingsRoute = ({ element }) => {
   );
 };
 
-export default UserSettingsRoute;
+export default SettingsRoute;

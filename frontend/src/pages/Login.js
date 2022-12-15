@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "../hooks/useLogin";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Fade from "@mui/material/Fade";
@@ -13,41 +13,30 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import AuthAPI from "../api/AuthAPI";
 import FormBox from "../components/FormBox";
+import formatError from "../utils/formatError";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [login, loginContext] = useLogin();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    AuthAPI.login(
-      data.get("email"),
-      data.get("password"),
-      data.get("rememberMe") ? true : false
-    )
+    login({
+      email: data.get("email"),
+      password: data.get("password"),
+      rememberMe: data.get("rememberMe") ? true : false,
+    })
       .then(() => {
         navigate("/");
       })
       .catch((error) => {
-        setLoading(false);
-
-        if (error?.response?.data?.error) {
-          if (error.response.status === 307) {
-            navigate("/");
-          } else {
-            setError(error.response.data.error);
-          }
-        } else {
-          setError("Failed to sign in: " + error.message);
+        if (error?.response?.status === 307) {
+          navigate("/");
         }
       });
-
-    setLoading(true);
   };
 
   return (
@@ -62,14 +51,14 @@ const Login = () => {
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
-          {error && (
-            <Fade in={error ? true : false}>
-              <Alert severity="error">{error}</Alert>
+          {loginContext.isError && (
+            <Fade in>
+              <Alert severity="error">{formatError(loginContext.error)}</Alert>
             </Fade>
           )}
 
           <TextField
-            error={error ? true : false}
+            error={loginContext.isError}
             margin="normal"
             required
             fullWidth
@@ -79,7 +68,7 @@ const Login = () => {
             autoComplete="email"
           />
           <TextField
-            error={error ? true : false}
+            error={loginContext.isError}
             margin="normal"
             required
             fullWidth
@@ -94,7 +83,7 @@ const Login = () => {
             label="Remember me"
           />
           <LoadingButton
-            loading={loading}
+            loading={loginContext.isLoading}
             type="submit"
             fullWidth
             variant="contained"

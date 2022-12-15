@@ -11,7 +11,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import LoadingBoundary from "../components/LoadingBoundary";
 import UserLogsTable from "../components/UserLogsTable";
 
-const UserLogs = () => {
+const Logs = () => {
   const [search, setSearch] = useState("");
 
   return (
@@ -64,4 +64,4 @@ const UserLogs = () => {
   );
 };
 
-export default UserLogs;
+export default Logs;
