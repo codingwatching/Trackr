@@ -98,6 +98,8 @@ JSONVar getValues(String apiKey, int fieldId, int offset, int limit, String orde
       JSONVar json = JSON.parse(payload);
       JSONVar values = json["values"];
 
+      http.end();
+      
       return values;
     }
   } else {

@@ -13,26 +13,42 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
 
-    - name: Build
+    - name: Build Backend
       run: cd backend && make
 
-    - name: Test
+    - name: Test Backend
       run: cd backend && make test
+
+    - name: Build Frontend
+      run: cd ../frontend && make
 
   build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
 
-    - name: Build
+    - name: Build Backend
       run: cd backend && make
+
+    - name: Build Frontend
+      run: cd ..\frontend && make
