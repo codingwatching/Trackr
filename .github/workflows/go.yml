@@ -30,7 +30,7 @@ jobs:
       run: cd backend && make test
 
     - name: Build Frontend
-      run: cd ../frontend && make
+      run: cd frontend && make
 
   build-windows:
     runs-on: windows-latest
@@ -51,4 +51,4 @@ jobs:
       run: cd backend && make
 
     - name: Build Frontend
-      run: cd ..\frontend && make
+      run: cd frontend && make
