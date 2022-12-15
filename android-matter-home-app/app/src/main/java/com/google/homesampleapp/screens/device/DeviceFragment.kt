@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -135,6 +136,15 @@ class DeviceFragment : Fragment() {
     binding.topAppBar.setOnClickListener {
       Timber.d("topAppBar.setOnClickListener")
       findNavController().popBackStack()
+    }
+
+    binding.newtempbut.setOnClickListener {
+      Timber.d("newtempbut.setOnClickListener")
+      val temp: Float? =  binding.newtemp as? Float
+      if(temp!=null){
+          trackrAPI.sendData(temp)
+
+      }
     }
 
     // Info / Inspect device menu button

@@ -46,6 +46,8 @@ public class trackrAPI {
         createProject();
         createField();
         createVisualization();
+        sendData(21);
+        sendData(22);
 
     }
 //    public String loginHelper(String username, String Password) throws IOException {
