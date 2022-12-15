@@ -1,2 +1,5 @@
 bin/*
-.vs/*
+.vs/*.DS_Store
+*.DS_Store
+.vscode/
+.DS_Store
