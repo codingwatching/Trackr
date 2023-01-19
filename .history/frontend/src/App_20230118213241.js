@@ -11,7 +11,7 @@ import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
 import ProjectFields from "./pages/ProjectFields";
-import Organisations from "./pages/Organizations";
+import Organisations from "./pages/Organisations";
 import Account from "./pages/Account";
 import ChangePassword from "./pages/ChangePassword";
 import Logs from "./pages/Logs";

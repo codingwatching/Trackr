@@ -29,7 +29,7 @@ const pages = [
     match: "/projects/*",
     subMenu: <ProjectListMenu />,
   },
-  { name: "Organizations", href: "/organizations", match: "/organizations/*" },
+  { name: "Organisations", href: "/organisations", match: "/organisations/*" },
 ];
 
 const NavBar = () => {

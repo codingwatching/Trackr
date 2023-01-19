@@ -29,7 +29,9 @@ const pages = [
     match: "/projects/*",
     subMenu: <ProjectListMenu />,
   },
-  { name: "Organizations", href: "/organizations", match: "/organizations/*" },
+  {
+    name: "Organisations",
+  },
 ];
 
 const NavBar = () => {

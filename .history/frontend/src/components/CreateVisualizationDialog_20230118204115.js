@@ -11,8 +11,6 @@ import Button from "@mui/material/Button";
 import CreateFieldDialog from "./CreateFieldDialog";
 import VisualizationsEditor from "./visualizations/VisualizationsEditor";
 
-// This component is used to create a popup menu used for adding a new visualization to the project.
-
 const CreateVisualizationDialog = ({ onClose }) => {
   const [primaryDialog, setPrimaryDialog] = useState();
   const [secondaryDialog, setSecondaryDialog] = useState();
