@@ -32,7 +32,7 @@ func addProjectRoute(c *gin.Context) {
 		Name:        "Untitled Project",
 		Description: "",
 		APIKey:      apiKey,
-		User:        *user,
+		Users:       []models.User{*user},
 	}
 
 	project.ID, err = serviceProvider.GetProjectService().AddProject(project)

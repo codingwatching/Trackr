@@ -1,9 +1,12 @@
 package models
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Log struct {
-	ID        uint `gorm:"primarykey"`
+	gorm.Model
 	Message   string
 	CreatedAt time.Time
 

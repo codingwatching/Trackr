@@ -1,9 +1,12 @@
 package models
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Field struct {
-	ID        uint `gorm:"primarykey"`
+	gorm.Model
 	Name      string
 	UpdatedAt time.Time
 	CreatedAt time.Time
