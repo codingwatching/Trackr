@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"trackr/src/forms/responses/projects"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -41,7 +40,7 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, project)
 
-	response, _ = json.Marshal(projects.NewProject{
+	response, _ = json.Marshal(responses.NewProject{
 		ID: uint(2),
 	})
 	httpRecorder = httptest.NewRecorder()
@@ -92,8 +91,8 @@ func TestGetProjectsRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, newProject.ID, projectId)
 
-	response, _ = json.Marshal(projects.ProjectList{
-		Projects: []projects.Project{
+	response, _ = json.Marshal(responses.ProjectList{
+		Projects: []responses.Project{
 			{
 				ID:             suite.Project.ID,
 				Name:           suite.Project.Name,
@@ -175,7 +174,7 @@ func TestGetProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	response, _ = json.Marshal(projects.Project{
+	response, _ = json.Marshal(responses.Project{
 		ID:             suite.Project.ID,
 		Name:           suite.Project.Name,
 		Description:    suite.Project.Description,
@@ -345,7 +344,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Name:        "New Project Name",
 		Description: suite.Project.Description,
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.Project.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -374,7 +373,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Name:        project.Name,
 		Description: "New Description Name",
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.Project.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -404,7 +403,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Description: project.Description,
 		ResetAPIKey: true,
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.Project.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")

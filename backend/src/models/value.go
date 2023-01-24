@@ -1,12 +1,9 @@
 package models
 
-import (
-	"gorm.io/gorm"
-	"time"
-)
+import "time"
 
 type Value struct {
-	gorm.Model
+	ID        uint `gorm:"primarykey"`
 	Value     string
 	CreatedAt time.Time `gorm:"index"`
 

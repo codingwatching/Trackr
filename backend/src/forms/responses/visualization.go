@@ -1,4 +1,4 @@
-package visualizations
+package responses
 
 import "time"
 

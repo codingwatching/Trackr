@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"trackr/src/forms/responses/visualizations"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -33,9 +32,12 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
+	createdAt := time.Now()
 	visualization := models.Visualization{
-		Metadata: json.Metadata,
-		Field:    *field,
+		Metadata:  json.Metadata,
+		UpdatedAt: createdAt,
+		CreatedAt: createdAt,
+		Field:     *field,
 	}
 
 	visualizationId, err := serviceProvider.GetVisualizationService().AddVisualization(visualization)
@@ -50,7 +52,7 @@ func addVisualizationRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, visualizations.NewVisualization{
+	c.JSON(http.StatusOK, responses.NewVisualization{
 		ID: visualizationId,
 	})
 }
@@ -70,15 +72,15 @@ func getVisualizationsRoute(c *gin.Context) {
 		return
 	}
 
-	userVisualizations, err := serviceProvider.GetVisualizationService().GetVisualizations(*project, *user)
+	visualizations, err := serviceProvider.GetVisualizationService().GetVisualizations(*project, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get visualizations."})
 		return
 	}
 
-	visualizationList := make([]visualizations.Visualization, len(userVisualizations))
-	for index, visualization := range userVisualizations {
-		visualizationList[index] = visualizations.Visualization{
+	visualizationList := make([]responses.Visualization, len(visualizations))
+	for index, visualization := range visualizations {
+		visualizationList[index] = responses.Visualization{
 			ID:      visualization.ID,
 			FieldID: visualization.Field.ID,
 
@@ -88,7 +90,7 @@ func getVisualizationsRoute(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, visualizations.VisualizationList{Visualizations: visualizationList})
+	c.JSON(http.StatusOK, responses.VisualizationList{Visualizations: visualizationList})
 }
 
 func updateVisualizationRoute(c *gin.Context) {
