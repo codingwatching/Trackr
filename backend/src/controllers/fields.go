@@ -34,8 +34,13 @@ func addFieldRoute(c *gin.Context) {
 		return
 	}
 
+	createdAt := time.Now()
+
 	field := models.Field{
-		Name:    json.Name,
+		Name:      json.Name,
+		UpdatedAt: createdAt,
+		CreatedAt: createdAt,
+
 		Project: *project,
 	}
 

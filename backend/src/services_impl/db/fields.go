@@ -24,16 +24,6 @@ func (service *FieldService) GetFields(project models.Project, user models.User)
 	return fields, nil
 }
 
-func (service *FieldService) GetNumberOfProjectsByOrganization(organization models.Organization, user models.User) (int64, error) {
-	var count int64
-
-	if count := service.DB.Model(&organization).Association("Projects").Count(); count < 0 {
-		return 0, fmt.Errorf("an error occurred when retrieving the number of associated projects")
-	}
-
-	return count, nil
-}
-
 func (service *FieldService) GetNumberOfFieldsByProject(project models.Project, user models.User) (int64, error) {
 	var count int64
 

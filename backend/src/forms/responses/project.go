@@ -1,4 +1,4 @@
-package projects
+package responses
 
 import "time"
 

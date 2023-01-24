@@ -68,7 +68,8 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
-	expiresAt := time.Now()
+	createdAt := time.Now()
+	expiresAt := createdAt
 
 	if json.RememberMe {
 		expiresAt = expiresAt.AddDate(0, 1, 0)
@@ -80,6 +81,7 @@ func loginRoute(c *gin.Context) {
 		ID:        sessionId,
 		UserAgent: c.Request.UserAgent(),
 		ExpiresAt: expiresAt,
+		CreatedAt: createdAt,
 		User:      *user,
 	}
 
@@ -201,6 +203,8 @@ func registerRoute(c *gin.Context) {
 		FirstName:  json.FirstName,
 		LastName:   json.LastName,
 		IsVerified: false,
+		UpdatedAt:  time.Now(),
+		CreatedAt:  time.Now(),
 
 		MaxValues:        maxValues,
 		MaxValueInterval: maxValueInterval,

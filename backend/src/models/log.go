@@ -1,12 +1,11 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "time"
 
 type Log struct {
-	gorm.Model
-	Message string
+	ID        uint `gorm:"primarykey"`
+	Message   string
+	CreatedAt time.Time
 
 	UserID uint
 	User   User `gorm:"constraint:OnDelete:CASCADE;"`
