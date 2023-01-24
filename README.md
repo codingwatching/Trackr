@@ -95,7 +95,7 @@ To run the tests:
 
 ## Architecture
 
-![Architecture diagram showing a presentation layer, business layer and data layer](arch.svg)
+![image](https://user-images.githubusercontent.com/63835313/214208475-0d327caf-95e1-4ed3-88d4-df5f27dffdc8.png)
 
 ## Licensing
 
