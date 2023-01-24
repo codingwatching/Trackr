@@ -1,15 +1,15 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+	"gorm.io/gorm"
+)
 
 type Project struct {
-	ID          uint `gorm:"primarykey"`
-	Name        string
-	Description string
-	APIKey      string `gorm:"uniqueIndex"`
-	UpdatedAt   time.Time
-	CreatedAt   time.Time
-
-	UserID uint
-	User   User `gorm:"constraint:OnDelete:CASCADE;"`
+	gorm.Model
+	Name           string
+	Description    string
+	APIKey         string        `gorm:"uniqueIndex"`
+	Users          []User        `gorm:"many2many:user_project;"`
+	OrganizationID sql.NullInt64 // uint
 }
