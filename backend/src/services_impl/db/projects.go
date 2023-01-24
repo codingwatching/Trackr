@@ -13,8 +13,8 @@ type ProjectService struct {
 
 func (service *ProjectService) GetProjects(user models.User) ([]models.Project, error) {
 	var projects []models.Project
-	if result := service.DB.Order("created_at DESC").Find(&projects, "user_id = ?", user.ID); result.Error != nil {
-		return nil, result.Error
+	if err := service.DB.Order("created_at DESC").Model(&user).Association("Projects").Find(&projects); err != nil {
+		return nil, err
 	}
 
 	return projects, nil
@@ -22,8 +22,9 @@ func (service *ProjectService) GetProjects(user models.User) ([]models.Project, 
 
 func (service *ProjectService) GetProject(id uint, user models.User) (*models.Project, error) {
 	var project models.Project
-	if result := service.DB.First(&project, "id = ? AND user_id = ?", id, user.ID); result.Error != nil {
-		return nil, result.Error
+
+	if err := service.DB.Model(&user).Association("Projects").Find(&project, "id = ?", id); err != nil {
+		return nil, err
 	}
 
 	return &project, nil
@@ -55,7 +56,7 @@ func (service *ProjectService) UpdateProject(project models.Project) error {
 }
 
 func (service *ProjectService) DeleteProject(id uint, user models.User) error {
-	result := service.DB.Delete(&models.Project{}, "id = ? AND user_id = ?", id, user.ID)
+	result := service.DB.Model(&user).Delete(&models.Project{}, "id = ?", id)
 	if result.Error != nil {
 		return result.Error
 	}

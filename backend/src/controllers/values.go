@@ -18,6 +18,8 @@ import (
 
 func getValuesRoute(c *gin.Context) {
 	var query requests.GetValues
+	user := getLoggedInUser(c)
+
 	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
 		return
@@ -39,18 +41,18 @@ func getValuesRoute(c *gin.Context) {
 	}
 
 	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(query.APIKey)
-	if err != nil {
+	if project != nil || err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, project.User)
+	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	values, err := serviceProvider.GetValueService().GetValues(*field, project.User, query.Order, query.Offset, query.Limit)
+	values, err := serviceProvider.GetValueService().GetValues(*field, *user, query.Order, query.Offset, query.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get values."})
 		return
@@ -112,6 +114,8 @@ func deleteValuesRoute(c *gin.Context) {
 }
 
 func addValueRoute(c *gin.Context) {
+	user := getLoggedInUser(c)
+
 	var form requests.AddValue
 	if err := c.ShouldBindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -135,37 +139,39 @@ func addValueRoute(c *gin.Context) {
 	}
 
 	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(form.APIKey)
-	if err != nil {
+	if project != nil || err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
 
-	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(project.User)
+	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(*user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get number of values."})
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, project.User)
+	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	if project.User.MaxValues > 0 && numberOfValues >= int64(project.User.MaxValues) {
+	values := user.MaxValues
+	if values > 0 && numberOfValues >= values {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "You have exceeded your max values limit."})
 		return
 	}
 
-	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(project.User)
+	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(*user)
 	if lastAddedValue != nil {
-		timeSinceLastAddedValue := time.Duration(project.User.MaxValueInterval)*time.Second - time.Since(lastAddedValue.CreatedAt)
+		interval := user.MaxValueInterval
+		timeSinceLastAddedValue := time.Duration(interval)*time.Second - time.Since(lastAddedValue.CreatedAt)
 
 		if timeSinceLastAddedValue > 0 {
 			c.Header("Retry-After", fmt.Sprint(timeSinceLastAddedValue.Seconds()))
 			c.JSON(http.StatusTooManyRequests, responses.Error{
 				Error: fmt.Sprintf("You can only add a value every %d seconds, retry after %f seconds.",
-					project.User.MaxValueInterval,
+					interval,
 					timeSinceLastAddedValue.Seconds(),
 				),
 			})
@@ -177,8 +183,7 @@ func addValueRoute(c *gin.Context) {
 	value := models.Value{
 		Value:     form.Value,
 		CreatedAt: time.Now(),
-
-		Field: *field,
+		Field:     *field,
 	}
 
 	err = serviceProvider.GetValueService().AddValue(value)
