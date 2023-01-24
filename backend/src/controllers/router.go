@@ -40,6 +40,7 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 	sessionMiddleware := initAuthMiddleware(serviceProvider)
 
 	initAuthController(routerGroup, serviceProvider)
+	initOrganizationsController(routerGroup, serviceProvider, sessionMiddleware)
 	initProjectsController(routerGroup, serviceProvider, sessionMiddleware)
 	initUsersController(routerGroup, serviceProvider, sessionMiddleware)
 	initFieldsController(routerGroup, serviceProvider, sessionMiddleware)

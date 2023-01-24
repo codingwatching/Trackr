@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"trackr/src/forms/responses/projects"
 
 	"github.com/gin-gonic/gin"
 
@@ -33,6 +34,7 @@ func addProjectRoute(c *gin.Context) {
 		Description: "",
 		APIKey:      apiKey,
 		Users:       []models.User{*user},
+		// OrganizationID: todo,
 	}
 
 	project.ID, err = serviceProvider.GetProjectService().AddProject(project)
@@ -47,7 +49,7 @@ func addProjectRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.NewProject{
+	c.JSON(http.StatusOK, projects.NewProject{
 		ID: project.ID,
 	})
 }
@@ -73,7 +75,7 @@ func getProjectRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.Project{
+	c.JSON(http.StatusOK, projects.Project{
 		ID:             project.ID,
 		Name:           project.Name,
 		Description:    project.Description,
@@ -87,21 +89,21 @@ func getProjectRoute(c *gin.Context) {
 func getProjectsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	projects, err := serviceProvider.GetProjectService().GetProjects(*user)
+	userProjects, err := serviceProvider.GetProjectService().GetProjects(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get projects."})
 		return
 	}
 
-	projectList := make([]responses.Project, len(projects))
-	for index, project := range projects {
+	projectList := make([]projects.Project, len(userProjects))
+	for index, project := range userProjects {
 		numberOfFields, err := serviceProvider.GetFieldService().GetNumberOfFieldsByProject(project, *user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of fields."})
 			return
 		}
 
-		projectList[index] = responses.Project{
+		projectList[index] = projects.Project{
 			ID:             project.ID,
 			Name:           project.Name,
 			Description:    project.Description,
@@ -112,7 +114,7 @@ func getProjectsRoute(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, responses.ProjectList{Projects: projectList})
+	c.JSON(http.StatusOK, projects.ProjectList{Projects: projectList})
 }
 
 func deleteProjectRoute(c *gin.Context) {
@@ -192,7 +194,7 @@ func updateProjectRoute(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, responses.UpdateProject{
+	c.JSON(http.StatusOK, projects.UpdateProject{
 		APIKey: project.APIKey,
 	})
 }

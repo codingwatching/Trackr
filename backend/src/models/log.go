@@ -2,13 +2,11 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"time"
 )
 
 type Log struct {
 	gorm.Model
-	Message   string
-	CreatedAt time.Time
+	Message string
 
 	UserID uint
 	User   User `gorm:"constraint:OnDelete:CASCADE;"`

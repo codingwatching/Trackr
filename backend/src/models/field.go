@@ -2,14 +2,11 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"time"
 )
 
 type Field struct {
 	gorm.Model
-	Name      string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	Name string
 
 	ProjectID uint
 	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`

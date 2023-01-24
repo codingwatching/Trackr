@@ -11,6 +11,7 @@ import (
 type ServiceProvider struct {
 	sessionService       services.SessionService
 	userService          services.UserService
+	organizationService  services.OrganizationService
 	projectService       services.ProjectService
 	fieldService         services.FieldService
 	visualizationService services.VisualizationService
@@ -26,6 +27,7 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Session{})
+	database.AutoMigrate(&models.Organization{})
 	database.AutoMigrate(&models.Project{})
 	database.AutoMigrate(&models.Field{})
 	database.AutoMigrate(&models.Value{})
@@ -35,6 +37,7 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	serviceProvider := &ServiceProvider{}
 	serviceProvider.sessionService = &db.SessionService{DB: database}
 	serviceProvider.userService = &db.UserService{DB: database}
+	serviceProvider.organizationService = &db.OrganizationService{DB: database}
 	serviceProvider.projectService = &db.ProjectService{DB: database}
 	serviceProvider.fieldService = &db.FieldService{DB: database}
 	serviceProvider.valueService = &db.ValueService{DB: database}
@@ -50,6 +53,10 @@ func (serviceProvider *ServiceProvider) GetSessionService() services.SessionServ
 
 func (serviceProvider *ServiceProvider) GetUserService() services.UserService {
 	return serviceProvider.userService
+}
+
+func (serviceProvider *ServiceProvider) GetOrganizationService() services.OrganizationService {
+	return serviceProvider.organizationService
 }
 
 func (serviceProvider *ServiceProvider) GetProjectService() services.ProjectService {
