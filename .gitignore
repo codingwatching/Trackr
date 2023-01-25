@@ -6,3 +6,4 @@ backend/backend.iml
 .idea/vcs.xml
 .idea/trackr.iml
 .idea/modules.xml
+backend/bin/go_build_main_go.exe
