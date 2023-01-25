@@ -7,3 +7,4 @@ backend/backend.iml
 .idea/trackr.iml
 .idea/modules.xml
 backend/bin/go_build_main_go.exe
+backend/bin/test.db
