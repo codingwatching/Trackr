@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"trackr/src/forms/responses/visualizations"
-
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
+	"trackr/src/forms/responses/visualizations"
 	"trackr/src/models"
 	"trackr/src/services"
 )

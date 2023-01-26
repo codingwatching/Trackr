@@ -1,6 +1,8 @@
 package services
 
-import "trackr/src/models"
+import (
+	"trackr/src/models"
+)
 
 type FieldService interface {
 	GetFields(project models.Project, user models.User) ([]models.Field, error)

@@ -16,8 +16,8 @@ type User struct {
 	MaxValues        int64
 	MaxValueInterval int64
 
-	Organizations []Organization `gorm:"many2many:user_organization;"`
-	Projects      []Project      `gorm:"many2many:user_project;"`
+	UserOrganizations []*UserOrganization `gorm:"many2many:user_organizations;"`
+	Projects          []*Project          `gorm:"many2many:user_projects;"`
 }
 
 func (user *User) BeforeSave(db *gorm.DB) error {

@@ -3,7 +3,6 @@ package db
 import (
 	"fmt"
 	"gorm.io/gorm"
-
 	"trackr/src/models"
 )
 
@@ -13,6 +12,7 @@ type UserService struct {
 
 func (service *UserService) GetUser(email string) (*models.User, error) {
 	var user models.User
+
 	if result := service.DB.First(&user, "email = ?", email); result.Error != nil {
 		return nil, result.Error
 	}
@@ -22,6 +22,7 @@ func (service *UserService) GetUser(email string) (*models.User, error) {
 
 func (service *UserService) GetNumberOfUsers(email string) (int64, error) {
 	var count int64
+
 	if result := service.DB.Model(&models.User{}).Where("email = ?", email).Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -39,6 +40,7 @@ func (service *UserService) AddUser(user models.User) (uint, error) {
 
 func (service *UserService) DeleteUser(user models.User) error {
 	result := service.DB.Delete(&user)
+
 	if result.Error != nil {
 		return result.Error
 	}

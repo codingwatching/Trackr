@@ -2,15 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
-	"trackr/src/forms/responses/organizations"
-
-	"github.com/gin-gonic/gin"
-
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
+	"trackr/src/forms/responses/organizations"
 	"trackr/src/models"
 	"trackr/src/services"
 )
@@ -28,10 +26,15 @@ func addOrganizationRoute(c *gin.Context) {
 		Name:        "Untitled Organization",
 		Description: "",
 		APIKey:      apiKey,
-		Users:       []models.User{*user},
 	}
 
-	organization.ID, err = serviceProvider.GetOrganizationService().AddOrganization(organization)
+	userOrganization := models.UserOrganization{
+		Organization: organization,
+		User:         *user,
+		Role:         "organization_member",
+	}
+
+	organization.ID, err = serviceProvider.GetOrganizationService().AddOrganization(organization, userOrganization)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to create a new organization."})
 		return

@@ -1,6 +1,8 @@
 package services
 
-import "trackr/src/models"
+import (
+	"trackr/src/models"
+)
 
 type ProjectService interface {
 	GetProjects(user models.User) ([]models.Project, error)

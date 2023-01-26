@@ -6,7 +6,6 @@ import (
 	"sort"
 	"testing"
 	"time"
-
 	"trackr/src/models"
 	"trackr/tests"
 )

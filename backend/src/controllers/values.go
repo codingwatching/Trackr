@@ -2,17 +2,16 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"math"
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
+	"trackr/src/models"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
-	"trackr/src/models"
 	"trackr/src/services"
 )
 
@@ -41,7 +40,7 @@ func getValuesRoute(c *gin.Context) {
 	}
 
 	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(query.APIKey)
-	if project != nil || err != nil {
+	if project == nil || err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
@@ -202,7 +201,7 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 	valuesRouterGroup.Use(sessionMiddleware)
 	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
-	externalValuesRouterGroup := routerGroup.Group("/values")
-	externalValuesRouterGroup.GET("/", getValuesRoute)
-	externalValuesRouterGroup.POST("/", addValueRoute)
+	// externalValuesRouterGroup := routerGroup.Group("/values")
+	valuesRouterGroup.GET("/", getValuesRoute)
+	valuesRouterGroup.POST("/", addValueRoute)
 }

@@ -1,11 +1,9 @@
 package tests
 
 import (
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
-
+	"time"
 	"trackr/src/controllers"
 	"trackr/src/models"
 	"trackr/src/services"
@@ -38,8 +36,6 @@ func Startup() *Suite {
 		Password:         "$2a$12$Z4Ko/2d/EfenK9nBtpBRVO8I/3yOPnpcT/D/sbueRmhVDujVjHT4S",
 		FirstName:        "FirstName",
 		LastName:         "LastName",
-		UpdatedAt:        suite.Time,
-		CreatedAt:        suite.Time,
 		IsVerified:       true,
 		MaxValues:        1,
 		MaxValueInterval: 5,
@@ -51,8 +47,6 @@ func Startup() *Suite {
 		Name:        "Name",
 		Description: "Description",
 		APIKey:      "APIKey",
-		CreatedAt:   suite.Time,
-		UpdatedAt:   suite.Time,
 
 		UserID: suite.User.ID,
 		User:   suite.User,
@@ -61,7 +55,6 @@ func Startup() *Suite {
 
 	suite.Session = models.Session{
 		ID:        "SessionID",
-		CreatedAt: suite.Time,
 		ExpiresAt: suite.Time.AddDate(1, 0, 0),
 
 		UserID: suite.User.ID,
@@ -71,7 +64,6 @@ func Startup() *Suite {
 
 	suite.ExpiredSession = models.Session{
 		ID:        "ExpiredSessionID",
-		CreatedAt: suite.Time,
 		ExpiresAt: suite.Time,
 
 		UserID: suite.User.ID,
@@ -80,10 +72,8 @@ func Startup() *Suite {
 	suite.Service.GetSessionService().AddSession(suite.ExpiredSession)
 
 	suite.Field = models.Field{
-		ID:        1,
-		Name:      "Field1",
-		UpdatedAt: suite.Time,
-		CreatedAt: suite.Time,
+		ID:   1,
+		Name: "Field1",
 
 		ProjectID: suite.Project.ID,
 		Project:   suite.Project,
@@ -91,10 +81,8 @@ func Startup() *Suite {
 	suite.Service.GetFieldService().AddField(suite.Field)
 
 	suite.Visualization = models.Visualization{
-		ID:        1,
-		Metadata:  "Metadata",
-		UpdatedAt: suite.Time,
-		CreatedAt: suite.Time,
+		ID:       1,
+		Metadata: "Metadata",
 
 		FieldID: suite.Field.ID,
 		Field:   suite.Field,

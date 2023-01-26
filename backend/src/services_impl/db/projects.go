@@ -2,9 +2,8 @@ package db
 
 import (
 	"fmt"
-	"trackr/src/models"
-
 	"gorm.io/gorm"
+	"trackr/src/models"
 )
 
 type ProjectService struct {
@@ -13,7 +12,12 @@ type ProjectService struct {
 
 func (service *ProjectService) GetProjects(user models.User) ([]models.Project, error) {
 	var projects []models.Project
-	if err := service.DB.Order("created_at DESC").Model(&user).Association("Projects").Find(&projects); err != nil {
+
+	if err := service.DB.
+		Order("created_at DESC").
+		Model(&user).
+		Association("Projects").
+		Find(&projects); err != nil {
 		return nil, err
 	}
 
@@ -23,7 +27,10 @@ func (service *ProjectService) GetProjects(user models.User) ([]models.Project, 
 func (service *ProjectService) GetProject(id uint, user models.User) (*models.Project, error) {
 	var project models.Project
 
-	if err := service.DB.Model(&user).Association("Projects").Find(&project, "id = ?", id); err != nil {
+	if err := service.DB.
+		Model(&user).
+		Association("Projects").
+		Find(&project, "id = ?", id); err != nil {
 		return nil, err
 	}
 
@@ -32,7 +39,10 @@ func (service *ProjectService) GetProject(id uint, user models.User) (*models.Pr
 
 func (service *ProjectService) GetProjectByAPIKey(apiKey string) (*models.Project, error) {
 	var project models.Project
-	if result := service.DB.Preload("User").First(&project, "api_key = ?", apiKey); result.Error != nil {
+
+	if result := service.DB.
+		Preload("Users").
+		First(&project, "api_key = ?", apiKey); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -56,12 +66,11 @@ func (service *ProjectService) UpdateProject(project models.Project) error {
 }
 
 func (service *ProjectService) DeleteProject(id uint, user models.User) error {
-	result := service.DB.Model(&user).Delete(&models.Project{}, "id = ?", id)
-	if result.Error != nil {
+	if result := service.DB.
+		Model(&user).
+		Delete(&models.Project{}, "id = ?", id); result.Error != nil {
 		return result.Error
-	}
-
-	if result.RowsAffected < 1 {
+	} else if result.RowsAffected < 1 {
 		return fmt.Errorf("no rows affected")
 	}
 

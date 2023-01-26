@@ -1,8 +1,6 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 type Organization struct {
 	gorm.Model
@@ -10,6 +8,6 @@ type Organization struct {
 	Description string
 	APIKey      string `gorm:"uniqueIndex"`
 
-	Users    []User    `gorm:"many2many:user_organization;"`
-	Projects []Project `gorm:"foreignKey:OrganizationID"`
+	UserOrganizations []*UserOrganization `gorm:"many2many:user_organizations;"`
+	Projects          []Project           `gorm:"foreignKey:OrganizationID"`
 }

@@ -2,16 +2,15 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
 	"trackr/src/forms/responses/projects"
-
-	"github.com/gin-gonic/gin"
+	"trackr/src/models"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
-	"trackr/src/models"
 	"trackr/src/services"
 )
 
@@ -33,7 +32,7 @@ func addProjectRoute(c *gin.Context) {
 		Name:        "Untitled Project",
 		Description: "",
 		APIKey:      apiKey,
-		Users:       []models.User{*user},
+		Users:       []*models.User{user},
 		// OrganizationID: todo,
 	}
 

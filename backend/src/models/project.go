@@ -10,6 +10,6 @@ type Project struct {
 	Name           string
 	Description    string
 	APIKey         string        `gorm:"uniqueIndex"`
-	Users          []User        `gorm:"many2many:user_project;"`
+	Users          []*User       `gorm:"many2many:user_projects;"`
 	OrganizationID sql.NullInt64 // uint
 }
