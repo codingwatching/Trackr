@@ -11,7 +11,7 @@ import AuthorizedRoute from "./routes/AuthorizedRoute";
 import Projects from "./pages/Projects";
 import ProjectSettings from "./pages/ProjectSettings";
 import ProjectFields from "./pages/ProjectFields";
-import Organisations from "./pages/Organizations";
+import Organizations from "./pages/Organizations";
 import Account from "./pages/Account";
 import ChangePassword from "./pages/ChangePassword";
 import Logs from "./pages/Logs";
@@ -53,8 +53,6 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-            <Route path="/organisations" element={<Organisations />} />
 
             <Route
               path="/projects/"
@@ -124,6 +122,11 @@ const App = () => {
                 />
               }
             />
+            <Route
+              path="/organizations"
+              element={<AuthorizedRoute element={<Organizations />} />}
+            />
+
             <Route
               path="/"
               element={<AuthorizedRoute element={<Dashboard />} />}
