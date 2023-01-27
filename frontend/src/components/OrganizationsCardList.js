@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useProjects } from "../hooks/useProjects";
+// import { useProjects } from "../hooks/useProjects"; ----> will need to make hood useOrganizations to connect with DB
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CenteredBox from "./CenteredBox";
 import GroupsIcon from "@mui/icons-material/Groups";
 import Card from "@mui/material/Card";
-import { CardActionArea } from "@mui/material";
+import OrganizationsMenuButton from "./OrganizationsMenuButton";
+import TextButton from "./TextButton";
 
 const OrganizationsCardList = () => {
   //stub database for organizations
@@ -44,7 +45,6 @@ const OrganizationsCardList = () => {
   ) : (
     organizations.map((organization) => (
       <Card
-        onClick={() => navigate("/organizations/" + organization.id)}
         key={organization.id}
         sx={{
           display: "flex",
@@ -65,7 +65,7 @@ const OrganizationsCardList = () => {
           boxShadow: "0 1px 1px 1px rgb(9 30 66 / 10%)",
         }}
       >
-        <CardActionArea>
+        {/*<CardActionArea>*/}
           <Box
             sx={{
               display: "flex",
@@ -87,21 +87,24 @@ const OrganizationsCardList = () => {
                 mb: 1,
               }}
             />
-
             {/* Name of the organization */}
-            <Typography variant="h6" sx={{ fontSize: "18px", mb: 3 }}>
-              {organization.name}
-            </Typography>
+            <TextButton onClick={() => navigate("/organizations/" + organization.id)}>
+              <Typography variant="h6" sx={{ fontSize: "18px" }}>
+                {organization.name}
+              </Typography>
+            </TextButton>
 
-            <Typography variant="h6" sx={{ fontSize: "13px", flex: 1 }}>
+            <Typography variant="h6" sx={{ fontSize: "13px", flex: 1, mt: 3}}>
               Users: {organization.numMembers}
             </Typography>
-
-            <Typography variant="h6" sx={{ fontSize: "13px", flex: 1 }}>
-              Projects: {organization.numProjects}
-            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "row" }} >
+              <Typography variant="h6" sx={{ fontSize: "13px", flex: 1 }}>
+                Projects: {organization.numProjects}
+              </Typography>
+              <OrganizationsMenuButton sx={{ zIndex: "" }} organization={organization} />
+            </Box>
           </Box>
-        </CardActionArea>
+        {/*</CardActionArea>*/}
       </Card>
     ))
   );

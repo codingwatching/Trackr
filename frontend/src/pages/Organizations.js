@@ -1,5 +1,3 @@
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import OrganizationsCardBox from "../components/OrganizationsCardBox";
 
