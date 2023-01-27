@@ -5,7 +5,8 @@ import CenteredBox from "./CenteredBox";
 import ErrorIcon from "@mui/icons-material/Error";
 import ErrorBoundary from "./ErrorBoundary";
 import LoadingBoundary from "./LoadingBoundary";
-import OrganizationsCard from "./OrganizationsCard";
+
+import OrganizationsCardList from "./OrganizationsCardList";
 
 const OrganizationsCardBox = () => {
   return (
@@ -52,12 +53,7 @@ const OrganizationsCardBox = () => {
               </CenteredBox>
             }
           >
-            <OrganizationsCard />
-            <OrganizationsCard />
-            <OrganizationsCard />
-            <OrganizationsCard />
-            <OrganizationsCard />
-            <OrganizationsCard />
+            <OrganizationsCardList />
             {/* here goes list of cards */}
           </LoadingBoundary>
         </ErrorBoundary>
