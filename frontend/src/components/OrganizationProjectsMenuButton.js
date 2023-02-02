@@ -5,7 +5,6 @@ import MoreVert from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import Link from "@mui/material/Link";
 import MenuItem from "@mui/material/MenuItem";
-import GroupsIcon from "@mui/icons-material/Groups";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,9 +12,10 @@ import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-// import DeleteProjectDialog from "./DeleteProjectDialog";
+import DeleteProjectDialog from "./DeleteProjectDialog";
+import GroupsIcon from "@mui/icons-material/Groups";
 
-const OrganizationsMenuButton = ({ organization, noSettings }) => {
+const OrganizationProjectsMenuButton = ({ project, noSettings }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogElement, setDialogElement] = useState();
@@ -41,12 +41,12 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
   //     createElement(DeleteProjectDialog, { project, onClose: closeDialog }, {})
   //   );
   // };
-
+  //
   // const handleCopyAPIKey = () => {
   //   navigator.clipboard.writeText(project.apiKey);
   //   setAnchorEl(null);
   // };
-
+  //
   // const handleSettingsProject = (event) => {
   //   event.preventDefault();
   //
@@ -55,8 +55,8 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
 
   return (
     <>
-      <IconButton sx={{ minHeight: 0, minWidth: 0, padding: 0 }} onClick={openDropdownMenu}>
-        <MoreVert/>
+      <IconButton onClick={openDropdownMenu}>
+        <MoreVert />
       </IconButton>
 
       <Menu
@@ -66,15 +66,15 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
       >
         {!noSettings && (
           <Link
-            href={"/projects/settings/" + organization.id}
+            href={"/projects/settings/" + project.id}
             underline="none"
             sx={{ color: "unset" }}
           >
-            <MenuItem >
+            <MenuItem>
               <ListItemIcon>
                 <GroupsIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Add User</ListItemText>
+              <ListItemText>Add user</ListItemText>
             </MenuItem>
           </Link>
         )}
@@ -84,7 +84,7 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
             <GroupsIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-          <Typography color = "error">Remove user</Typography>
+            <Typography color = "error">Remove user</Typography>
           </ListItemText>
         </MenuItem>
         <MenuItem>
@@ -92,7 +92,7 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
             <DeleteIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color="error">Delete organization</Typography>
+            <Typography color="error"> Delete project</Typography>
           </ListItemText>
         </MenuItem>
       </Menu>
@@ -104,4 +104,7 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
   );
 };
 
-export default OrganizationsMenuButton;
+export default OrganizationProjectsMenuButton;
+
+
+

@@ -19,6 +19,7 @@ import About from "./pages/About";
 import SettingsRoute from "./routes/SettingsRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
+import Organization from "./pages/Organization";
 
 const theme = createTheme({
   palette: {
@@ -57,6 +58,10 @@ const App = () => {
             <Route
               path="/projects/"
               element={<AuthorizedRoute element={<Projects />} />}
+            />
+            <Route
+              path="/organizations/"
+              element={<AuthorizedRoute element={<Organizations />} />}
             />
             <Route
               path="/settings/"
@@ -123,10 +128,9 @@ const App = () => {
               }
             />
             <Route
-              path="/organizations"
-              element={<AuthorizedRoute element={<Organizations />} />}
+              path="/organizations/:organizationId"
+              element={<AuthorizedRoute element={<Organization />} />}
             />
-
             <Route
               path="/"
               element={<AuthorizedRoute element={<Dashboard />} />}
