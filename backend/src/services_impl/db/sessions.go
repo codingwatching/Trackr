@@ -46,9 +46,7 @@ func (service *SessionService) DeleteSession(id string, user models.User) error 
 }
 
 func (service *SessionService) DeleteExpiredSessions(user models.User) error {
-	result := service.DB.Delete(&models.Session{}, "expires_at < ? AND user_id = ?", time.Now(), user.ID)
-
-	if result.Error != nil {
+	if result := service.DB.Delete(&models.Session{}, "expires_at < ? AND user_id = ?", time.Now(), user.ID); result.Error != nil {
 		return result.Error
 	}
 

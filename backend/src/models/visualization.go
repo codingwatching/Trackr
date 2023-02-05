@@ -1,11 +1,14 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 type Visualization struct {
-	gorm.Model
+	ID       uint `gorm:"primarykey"`
 	Metadata string
 
 	FieldID uint
 	Field   Field `gorm:"constraint:OnDelete:CASCADE;"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

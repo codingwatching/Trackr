@@ -63,13 +63,13 @@ func getVisualizationsRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProject(uint(projectId), *user)
+	userProject, err := serviceProvider.GetProjectService().GetUserProject(uint(projectId), *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project."})
 		return
 	}
 
-	userVisualizations, err := serviceProvider.GetVisualizationService().GetVisualizations(*project, *user)
+	userVisualizations, err := serviceProvider.GetVisualizationService().GetVisualizations(userProject.Project, *user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get visualizations."})
 		return

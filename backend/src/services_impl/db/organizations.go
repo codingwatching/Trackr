@@ -10,29 +10,30 @@ type OrganizationService struct {
 	DB *gorm.DB
 }
 
-func (service *OrganizationService) GetOrganizations(user models.User) ([]models.Organization, error) {
-	var organizations []models.Organization
+func (service *OrganizationService) GetUserOrganizations(user models.User) ([]models.UserOrganization, error) {
+	var organizations []models.UserOrganization
 
 	if result := service.DB.
-		Order("created_at DESC").
-		Find(&organizations, "user_id = ?", user.ID); result.Error != nil {
+		Preload("User").
+		Preload("Organization").
+		Find(&organizations, "user_organizations.user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
 	return organizations, nil
 }
 
-func (service *OrganizationService) GetOrganization(id uint, user models.User) (*models.Organization, error) {
-	var organization models.Organization
+func (service *OrganizationService) GetUserOrganization(id uint, user models.User) (*models.UserOrganization, error) {
+	var organizationWithRelation models.UserOrganization
 
 	if result := service.DB.
-		Model(&models.Organization{}).
-		Joins("INNER JOIN user_organizations ON user_organizations.organization_id = organizations.id AND user_organizations.user_id = ?", user.ID).
-		First(&organization); result.Error != nil {
+		Preload("User").
+		Preload("Organization").
+		First(&organizationWithRelation, "user_organizations.user_id = ? AND user_organizations.organization_id = ?", user.ID, id); result.Error != nil {
 		return nil, result.Error
 	}
 
-	return &organization, nil
+	return &organizationWithRelation, nil
 }
 
 func (service *OrganizationService) GetOrganizationByAPIKey(apiKey string) (*models.Organization, error) {
@@ -40,7 +41,9 @@ func (service *OrganizationService) GetOrganizationByAPIKey(apiKey string) (*mod
 
 	if result := service.DB.
 		Preload("Users").
-		First(&organization, "api_key = ?", apiKey); result.Error != nil {
+		Table("user_organizations").
+		Joins("INNER JOIN organizations ON user_organizations.organization_id = organization.id").
+		First(&organization, "user_organizations.api_key = ?", apiKey); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -70,9 +73,9 @@ func (service *OrganizationService) UpdateOrganization(organization models.Organ
 func (service *OrganizationService) DeleteOrganization(id uint, user models.User) error {
 	if result := service.DB.
 		Model(&models.Organization{}).
-		Joins("INNER JOIN user_organizations ON user_organizations.organization_id = ? "+
-			"AND user_organization.user_id = ? AND user_organizations.role = ?", id, user.ID, "organization_owner").
-		Delete(&models.Organization{}); result.Error != nil {
+		Joins("INNER JOIN user_organizations ON user_organization.user_id = ? "+
+			"AND user_organizations.role = ?", user.ID, "organization_owner").
+		Delete(&models.Organization{}, "organizations.id = ?", id); result.Error != nil {
 		return result.Error
 	} else if result.RowsAffected < 1 {
 		return fmt.Errorf("no rows affected")

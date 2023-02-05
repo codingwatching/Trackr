@@ -24,6 +24,9 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 		return nil
 	}
 
+	database.SetupJoinTable(&models.User{}, "Projects", &models.UserProject{})
+	database.SetupJoinTable(&models.User{}, "Organizations", &models.UserOrganization{})
+
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Session{})
 	database.AutoMigrate(&models.Organization{})

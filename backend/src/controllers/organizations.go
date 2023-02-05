@@ -25,13 +25,13 @@ func addOrganizationRoute(c *gin.Context) {
 	organization := models.Organization{
 		Name:        "Untitled Organization",
 		Description: "",
-		APIKey:      apiKey,
 	}
 
 	userOrganization := models.UserOrganization{
 		Organization: organization,
 		User:         *user,
-		Role:         "organization_member",
+		Role:         "organization_owner",
+		APIKey:       apiKey,
 	}
 
 	organization.ID, err = serviceProvider.GetOrganizationService().AddOrganization(organization, userOrganization)
@@ -60,13 +60,14 @@ func getOrganizationRoute(c *gin.Context) {
 		return
 	}
 
-	organization, err := serviceProvider.GetOrganizationService().GetOrganization(uint(organizationId), *user)
+	userOrganization, err := serviceProvider.GetOrganizationService().GetUserOrganization(uint(organizationId), *user)
+	organization := userOrganization.Organization
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find organization."})
 		return
 	}
 
-	numberOfProjects, err := serviceProvider.GetFieldService().GetNumberOfProjectsByOrganization(*organization, *user)
+	numberOfProjects, err := serviceProvider.GetFieldService().GetNumberOfProjectsByOrganization(organization, *user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of projects."})
 		return
@@ -76,7 +77,7 @@ func getOrganizationRoute(c *gin.Context) {
 		ID:               organization.ID,
 		Name:             organization.Name,
 		Description:      organization.Description,
-		APIKey:           organization.APIKey,
+		APIKey:           userOrganization.APIKey,
 		CreatedAt:        organization.CreatedAt,
 		UpdatedAt:        organization.UpdatedAt,
 		NumberOfProjects: numberOfProjects,
@@ -86,7 +87,7 @@ func getOrganizationRoute(c *gin.Context) {
 func getOrganizationsRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
-	userOrganizations, err := serviceProvider.GetOrganizationService().GetOrganizations(*user)
+	userOrganizations, err := serviceProvider.GetOrganizationService().GetUserOrganizations(*user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get organizations."})
 		return
@@ -94,19 +95,20 @@ func getOrganizationsRoute(c *gin.Context) {
 
 	organizationList := make([]organizations.Organization, len(userOrganizations))
 	for index, organization := range userOrganizations {
-		numberOfProjects, err := serviceProvider.GetFieldService().GetNumberOfProjectsByOrganization(organization, *user)
+		organizationEntity := organization.Organization
+		numberOfProjects, err := serviceProvider.GetFieldService().GetNumberOfProjectsByOrganization(organizationEntity, *user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get number of fields."})
 			return
 		}
 
 		organizationList[index] = organizations.Organization{
-			ID:               organization.ID,
-			Name:             organization.Name,
-			Description:      organization.Description,
+			ID:               organizationEntity.ID,
+			Name:             organizationEntity.Name,
+			Description:      organizationEntity.Description,
 			APIKey:           organization.APIKey,
-			CreatedAt:        organization.CreatedAt,
-			UpdatedAt:        organization.UpdatedAt,
+			CreatedAt:        organizationEntity.CreatedAt,
+			UpdatedAt:        organizationEntity.UpdatedAt,
 			NumberOfProjects: numberOfProjects,
 		}
 	}
@@ -123,7 +125,8 @@ func deleteOrganizationRoute(c *gin.Context) {
 		return
 	}
 
-	organization, err := serviceProvider.GetOrganizationService().GetOrganization(uint(organizationId), *user)
+	userOrganization, err := serviceProvider.GetOrganizationService().GetUserOrganization(uint(organizationId), *user)
+	organization := userOrganization.Organization
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find organization."})
 		return
@@ -153,7 +156,8 @@ func updateOrganizationRoute(c *gin.Context) {
 		return
 	}
 
-	organization, err := serviceProvider.GetOrganizationService().GetOrganization(json.ID, *user)
+	userOrganization, err := serviceProvider.GetOrganizationService().GetUserOrganization(json.ID, *user)
+	organization := userOrganization.Organization
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find organization."})
 		return
@@ -174,12 +178,12 @@ func updateOrganizationRoute(c *gin.Context) {
 			return
 		}
 
-		organization.APIKey = apiKey
+		userOrganization.APIKey = apiKey
 	}
 
 	organization.UpdatedAt = time.Now()
 
-	err = serviceProvider.GetOrganizationService().UpdateOrganization(*organization)
+	err = serviceProvider.GetOrganizationService().UpdateOrganization(organization)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to update organization."})
 		return
@@ -192,7 +196,7 @@ func updateOrganizationRoute(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, organizations.UpdateOrganization{
-		APIKey: organization.APIKey,
+		APIKey: userOrganization.APIKey,
 	})
 }
 

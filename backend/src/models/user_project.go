@@ -5,15 +5,15 @@ import (
 	"time"
 )
 
-type UserOrganization struct {
+type UserProject struct {
 	Role   string
 	APIKey string `gorm:"uniqueIndex"`
 
 	UserID uint `gorm:"primary_key"`
 	User   User
 
-	OrganizationID uint `gorm:"primary_key"`
-	Organization   Organization
+	ProjectID uint `gorm:"primary_key"`
+	Project   Project
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

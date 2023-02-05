@@ -17,9 +17,9 @@ func (service *VisualizationService) GetVisualizations(project models.Project, u
 		Model(&models.Visualization{}).
 		Preload("Field").
 		Joins("INNER JOIN fields ON visualizations.field_id = fields.id").
-		Joins("INNER JOIN projects ON fields.project_id = projects.id = ?", project.ID).
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
-		Find(&visualizations); result.Error != nil {
+		Joins("INNER JOIN projects ON fields.project_id = projects.id").
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id").
+		Find(&visualizations, "user_projects.project_id = ? AND user_projects.user_id = ?", project.ID, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -33,8 +33,8 @@ func (service *VisualizationService) GetVisualization(id uint, user models.User)
 		Model(&models.Visualization{}).
 		Joins("INNER JOIN fields ON visualizations.field_id = fields.id").
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
-		First(&visualization, "visualizations.id = ?", id); result.Error != nil {
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id").
+		First(&visualization, "visualizations.id = ? AND user_projects.user_id = ?", id, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -57,13 +57,9 @@ func (service *VisualizationService) UpdateVisualization(visualization models.Vi
 }
 
 func (service *VisualizationService) DeleteVisualization(visualization models.Visualization) error {
-	result := service.DB.Delete(visualization)
-
-	if result.Error != nil {
+	if result := service.DB.Delete(&visualization); result.Error != nil {
 		return result.Error
-	}
-
-	if result.RowsAffected < 1 {
+	} else if result.RowsAffected < 1 {
 		return fmt.Errorf("no rows affected")
 	}
 

@@ -24,10 +24,10 @@ func (service *ValueService) GetValues(field models.Field, user models.User, ord
 		Model(&models.Value{}).
 		Joins("INNER JOIN fields ON `values`.field_id = fields.id").
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id").
 		Order("`values`.created_at "+order).
 		Scopes(scopes.SetPagination(offset, limit)).
-		Find(&values, "`values`.field_id = ?", field.ID); result.Error != nil {
+		Find(&values, "`values`.field_id = ? AND user_projects.user_id = ?", field.ID, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -41,7 +41,8 @@ func (service *ValueService) GetNumberOfValuesByUser(user models.User) (int64, e
 		Model(&models.Value{}).
 		Joins("INNER JOIN fields ON `values`.field_id = fields.id").
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id").
+		Where("user_projects.user_id = ?", user.ID).
 		Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -54,7 +55,8 @@ func (service *ValueService) GetNumberOfValuesByField(field models.Field) (int64
 
 	if result := service.DB.
 		Model(&models.Value{}).
-		Joins("INNER JOIN fields ON `values`.field_id = fields.id = ?", field.ID).
+		Joins("INNER JOIN fields ON `values`.field_id = fields.id").
+		Where("fields.id = ?", field.ID).
 		Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -69,9 +71,9 @@ func (service *ValueService) GetLastAddedValue(user models.User) (*models.Value,
 		Model(&models.Value{}).
 		Joins("INNER JOIN fields ON `values`.field_id = fields.id").
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id").
 		Order("`values`.created_at DESC").
-		First(&value); result.Error != nil {
+		First(&value, "user_projects.user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -81,12 +83,18 @@ func (service *ValueService) GetLastAddedValue(user models.User) (*models.Value,
 func (service *ValueService) GetValue(id uint, user models.User) (*models.Value, error) {
 	var value models.Value
 
+	var values []models.Value
+	service.DB.Find(&values)
+
+	var fields []models.Field
+	service.DB.Find(&fields)
+
 	if result := service.DB.
 		Model(&models.Value{}).
 		Joins("INNER JOIN fields ON `values`.field_id = fields.id").
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
-		First(&value, "`values`.id = ?", id); result.Error != nil {
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id").
+		First(&value, "`values`.id = ? AND user_projects.user_id = ?", id, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -102,9 +110,7 @@ func (service *ValueService) AddValue(value models.Value) error {
 }
 
 func (service *ValueService) DeleteValues(field models.Field) error {
-	result := service.DB.Delete(&models.Value{}, "field_id = ?", field.ID)
-
-	if result.Error != nil {
+	if result := service.DB.Delete(&models.Value{}, "field_id = ?", field.ID); result.Error != nil {
 		return result.Error
 	}
 

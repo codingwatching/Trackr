@@ -17,7 +17,6 @@ import (
 
 func getValuesRoute(c *gin.Context) {
 	var query requests.GetValues
-	user := getLoggedInUser(c)
 
 	if err := c.ShouldBindQuery(&query); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -39,19 +38,20 @@ func getValuesRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(query.APIKey)
-	if project == nil || err != nil {
+	userProject, err := serviceProvider.GetProjectService().GetUserAndProjectByAPIKey(query.APIKey)
+	if userProject == nil || err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, *user)
+	user := userProject.User
+	field, err := serviceProvider.GetFieldService().GetField(query.FieldID, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
 	}
 
-	values, err := serviceProvider.GetValueService().GetValues(*field, *user, query.Order, query.Offset, query.Limit)
+	values, err := serviceProvider.GetValueService().GetValues(*field, user, query.Order, query.Offset, query.Limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get values."})
 		return
@@ -113,8 +113,6 @@ func deleteValuesRoute(c *gin.Context) {
 }
 
 func addValueRoute(c *gin.Context) {
-	user := getLoggedInUser(c)
-
 	var form requests.AddValue
 	if err := c.ShouldBindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -137,19 +135,20 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	project, err := serviceProvider.GetProjectService().GetProjectByAPIKey(form.APIKey)
-	if project != nil || err != nil {
+	userProject, err := serviceProvider.GetProjectService().GetUserAndProjectByAPIKey(form.APIKey)
+	if userProject == nil || err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find project, invalid API key."})
 		return
 	}
 
-	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(*user)
+	user := userProject.User
+	numberOfValues, err := serviceProvider.GetValueService().GetNumberOfValuesByUser(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to get number of values."})
 		return
 	}
 
-	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, *user)
+	field, err := serviceProvider.GetFieldService().GetField(form.FieldID, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Failed to find field."})
 		return
@@ -161,7 +160,7 @@ func addValueRoute(c *gin.Context) {
 		return
 	}
 
-	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(*user)
+	lastAddedValue, _ := serviceProvider.GetValueService().GetLastAddedValue(user)
 	if lastAddedValue != nil {
 		interval := user.MaxValueInterval
 		timeSinceLastAddedValue := time.Duration(interval)*time.Second - time.Since(lastAddedValue.CreatedAt)
@@ -201,7 +200,7 @@ func initValuesController(routerGroup *gin.RouterGroup, serviceProviderInput ser
 	valuesRouterGroup.Use(sessionMiddleware)
 	valuesRouterGroup.DELETE("/:fieldId", deleteValuesRoute)
 
-	// externalValuesRouterGroup := routerGroup.Group("/values")
-	valuesRouterGroup.GET("/", getValuesRoute)
-	valuesRouterGroup.POST("/", addValueRoute)
+	externalValuesRouterGroup := routerGroup.Group("/values")
+	externalValuesRouterGroup.GET("/", getValuesRoute)
+	externalValuesRouterGroup.POST("/", addValueRoute)
 }

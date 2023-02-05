@@ -15,9 +15,9 @@ func (service *FieldService) GetFields(project models.Project, user models.User)
 
 	if result := service.DB.
 		Model(&models.Field{}).
-		Joins("INNER JOIN projects ON fields.project_id = projects.id = ?", project.ID).
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
-		Find(&fields); result.Error != nil {
+		Joins("INNER JOIN projects ON fields.project_id = projects.id").
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id").
+		Find(&fields, "user_projects.project_id = ? AND user_projects.user_id = ?", project.ID, user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -28,11 +28,10 @@ func (service *FieldService) GetNumberOfProjectsByOrganization(organization mode
 	var count int64
 
 	if result := service.DB.
-		//Model(&models.Project{}). TODO remove if not needed
 		Model(&models.User{}).
-		Joins("INNER JOIN user_projects ON user_projects.user_id = users.id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.user_id = users.id").
 		Joins("INNER JOIN projects ON user_projects.project_id = projects.id").
-		Where("projects.organization_id = ?", organization.ID).
+		Where("projects.organization_id = ? AND users.id = ?", organization.ID, user.ID).
 		Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -45,8 +44,9 @@ func (service *FieldService) GetNumberOfFieldsByProject(project models.Project, 
 
 	if result := service.DB.
 		Model(&models.Field{}).
-		Joins("INNER JOIN projects ON fields.project_id = projects.id = ?", project.ID).
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN projects ON fields.project_id = projects.id").
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id").
+		Where("user_projects.project_id = ? AND user_projects.user_id = ?", project.ID, user.ID).
 		Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -60,7 +60,8 @@ func (service *FieldService) GetNumberOfFieldsByUser(user models.User) (int64, e
 	if result := service.DB.
 		Model(&models.Field{}).
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id").
+		Where("user_projects.user_id = ?", user.ID).
 		Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -74,7 +75,8 @@ func (service *FieldService) GetField(id uint, user models.User) (*models.Field,
 	if result := service.DB.
 		Model(&models.Field{}).
 		Joins("INNER JOIN projects ON fields.project_id = projects.id").
-		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id = ?", user.ID).
+		Joins("INNER JOIN user_projects ON user_projects.project_id = projects.id AND user_projects.user_id").
+		Where("user_projects.user_id = ?", user.ID).
 		First(&field, "fields.id = ?", id); result.Error != nil {
 		return nil, result.Error
 	}
@@ -99,14 +101,18 @@ func (service *FieldService) UpdateField(field models.Field) error {
 }
 
 func (service *FieldService) DeleteField(field models.Field) error {
-	result := service.DB.Delete(field)
+	if result := service.DB.Delete(&models.Field{}, "id = ?", field.ID); result.Error != nil {
+		return result.Error
+	} else if result.RowsAffected < 1 {
+		return fmt.Errorf("no rows affected")
+	}
 
-	if result.Error != nil {
+	if result := service.DB.Where("field_id = ?", field.ID).Delete(&models.Value{}); result.Error != nil {
 		return result.Error
 	}
 
-	if result.RowsAffected < 1 {
-		return fmt.Errorf("no rows affected")
+	if result := service.DB.Where("field_id = ?", field.ID).Delete(&models.Visualization{}); result.Error != nil {
+		return result.Error
 	}
 
 	return nil

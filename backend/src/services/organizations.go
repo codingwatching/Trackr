@@ -5,8 +5,8 @@ import (
 )
 
 type OrganizationService interface {
-	GetOrganizations(user models.User) ([]models.Organization, error)
-	GetOrganization(id uint, user models.User) (*models.Organization, error)
+	GetUserOrganizations(user models.User) ([]models.UserOrganization, error)
+	GetUserOrganization(id uint, user models.User) (*models.UserOrganization, error)
 	GetOrganizationByAPIKey(apiKey string) (*models.Organization, error)
 	AddOrganization(organization models.Organization, userOrganization models.UserOrganization) (uint, error)
 	UpdateOrganization(organization models.Organization) error

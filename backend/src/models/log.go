@@ -9,7 +9,7 @@ type Log struct {
 	Message string
 
 	UserID uint
-	User   User `gorm:"constraint:OnDelete:CASCADE;"`
+	User   User
 
 	ProjectID *uint
 	Project   Project `gorm:"constraint:OnDelete:SET NULL;"`
