@@ -15,11 +15,12 @@ import CenteredBox from "../components/CenteredBox";
 import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
-import AddUserButton from "../components/CreateProjectButton";
+import AddUserButton from "../components/AddUserButton";
 import SearchBar from "../components/SearchBar";
 import OrganizationProjectsMenuButton from "./OrganizationProjectsMenuButton";
 
-const OrganizationProjectsTable = () => {
+const OrganizationUsersTable = () => {
+  // WILL NEED TO CHANHE PROJECTS TO USERS AND CREATE A HOOK FOR USER CATCHING
   const projects = useProjects();
   const [search, setSearch] = useState("");
 
@@ -34,7 +35,7 @@ const OrganizationProjectsTable = () => {
           }}
         >
           <SearchBar
-            title="Projects"
+            title="Users"
             search={search}
             setSearch={setSearch}
             element={
@@ -63,8 +64,9 @@ const OrganizationProjectsTable = () => {
             <TableHead sx={{ pb: 1 }}>
               <TableRow>
                 <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Created</TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="left">Added</TableCell>
+                <TableCell align="left">Role</TableCell>
+                {/* <TableCell align="right"></TableCell> */}
               </TableRow>
             </TableHead>
 
@@ -115,7 +117,7 @@ const OrganizationProjectsTable = () => {
           {projects.length === 0 && (
             <CenteredBox sx={{ py: 5 }}>
               <Typography variant="h7" sx={{ color: "gray" }}>
-                You currently have no projects.
+                You currently have no users.
               </Typography>
             </CenteredBox>
           )}
@@ -125,4 +127,4 @@ const OrganizationProjectsTable = () => {
   );
 };
 
-export default OrganizationProjectsTable;
+export default OrganizationUsersTable;

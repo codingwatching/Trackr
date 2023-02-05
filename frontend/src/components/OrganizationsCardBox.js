@@ -5,6 +5,8 @@ import CenteredBox from "./CenteredBox";
 import ErrorIcon from "@mui/icons-material/Error";
 import ErrorBoundary from "./ErrorBoundary";
 import LoadingBoundary from "./LoadingBoundary";
+import CreateOrganizationButton from "./CreateOrganizationButton";
+import SearchBar from "../components/SearchBar";
 
 import OrganizationsCardList from "./OrganizationsCardList";
 
@@ -17,12 +19,24 @@ const OrganizationsCardBox = () => {
         mb: 3,
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{ flexGrow: 1, pb: 2, borderBottom: "2px solid #ededed", mb: 3 }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          mb: 2,
+          justifyContent: "space-between",
+          pb: 2,
+          borderBottom: "2px solid #ededed",
+        }}
       >
-        Organizations
-      </Typography>
+        <Typography variant="h6">Organizations</Typography>
+        <CreateOrganizationButton
+          sx={{
+            alignSelf: "flex-end",
+            ml: 2,
+          }}
+        />
+      </Box>
 
       <Box
         sx={{

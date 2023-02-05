@@ -20,6 +20,7 @@ import SettingsRoute from "./routes/SettingsRoute";
 import Project from "./pages/Project";
 import ProjectAPI from "./pages/ProjectAPI";
 import Organization from "./pages/Organization";
+import OrganizationUsers from "./pages/OrganizationUsers";
 
 const theme = createTheme({
   palette: {
@@ -128,8 +129,12 @@ const App = () => {
               }
             />
             <Route
-              path="/organizations/:organizationId"
+              path="/organizations/projects/:organizationId"
               element={<AuthorizedRoute element={<Organization />} />}
+            />
+            <Route
+              path="/organizations/users/:organizationId"
+              element={<AuthorizedRoute element={<OrganizationUsers />} />}
             />
             <Route
               path="/"
