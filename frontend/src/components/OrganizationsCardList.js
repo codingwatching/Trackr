@@ -88,23 +88,23 @@ const OrganizationsCardList = () => {
               }}
             />
             {/* Name of the organization */}
-            <TextButton onClick={() => navigate("/organizations/" + organization.id)}>
-              <Typography variant="h6" sx={{ fontSize: "18px" }}>
+            <Typography variant="h6" sx={{ fontSize: "18px", mb: 3 }}>
                 {organization.name}
+            </Typography>
+
+            <TextButton onClick={() => navigate("/organizations/users/" + organization.id)}>
+              <Typography variant="h6" sx={{ fontSize: "13px", flex: 1}}>
+                Users: {organization.numMembers}
               </Typography>
             </TextButton>
-
-            <Typography variant="h6" sx={{ fontSize: "13px", flex: 1, mt: 3}}>
-              Users: {organization.numMembers}
-            </Typography>
             <Box sx={{ display: "flex", flexDirection: "row" }} >
-              <Typography variant="h6" sx={{ fontSize: "13px", flex: 1 }}>
-                Projects: {organization.numProjects}
+              <Typography onClick={() => navigate("/organizations/projects/" + organization.id)} variant="h6" sx={{ fontSize: "13px", flex: 1, borderRadius: 1, userSelect: "none", py: 0.2,
+                  "&:hover": { background: "#ebf3ff", cursor: "pointer" }, }}>
+                  Projects: {organization.numProjects}
               </Typography>
               <OrganizationsMenuButton sx={{ zIndex: "" }} organization={organization} />
             </Box>
           </Box>
-        {/*</CardActionArea>*/}
       </Card>
     ))
   );
