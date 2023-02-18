@@ -2,7 +2,6 @@ package services_impl
 
 import (
 	"gorm.io/gorm"
-
 	"trackr/src/models"
 	"trackr/src/services"
 	"trackr/src/services_impl/db"
@@ -24,6 +23,9 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 		return nil
 	}
 
+	database.SetupJoinTable(&models.User{}, "Projects", &models.UserProject{})
+	database.SetupJoinTable(&models.User{}, "Organizations", &models.UserOrganization{})
+
 	database.AutoMigrate(&models.User{})
 	database.AutoMigrate(&models.Session{})
 	database.AutoMigrate(&models.Project{})
@@ -38,7 +40,7 @@ func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	serviceProvider.projectService = &db.ProjectService{DB: database}
 	serviceProvider.fieldService = &db.FieldService{DB: database}
 	serviceProvider.valueService = &db.ValueService{DB: database}
-	serviceProvider.visualizationService = &db.VisulizationService{DB: database}
+	serviceProvider.visualizationService = &db.VisualizationService{DB: database}
 	serviceProvider.logService = &db.LogService{DB: database}
 
 	return serviceProvider

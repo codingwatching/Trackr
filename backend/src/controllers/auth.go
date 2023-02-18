@@ -1,20 +1,19 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"math"
 	"net/http"
 	"net/mail"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
+	"trackr/src/models"
 
 	"trackr/src/common"
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
-	"trackr/src/models"
 	"trackr/src/services"
 )
 
