@@ -1,10 +1,7 @@
 package db
 
 import (
-	"time"
-
 	"gorm.io/gorm"
-
 	"trackr/src/models"
 )
 
@@ -14,7 +11,11 @@ type LogService struct {
 
 func (service *LogService) GetLogs(user models.User) ([]models.Log, error) {
 	var logs []models.Log
-	if result := service.DB.Preload("Project").Order("created_at DESC").Find(&logs, "user_id = ?", user.ID); result.Error != nil {
+
+	if result := service.DB.
+		Preload("Project").
+		Order("created_at DESC").
+		Find(&logs, "user_id = ?", user.ID); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -24,8 +25,6 @@ func (service *LogService) GetLogs(user models.User) ([]models.Log, error) {
 func (service *LogService) AddLog(message string, user models.User, projectId *uint) error {
 	log := models.Log{
 		Message:   message,
-		CreatedAt: time.Now(),
-
 		User:      user,
 		ProjectID: projectId,
 	}
