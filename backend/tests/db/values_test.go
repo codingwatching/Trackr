@@ -6,17 +6,21 @@ import (
 	"sort"
 	"testing"
 	"time"
+
 	"trackr/src/models"
 	"trackr/tests"
-	"trackr/tests/helpers"
 )
 
 func TestGetValues(t *testing.T) {
 	suite := tests.Startup()
 
-	newProject, newUserProject := helpers.CreateNewProject(*suite)
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
 
-	projectId, err := suite.Service.GetProjectService().AddProject(newProject, newUserProject)
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
 	assert.Nil(t, err)
 	assert.Equal(t, newProject.ID, projectId)
 
@@ -38,7 +42,7 @@ func TestGetValues(t *testing.T) {
 	for i := 2; i <= numberOfExpectedValues; i++ {
 		newValue := suite.Value
 		newValue.ID = uint(i)
-		newValue.CreatedAt = time.Now().Add(time.Minute * time.Duration(i))
+		newValue.CreatedAt = time.Now()
 		newValue.Value = fmt.Sprintf("%d.00", i)
 
 		err := suite.Service.GetValueService().AddValue(newValue)

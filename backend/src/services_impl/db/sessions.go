@@ -2,8 +2,10 @@ package db
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
+
 	"trackr/src/models"
 )
 
@@ -13,10 +15,7 @@ type SessionService struct {
 
 func (service *SessionService) GetSessionAndUser(id string) (*models.Session, *models.User, error) {
 	var session models.Session
-
-	if result := service.DB.
-		Preload("User").
-		First(&session, "id = ?", id); result.Error != nil {
+	if result := service.DB.Preload("User").First(&session, "id = ?", id); result.Error != nil {
 		return nil, nil, result.Error
 	}
 
@@ -33,7 +32,6 @@ func (service *SessionService) AddSession(session models.Session) error {
 
 func (service *SessionService) DeleteSession(id string, user models.User) error {
 	result := service.DB.Delete(&models.Session{}, "id = ? AND user_id = ?", id, user.ID)
-
 	if result.Error != nil {
 		return result.Error
 	}
@@ -46,7 +44,8 @@ func (service *SessionService) DeleteSession(id string, user models.User) error 
 }
 
 func (service *SessionService) DeleteExpiredSessions(user models.User) error {
-	if result := service.DB.Delete(&models.Session{}, "expires_at < ? AND user_id = ?", time.Now(), user.ID); result.Error != nil {
+	result := service.DB.Delete(&models.Session{}, "expires_at < ? AND user_id = ?", time.Now(), user.ID)
+	if result.Error != nil {
 		return result.Error
 	}
 

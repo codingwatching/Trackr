@@ -3,6 +3,7 @@ package db_test
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+
 	"trackr/src/models"
 	"trackr/tests"
 )

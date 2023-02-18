@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"trackr/src/forms/responses/projects"
-	"trackr/tests/helpers"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -38,11 +36,11 @@ func TestAddProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	userProject, err := suite.Service.GetProjectService().GetUserProject(2, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.NotNil(t, err)
-	assert.Nil(t, userProject)
+	assert.Nil(t, project)
 
-	response, _ = json.Marshal(projects.NewProject{
+	response, _ = json.Marshal(responses.NewProject{
 		ID: uint(2),
 	})
 	httpRecorder = httptest.NewRecorder()
@@ -53,14 +51,10 @@ func TestAddProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	userProject, err = suite.Service.GetProjectService().GetUserProject(2, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(2, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, userProject)
-	assert.NotNil(t, userProject.User)
-	assert.NotNil(t, userProject.Project)
-
-	assert.Equal(t, uint(2), userProject.ProjectID)
-	assert.Equal(t, uint(1), userProject.UserID)
+	assert.NotNil(t, project)
+	assert.Equal(t, uint(2), project.ID)
 
 	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
@@ -89,19 +83,21 @@ func TestGetProjectsRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	newProject, newUserProject := helpers.CreateNewProject(*suite)
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
 
-	projectId, err := suite.Service.GetProjectService().AddProject(newProject, newUserProject)
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
 	assert.Nil(t, err)
 	assert.Equal(t, newProject.ID, projectId)
 
-	response, _ = json.Marshal(projects.ProjectList{
-		Projects: []projects.Project{
+	response, _ = json.Marshal(responses.ProjectList{
+		Projects: []responses.Project{
 			{
 				ID:             suite.Project.ID,
 				Name:           suite.Project.Name,
 				Description:    suite.Project.Description,
-				APIKey:         suite.UserProject.APIKey,
+				APIKey:         suite.Project.APIKey,
 				CreatedAt:      suite.Project.CreatedAt,
 				UpdatedAt:      suite.Project.UpdatedAt,
 				NumberOfFields: 1,
@@ -110,7 +106,7 @@ func TestGetProjectsRoute(t *testing.T) {
 				ID:             newProject.ID,
 				Name:           newProject.Name,
 				Description:    newProject.Description,
-				APIKey:         newUserProject.APIKey,
+				APIKey:         newProject.APIKey,
 				CreatedAt:      newProject.CreatedAt,
 				UpdatedAt:      newProject.UpdatedAt,
 				NumberOfFields: 0,
@@ -178,11 +174,11 @@ func TestGetProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	response, _ = json.Marshal(projects.Project{
+	response, _ = json.Marshal(responses.Project{
 		ID:             suite.Project.ID,
 		Name:           suite.Project.Name,
 		Description:    suite.Project.Description,
-		APIKey:         suite.UserProject.APIKey,
+		APIKey:         suite.Project.APIKey,
 		CreatedAt:      suite.Project.CreatedAt,
 		UpdatedAt:      suite.Project.UpdatedAt,
 		NumberOfFields: 1,
@@ -230,7 +226,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test non-existent project id path.
+	// Test non-existant project id path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
@@ -248,15 +244,11 @@ func TestDeleteProjectRoute(t *testing.T) {
 	// Test successful path.
 	//
 
-	userProject, err := suite.Service.GetProjectService().GetUserProject(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, userProject)
-
-	assert.NotNil(t, userProject.User)
-	assert.NotNil(t, userProject.Project)
-
-	assert.Equal(t, uint(1), userProject.ProjectID)
-	assert.Equal(t, uint(1), userProject.UserID)
+	assert.NotNil(t, project)
+	assert.Equal(t, uint(1), project.ID)
+	assert.Equal(t, suite.User.ID, project.UserID)
 
 	response, _ = json.Marshal(responses.Empty{})
 	httpRecorder = httptest.NewRecorder()
@@ -267,9 +259,9 @@ func TestDeleteProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	userProject, err = suite.Service.GetProjectService().GetUserProject(1, suite.User)
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.NotNil(t, err)
-	assert.Nil(t, userProject)
+	assert.Nil(t, project)
 
 	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
@@ -352,7 +344,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Name:        "New Project Name",
 		Description: suite.Project.Description,
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.UserProject.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -361,16 +353,12 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	userProject, err := suite.Service.GetProjectService().GetUserProject(1, suite.User)
+	project, err := suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
-	assert.NotNil(t, userProject)
-	assert.NotNil(t, userProject.User)
-	assert.NotNil(t, userProject.Project)
-
-	project := userProject.Project
+	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, suite.Project.Description, project.Description)
-	assert.Equal(t, suite.UserProject.APIKey, userProject.APIKey)
+	assert.Equal(t, suite.Project.APIKey, project.APIKey)
 
 	logs, err := suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
@@ -385,7 +373,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Name:        project.Name,
 		Description: "New Description Name",
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.UserProject.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -394,13 +382,12 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
-	userProject, err = suite.Service.GetProjectService().GetUserProject(1, suite.User)
-	project = userProject.Project
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
-	assert.Equal(t, suite.UserProject.APIKey, userProject.APIKey)
+	assert.Equal(t, suite.Project.APIKey, project.APIKey)
 
 	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)
@@ -416,7 +403,7 @@ func TestUpdateProjectRoute(t *testing.T) {
 		Description: project.Description,
 		ResetAPIKey: true,
 	})
-	response, _ = json.Marshal(projects.UpdateProject{APIKey: suite.UserProject.APIKey})
+	response, _ = json.Marshal(responses.UpdateProject{APIKey: suite.Project.APIKey})
 	httpRecorder = httptest.NewRecorder()
 	httpRequest, _ = http.NewRequest(method, path, bytes.NewReader(request))
 	httpRequest.Header.Add("Cookie", "Session=SessionID")
@@ -425,13 +412,12 @@ func TestUpdateProjectRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, httpRecorder.Code)
 	assert.NotEqual(t, response, httpRecorder.Body.Bytes())
 
-	userProject, err = suite.Service.GetProjectService().GetUserProject(1, suite.User)
-	project = userProject.Project
+	project, err = suite.Service.GetProjectService().GetProject(1, suite.User)
 	assert.Nil(t, err)
 	assert.NotNil(t, project)
 	assert.Equal(t, "New Project Name", project.Name)
 	assert.Equal(t, "New Description Name", project.Description)
-	assert.NotEqual(t, suite.UserProject.APIKey, userProject.APIKey)
+	assert.NotEqual(t, suite.Project.APIKey, project.APIKey)
 
 	logs, err = suite.Service.GetLogService().GetLogs(suite.User)
 	assert.Nil(t, err)

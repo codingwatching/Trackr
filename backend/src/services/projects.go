@@ -1,14 +1,12 @@
 package services
 
-import (
-	"trackr/src/models"
-)
+import "trackr/src/models"
 
 type ProjectService interface {
-	GetUserProjects(user models.User) ([]models.UserProject, error)
-	GetUserProject(id uint, user models.User) (*models.UserProject, error)
-	GetUserAndProjectByAPIKey(apiKey string) (*models.UserProject, error)
-	AddProject(project models.Project, userProject models.UserProject) (uint, error)
-	UpdateProject(project models.Project, userProject models.UserProject) error
+	GetProjects(user models.User) ([]models.Project, error)
+	GetProject(id uint, user models.User) (*models.Project, error)
+	GetProjectByAPIKey(apiKey string) (*models.Project, error)
+	AddProject(project models.Project) (uint, error)
+	UpdateProject(project models.Project) error
 	DeleteProject(id uint, user models.User) error
 }

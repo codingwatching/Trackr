@@ -1,16 +1,13 @@
 package models
 
-import (
-	"time"
-)
+import "time"
 
 type Field struct {
-	ID   uint `gorm:"primarykey"`
-	Name string
+	ID        uint `gorm:"primarykey"`
+	Name      string
+	UpdatedAt time.Time
+	CreatedAt time.Time
 
 	ProjectID uint
 	Project   Project `gorm:"constraint:OnDelete:CASCADE;"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
 }

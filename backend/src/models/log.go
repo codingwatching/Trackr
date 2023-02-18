@@ -8,7 +8,7 @@ type Log struct {
 	CreatedAt time.Time
 
 	UserID uint
-	User   User
+	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 
 	ProjectID *uint
 	Project   Project `gorm:"constraint:OnDelete:SET NULL;"`

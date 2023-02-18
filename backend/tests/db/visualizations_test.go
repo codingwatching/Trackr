@@ -3,17 +3,21 @@ package db_test
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
+
 	"trackr/src/models"
 	"trackr/tests"
-	"trackr/tests/helpers"
 )
 
 func TestGetVisualizations(t *testing.T) {
 	suite := tests.Startup()
 
-	newProject, newUserProject := helpers.CreateNewProject(*suite)
+	newProject := suite.Project
+	newProject.ID = 2
+	newProject.APIKey = "APIKey2"
+	newProject.UserID = suite.Project.UserID
+	newProject.User = suite.User
 
-	projectId, err := suite.Service.GetProjectService().AddProject(newProject, newUserProject)
+	projectId, err := suite.Service.GetProjectService().AddProject(newProject)
 	assert.Nil(t, err)
 	assert.Equal(t, newProject.ID, projectId)
 

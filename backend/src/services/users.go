@@ -1,8 +1,6 @@
 package services
 
-import (
-	"trackr/src/models"
-)
+import "trackr/src/models"
 
 type UserService interface {
 	GetUser(email string) (*models.User, error)

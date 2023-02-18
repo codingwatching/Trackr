@@ -129,7 +129,7 @@ func TestGetFieldsRoute(t *testing.T) {
 	assert.Equal(t, response, httpRecorder.Body.Bytes())
 
 	//
-	// Test non-existent project id path.
+	// Test non-existant project id path.
 	//
 
 	response, _ = json.Marshal(responses.Error{
@@ -151,6 +151,7 @@ func TestGetFieldsRoute(t *testing.T) {
 	newField := suite.Field
 	newField.ID = 2
 	newField.Name = "Field2"
+	newField.CreatedAt = suite.Time
 	newField.UpdatedAt = suite.Time
 	newField.Project = suite.Project
 

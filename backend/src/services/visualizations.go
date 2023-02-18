@@ -1,8 +1,6 @@
 package services
 
-import (
-	"trackr/src/models"
-)
+import "trackr/src/models"
 
 type VisualizationService interface {
 	GetVisualizations(project models.Project, user models.User) ([]models.Visualization, error)

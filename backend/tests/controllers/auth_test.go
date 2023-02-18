@@ -9,7 +9,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -417,10 +416,9 @@ func TestLoginRoute(t *testing.T) {
 		assert.Equal(t, session.ID, sessionId)
 
 		if shouldRememberMe {
-			assert.GreaterOrEqual(t, session.ExpiresAt.Add(time.Millisecond*time.Duration(100)), session.CreatedAt.AddDate(0, 1, 0))
+			assert.GreaterOrEqual(t, session.ExpiresAt, session.CreatedAt.AddDate(0, 1, 0))
 		} else {
-			assert.LessOrEqual(t, session.ExpiresAt, session.CreatedAt.AddDate(0, 0, 7))
-			assert.GreaterOrEqual(t, session.ExpiresAt.Add(time.Millisecond*time.Duration(100)), session.CreatedAt.AddDate(0, 0, 7))
+			assert.True(t, session.ExpiresAt.Equal(session.CreatedAt.AddDate(0, 0, 7)))
 		}
 
 		assert.Nil(t, err)
