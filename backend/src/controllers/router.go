@@ -38,7 +38,7 @@ func InitRouter(serviceProviderInput services.ServiceProvider) *gin.Engine {
 	router.Use(corsMiddleware())
 
 	router.ForwardedByClientIP = false
-	err := router.SetTrustedProxies(nil)
+	err := router.SetTrustedProxies([]string{os.Getenv("DOCKER_ADDRESS"), os.Getenv("LOCAL_ADDRESS")})
 	if err != nil {
 		fmt.Println("Error setting trusted proxies:", err)
 		return nil
