@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-// import { useProjects } from "../hooks/useProjects"; ----> will need to make hood useOrganizations to connect with DB
+import { useOrganizations } from "../hooks/useOrganizations";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CenteredBox from "./CenteredBox";
@@ -11,29 +11,32 @@ import TextButton from "./TextButton";
 const OrganizationsCardList = () => {
   //stub database for organizations
   // NEED REPLACEMENT WITH ACTUAL DATABASE
-  const organization_1 = {
-    name: "Organization 1",
-    numMembers: 32,
-    numProjects: 3,
-    id: 1,
-  };
-  const organization_2 = {
-    name: "Organization 2",
-    numMembers: 12,
-    numProjects: 1,
-    id: 2,
-  };
-  const organization_3 = {
-    name: "Organization 3",
-    numMembers: 65,
-    numProjects: 6,
-    id: 3,
-  };
+  // const test_organization_1 = {
+  //   name: "Organization 1",
+  //   numMembers: 32,
+  //   numProjects: 3,
+  //   id: 1,
+  // };
+  // const test_organization_2 = {
+  //   name: "Organization 2",
+  //   numMembers: 12,
+  //   numProjects: 1,
+  //   id: 2,
+  // };
+  // const test_organization_3 = {
+  //   name: "Organization 3",
+  //   numMembers: 65,
+  //   numProjects: 6,
+  //   id: 3,
+  // };
 
-  const organizations = [organization_1, organization_2, organization_3];
+  // const organizations = [
+  //   test_organization_1,
+  //   test_organization_2,
+  //   test_organization_3,
+  // ];
 
-  // UNCOMMENT WHEN DATABASE IS IMPLEMENTED
-  //const organizations = useOrganizations();
+  const organizations = useOrganizations();
   const navigate = useNavigate();
 
   return organizations.length === 0 ? (
@@ -66,45 +69,64 @@ const OrganizationsCardList = () => {
         }}
       >
         {/*<CardActionArea>*/}
-          <Box
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            background: "white",
+            mt: 5,
+            px: 2,
+            pb: 3,
+            flex: 1,
+          }}
+        >
+          <GroupsIcon
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              background: "white",
-              mt: 5,
-              px: 2,
-              pb: 3,
-              flex: 1,
+              fontSize: 35,
+              color: "#3887ff",
+              //   backgroundColor: "#bed8ff",
+              borderRadius: 1,
+              mt: "-35px",
+              mb: 1,
             }}
-          >
-            <GroupsIcon
-              sx={{
-                fontSize: 35,
-                color: "#3887ff",
-                //   backgroundColor: "#bed8ff",
-                borderRadius: 1,
-                mt: "-35px",
-                mb: 1,
-              }}
-            />
-            {/* Name of the organization */}
-            <Typography variant="h6" sx={{ fontSize: "18px", mb: 3 }}>
-                {organization.name}
-            </Typography>
+          />
+          {/* Name of the organization */}
+          <Typography variant="h6" sx={{ fontSize: "18px", mb: 3 }}>
+            {organization.name}
+          </Typography>
 
-            <TextButton onClick={() => navigate("/organizations/users/" + organization.id)}>
-              <Typography variant="h6" sx={{ fontSize: "13px", flex: 1}}>
-                Users: {organization.numMembers}
-              </Typography>
-            </TextButton>
-            <Box sx={{ display: "flex", flexDirection: "row" }} >
-              <Typography onClick={() => navigate("/organizations/projects/" + organization.id)} variant="h6" sx={{ fontSize: "13px", flex: 1, borderRadius: 1, userSelect: "none", py: 0.2,
-                  "&:hover": { background: "#ebf3ff", cursor: "pointer" }, }}>
-                  Projects: {organization.numProjects}
-              </Typography>
-              <OrganizationsMenuButton sx={{ zIndex: "" }} organization={organization} />
-            </Box>
+          <TextButton
+            onClick={() => navigate("/organizations/users/" + organization.id)}
+          >
+            <Typography variant="h6" sx={{ fontSize: "13px", flex: 1 }}>
+              {/* Users: {organization.numMembers} */}
+              Users: 0
+            </Typography>
+          </TextButton>
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Typography
+              onClick={() =>
+                navigate("/organizations/projects/" + organization.id)
+              }
+              variant="h6"
+              sx={{
+                fontSize: "13px",
+                flex: 1,
+                borderRadius: 1,
+                userSelect: "none",
+                py: 0.2,
+                "&:hover": { background: "#ebf3ff", cursor: "pointer" },
+              }}
+            >
+              {/* Projects: {organization.numProjects} */}
+              Projects: 0
+            </Typography>
+            <OrganizationsMenuButton
+              sx={{ zIndex: "" }}
+              organization={organization}
+            />
           </Box>
+        </Box>
       </Card>
     ))
   );

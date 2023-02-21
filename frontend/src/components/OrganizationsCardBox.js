@@ -68,7 +68,6 @@ const OrganizationsCardBox = () => {
             }
           >
             <OrganizationsCardList />
-            {/* here goes list of cards */}
           </LoadingBoundary>
         </ErrorBoundary>
       </Box>

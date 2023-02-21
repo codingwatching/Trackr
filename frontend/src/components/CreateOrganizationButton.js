@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateProject } from "../hooks/useCreateProject";
+import { useCreateOrganization } from "../hooks/useCreateOrganization";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
@@ -16,12 +16,13 @@ import formatError from "../utils/formatError";
 const CreateOrganizationButton = ({ sx, menuItem, icon }) => {
   const navigate = useNavigate();
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [createProject, createProjectContext] = useCreateProject();
+  const [createOrganization, createOrganizationContext] =
+    useCreateOrganization();
 
   const handleOnClick = () => {
-    createProject()
+    createOrganization()
       .then((result) => {
-        navigate("/projects/settings/" + result.data.id);
+        navigate("/organizations/settings/" + result.data.id);
         menuItem();
       })
       .catch(() => {
@@ -38,7 +39,7 @@ const CreateOrganizationButton = ({ sx, menuItem, icon }) => {
     <>
       {menuItem ? (
         <MenuItem
-          disabled={createProjectContext.isLoading}
+          disabled={createOrganizationContext.isLoading}
           onClick={() => {
             handleOnClick();
           }}
@@ -56,7 +57,7 @@ const CreateOrganizationButton = ({ sx, menuItem, icon }) => {
         <LoadingButton
           sx={sx}
           startIcon={icon && <AddRoundedIcon />}
-          loading={createProjectContext.isLoading}
+          loading={createOrganizationContext.isLoading}
           type="submit"
           variant="contained"
           onClick={handleOnClick}
@@ -70,7 +71,7 @@ const CreateOrganizationButton = ({ sx, menuItem, icon }) => {
         <DialogTitle>Error</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {formatError(createProjectContext.error)}
+            {formatError(createOrganizationContext.error)}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

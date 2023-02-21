@@ -6,6 +6,7 @@ import Menu from "@mui/material/Menu";
 import Link from "@mui/material/Link";
 import MenuItem from "@mui/material/MenuItem";
 import GroupsIcon from "@mui/icons-material/Groups";
+import SettingsIcon from "@mui/icons-material/Settings";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -55,8 +56,11 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
 
   return (
     <>
-      <IconButton sx={{ minHeight: 0, minWidth: 0, padding: 0 }} onClick={openDropdownMenu}>
-        <MoreVert/>
+      <IconButton
+        sx={{ minHeight: 0, minWidth: 0, padding: 0 }}
+        onClick={openDropdownMenu}
+      >
+        <MoreVert />
       </IconButton>
 
       <Menu
@@ -66,15 +70,23 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
       >
         {!noSettings && (
           <Link
-            href={"/projects/settings/" + organization.id}
+            // IMPORTANT
+            // settings page is not set up yet. needs to be created and added to the router
+            href={"/organizations/settings/" + organization.id}
             underline="none"
             sx={{ color: "unset" }}
           >
-            <MenuItem >
+            <MenuItem>
               <ListItemIcon>
                 <GroupsIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Add User</ListItemText>
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Settings</ListItemText>
             </MenuItem>
           </Link>
         )}
@@ -84,7 +96,7 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
             <GroupsIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-          <Typography color = "error">Remove user</Typography>
+            <Typography color="error">Remove user</Typography>
           </ListItemText>
         </MenuItem>
         <MenuItem>
