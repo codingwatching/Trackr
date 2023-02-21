@@ -1,5 +1,4 @@
 import { useUpdateProject } from "../hooks/useUpdateProject";
-import { useProject } from "../hooks/useProject";
 import { ProjectRouteContext } from "../routes/ProjectRoute";
 import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
@@ -12,31 +11,33 @@ import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Moment from "react-moment";
 import formatError from "../utils/formatError";
+import {useOrganization} from "../hooks/useOrganization";
+import {OrganizationRouteContext} from "../routes/OrganizationRoute";
 
-const EditProject = () => {
+const EditOrganization = () => {
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
-  const [updateProject, updateProjectContext] = useUpdateProject();
-  const projectId = useContext(ProjectRouteContext);
-  const project = useProject(projectId);
+  // const [updateProject, updateProjectContext] = useUpdateOrganization(); //make this useUpdateOrganization
+  const organizationId = useContext(OrganizationRouteContext);
+  const organization = useOrganization(organizationId);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    updateProject({
-      id: project.id,
-      name: data.get("name"),
-      description: data.get("description"),
-      resetAPIKey: false,
-    })
-      .then(() => {
-        setSuccess("Project settings updated successfully.");
-        setError();
-      })
-      .catch((error) => {
-        setError(formatError(error));
-      });
+    // updateProject({
+    //   id: project.id,
+    //   name: data.get("name"),
+    //   description: data.get("description"),
+    //   resetAPIKey: false,
+    // })
+    //   .then(() => {
+    //     setSuccess("Project settings updated successfully.");
+    //     setError();
+    //   })
+    //   .catch((error) => {
+    //     setError(formatError(error));
+    //   });
   };
 
   return (
@@ -79,7 +80,7 @@ const EditProject = () => {
           name="name"
           error={error ? true : false}
           required
-          defaultValue={project.name}
+          defaultValue={organization.name}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The name of your organization used to identify it.
@@ -92,7 +93,7 @@ const EditProject = () => {
           error={error ? true : false}
           multiline
           rows={4}
-          defaultValue={project.description}
+          defaultValue={organization.description}
         />
         <Typography variant="caption" sx={{ mt: 1, mb: 2.5, color: "gray" }}>
           The description used to briefly describe your organization.
@@ -108,7 +109,7 @@ const EditProject = () => {
           }}
         >
           <LoadingButton
-            loading={updateProjectContext.isLoading}
+            // loading={updateProjectContext.isLoading}
             type="submit"
             variant="contained"
             disableElevation
@@ -131,7 +132,7 @@ const EditProject = () => {
           >
             Last modified{" "}
             <Moment fromNow ago>
-              {project.updatedAt}
+              {organization.updatedAt}
             </Moment>{" "}
             ago
           </Typography>
@@ -141,4 +142,4 @@ const EditProject = () => {
   );
 };
 
-export default EditProject;
+export default EditOrganization;

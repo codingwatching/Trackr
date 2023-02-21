@@ -68,20 +68,18 @@ const OrganizationsMenuButton = ({ organization, noSettings }) => {
         open={Boolean(anchorEl)}
         onClose={closeDropdownMenu}
       >
+        <MenuItem>
+          <ListItemIcon>
+            <GroupsIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Add User</ListItemText>
+        </MenuItem>
         {!noSettings && (
           <Link
-            // IMPORTANT
-            // settings page is not set up yet. needs to be created and added to the router
             href={"/organizations/settings/" + organization.id}
             underline="none"
             sx={{ color: "unset" }}
           >
-            <MenuItem>
-              <ListItemIcon>
-                <GroupsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Add User</ListItemText>
-            </MenuItem>
             <MenuItem>
               <ListItemIcon>
                 <SettingsIcon fontSize="small" />
