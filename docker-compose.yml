@@ -6,13 +6,41 @@ services:
         container_name: trackr-db
         restart: always
         ports:
-            - 3306:3306
+            - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: "trackr"
             MYSQL_DATABASE: "trackr"
             MYSQL_USER: "trackr"
             MYSQL_PASSWORD: "trackr"
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 5s
+            timeout: 10s
+            retries: 10
+
+    server:
+        build: ./backend
+        container_name: trackr-server
+        ports:
+            - "8080:8080"
+        volumes:
+            - .:/usr/app
+        links:
+            - database
+        depends_on:
+            database:
+                condition: service_healthy
+        restart: always
+
+    app:
+        build: ./frontend
+        container_name: trackr-frontend
+        ports:
+            - 3000:3000
+        volumes:
+            - .:/usr/app
+        restart: always
 
 volumes:
-    dbdata:
+    data:
         driver: local

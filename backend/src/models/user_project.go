@@ -6,8 +6,8 @@ import (
 )
 
 type UserProject struct {
-	Role   string
 	APIKey string `gorm:"uniqueIndex"`
+	Role   string
 
 	UserID uint `gorm:"primary_key"`
 	User   User

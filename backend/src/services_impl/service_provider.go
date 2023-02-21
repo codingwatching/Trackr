@@ -1,6 +1,7 @@
 package services_impl
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"trackr/src/models"
 	"trackr/src/services"
@@ -21,20 +22,49 @@ type ServiceProvider struct {
 func InitServiceProvider(dialector gorm.Dialector) services.ServiceProvider {
 	database, err := gorm.Open(dialector, &gorm.Config{})
 	if err != nil {
+		fmt.Println("Error opening database connection:", err)
 		return nil
 	}
 
-	database.SetupJoinTable(&models.User{}, "Projects", &models.UserProject{})
-	database.SetupJoinTable(&models.User{}, "Organizations", &models.UserOrganization{})
+	if err := database.SetupJoinTable(&models.User{}, "Projects", &models.UserProject{}); err != nil {
+		fmt.Println("Error setting up user projects:", err)
+	}
 
-	database.AutoMigrate(&models.User{})
-	database.AutoMigrate(&models.Session{})
-	database.AutoMigrate(&models.Organization{})
-	database.AutoMigrate(&models.Project{})
-	database.AutoMigrate(&models.Field{})
-	database.AutoMigrate(&models.Value{})
-	database.AutoMigrate(&models.Visualization{})
-	database.AutoMigrate(&models.Log{})
+	if err := database.SetupJoinTable(&models.User{}, "Organizations", &models.UserOrganization{}); err != nil {
+		fmt.Println("Error setting up user organizations:", err)
+	}
+
+	if err := database.AutoMigrate(&models.User{}); err != nil {
+		fmt.Println("Error migrating users:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Session{}); err != nil {
+		fmt.Println("Error migrating sessions:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Organization{}); err != nil {
+		fmt.Println("Error migrating organizations:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Project{}); err != nil {
+		fmt.Println("Error migrating projects:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Field{}); err != nil {
+		fmt.Println("Error migrating fields:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Value{}); err != nil {
+		fmt.Println("Error migrating values:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Visualization{}); err != nil {
+		fmt.Println("Error migrating visualizations:", err)
+	}
+
+	if err := database.AutoMigrate(&models.Log{}); err != nil {
+		fmt.Println("Error migrating logs:", err)
+	}
 
 	serviceProvider := &ServiceProvider{}
 	serviceProvider.sessionService = &db.SessionService{DB: database}

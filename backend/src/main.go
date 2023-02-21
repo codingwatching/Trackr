@@ -1,20 +1,24 @@
 package main
 
 import (
-	"os"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"os"
 
 	"trackr/src/controllers"
 	"trackr/src/services_impl"
 )
 
 func main() {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading environment variables from .env file:", err)
+		return
+	}
 
 	var dialector gorm.Dialector
 	if os.Getenv("DB_TYPE") == "sqlite" {
@@ -34,5 +38,9 @@ func main() {
 
 	serviceProvider := services_impl.InitServiceProvider(dialector)
 	router := controllers.InitRouter(serviceProvider)
-	router.Run()
+
+	if err := router.Run(); err != nil {
+		fmt.Println("Error running router:", err)
+		return
+	}
 }
