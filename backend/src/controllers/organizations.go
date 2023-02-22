@@ -28,10 +28,9 @@ func addOrganizationRoute(c *gin.Context) {
 	}
 
 	userOrganization := models.UserOrganization{
-		Organization: organization,
-		User:         *user,
-		Role:         "organization_owner",
-		APIKey:       apiKey,
+		UserID: user.ID,
+		Role:   "organization_owner",
+		APIKey: apiKey,
 	}
 
 	organization.ID, err = serviceProvider.GetOrganizationService().AddOrganization(organization, userOrganization)
