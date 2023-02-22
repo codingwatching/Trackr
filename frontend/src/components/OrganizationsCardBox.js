@@ -43,33 +43,11 @@ const OrganizationsCardBox = () => {
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          // originally gap was 15px
-          gap: "47px",
+          // originally gap was 15px, 30px now to align cards
+          gap: "30px",
         }}
       >
-        <ErrorBoundary
-          fallback={({ error }) => (
-            <CenteredBox>
-              <ErrorIcon sx={{ fontSize: 50, mb: 2 }} />
-              <Typography
-                variant="h7"
-                sx={{ userSelect: "none", textAlign: "center" }}
-              >
-                {error}
-              </Typography>
-            </CenteredBox>
-          )}
-        >
-          <LoadingBoundary
-            fallback={
-              <CenteredBox>
-                <CircularProgress />
-              </CenteredBox>
-            }
-          >
             <OrganizationsCardList />
-          </LoadingBoundary>
-        </ErrorBoundary>
       </Box>
     </Box>
   );

@@ -9,33 +9,6 @@ import OrganizationsMenuButton from "./OrganizationsMenuButton";
 import TextButton from "./TextButton";
 
 const OrganizationsCardList = () => {
-  //stub database for organizations
-  // NEED REPLACEMENT WITH ACTUAL DATABASE
-  // const test_organization_1 = {
-  //   name: "Organization 1",
-  //   numMembers: 32,
-  //   numProjects: 3,
-  //   id: 1,
-  // };
-  // const test_organization_2 = {
-  //   name: "Organization 2",
-  //   numMembers: 12,
-  //   numProjects: 1,
-  //   id: 2,
-  // };
-  // const test_organization_3 = {
-  //   name: "Organization 3",
-  //   numMembers: 65,
-  //   numProjects: 6,
-  //   id: 3,
-  // };
-
-  // const organizations = [
-  //   test_organization_1,
-  //   test_organization_2,
-  //   test_organization_3,
-  // ];
-
   const organizations = useOrganizations();
   const navigate = useNavigate();
 
