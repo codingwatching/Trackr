@@ -1,5 +1,4 @@
-import { useUpdateProject } from "../hooks/useUpdateProject";
-import { ProjectRouteContext } from "../routes/ProjectRoute";
+import { useUpdateOrganization } from "../hooks/useUpdateOrganization";
 import { useContext, useState } from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -17,7 +16,7 @@ import {OrganizationRouteContext} from "../routes/OrganizationRoute";
 const EditOrganization = () => {
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
-  // const [updateProject, updateProjectContext] = useUpdateOrganization(); //make this useUpdateOrganization
+  const [updateOrganization, updateOrganizationContext] = useUpdateOrganization(); //make this useUpdateOrganization
   const organizationId = useContext(OrganizationRouteContext);
   const organization = useOrganization(organizationId);
 
@@ -25,19 +24,18 @@ const EditOrganization = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    // updateProject({
-    //   id: project.id,
-    //   name: data.get("name"),
-    //   description: data.get("description"),
-    //   resetAPIKey: false,
-    // })
-    //   .then(() => {
-    //     setSuccess("Project settings updated successfully.");
-    //     setError();
-    //   })
-    //   .catch((error) => {
-    //     setError(formatError(error));
-    //   });
+    updateOrganization({
+      id: organization.id,
+      name: data.get("name"),
+      description: data.get("description"),
+    })
+      .then(() => {
+        setSuccess("Organization settings updated successfully.");
+        setError();
+      })
+      .catch((error) => {
+        setError(formatError(error));
+      });
   };
 
   return (
@@ -109,7 +107,7 @@ const EditOrganization = () => {
           }}
         >
           <LoadingButton
-            // loading={updateProjectContext.isLoading}
+            loading={updateOrganizationContext.isLoading}
             type="submit"
             variant="contained"
             disableElevation

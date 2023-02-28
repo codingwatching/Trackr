@@ -22,10 +22,10 @@ class OrganizationsAPI {
 
   // INPORTANT
   // change variables to relevant variables to organizations
-  static updateOrganization = (id, name, description, resetAPIKey) => {
+  static updateOrganization = (id, name, description) => {
     return axios.put(
       this.#BASE_URL + "/",
-      { id, name, description, resetAPIKey },
+      { id, name, description },
       { withCredentials: true }
     );
   };

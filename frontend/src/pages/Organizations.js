@@ -6,7 +6,6 @@ import ErrorIcon from "@mui/icons-material/Error";
 import Typography from "@mui/material/Typography";
 import LoadingBoundary from "../components/LoadingBoundary";
 import CircularProgress from "@mui/material/CircularProgress";
-import ProjectsTable from "../components/ProjectsTable";
 
 // Page that you can open through the navbar
 // Page includes a list of organisations currently created
