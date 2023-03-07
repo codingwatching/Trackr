@@ -1,12 +1,12 @@
 import PieChartIcon from "@mui/icons-material/PieChart";
-import TableView from "./TableView";
+import PieChartView from "./PieChartView";
 import PieChartEditor from "./PieChartEditor";
 
 const PieChart = {
   name: "Pie Chart",
   icon: PieChartIcon,
-  editor: PieChartEditor, // CHANGE TO PieChartEditor
-  view: TableView,
+  editor: PieChartEditor,
+  view: PieChartView,
 
   deserialize: (metadata) => {
     const sort = metadata?.sort || "asc";

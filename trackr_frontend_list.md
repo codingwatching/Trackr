@@ -22,3 +22,10 @@
       - nothing yet
   - *TO-DO*:
       - ?
+
+- **Visualizations**
+  - *Done*
+    - frontend and backend for piechart visualization pages
+    - pieChart visualization option
+  - *TO-DO*
+    - PieChart visualization itself. no Piechart visualization is yet implemented 
