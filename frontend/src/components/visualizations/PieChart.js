@@ -9,7 +9,7 @@ const PieChart = {
   view: PieChartView,
 
   deserialize: (metadata) => {
-    const sort = metadata?.sort || "asc";
+    const sort = metadata?.sort || "asc"; //TODO change to store labels in metadata
 
     return { sort };
   },

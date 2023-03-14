@@ -27,5 +27,11 @@
   - *Done*
     - frontend and backend for piechart visualization pages
     - pieChart visualization option
+    - PieChart visualization itself.
   - *TO-DO*
-    - PieChart visualization itself. no Piechart visualization is yet implemented 
+    - make creation of labels by the user
+    - centre piechart in the middle of the box
+
+
+- **BUGS due to changes**
+  - **!impossible to delete projects!**
