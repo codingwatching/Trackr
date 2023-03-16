@@ -1,10 +1,11 @@
 import { ProjectRouteContext } from "../../routes/ProjectRoute";
-import {useEffect, useState, useContext, useMemo} from "react";
+import { useContext} from "react";
 import { useValues } from "../../hooks/useValues";
 import { useProject } from "../../hooks/useProject";
-import PieChart from "./PieChart";
+// import PieChart from "./PieChart";
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import Box from "@mui/material/Box";
 
 
 
@@ -34,23 +35,20 @@ const PieChartSubView = ({ visualization, metadata }) => {
   // const { labels } = PieChart.deserialize(metadata); //TODO make creation of labels by the user
   ChartJS.register(ArcElement, Tooltip, Legend);
 
-  // const backgroundColors = [];
-  // const borderColors = [];
+
   const colorVals = selectColors(values.length);
-  // for(let i = 0; i<values.length; i++)
-  // {
-  //   let
-  //   backgroundColors.push(colorVals);
-  //   borderColors.push(colorVals);
-  // }
+  for(let i = 1; i<=values.length; i++)
+  {
+    let labelName = `label ${i}`;
+    labels.push(labelName)
+  }
 
 
 
   const data = {
-    labels: ['Red', 'Blue'],
+    labels: labels,
     datasets: [
       {
-        label: '# of Votes', // WHY? FOR WHAT?
         data: values,
         backgroundColor: colorVals,
         borderColor: colorVals,
@@ -68,7 +66,11 @@ const PieChartSubView = ({ visualization, metadata }) => {
   };
 
 
-  return <Pie options={options} data={data} />;
+  return (
+    <Box sx = {{height: "100%", p:2}}>
+      <Pie options={options} data={data} />
+    </Box>
+  );
 
 };
 
