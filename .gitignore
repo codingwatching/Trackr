@@ -1,2 +1,11 @@
+frontend/frontend.iml
+backend/bin/trackr/go_build_main_go.exe
+backend/backend.iml
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/trackr.iml
+.idea/modules.xml
+backend/bin/go_build_main_go.exe
+backend/bin/test.db
 .idea
 *.iml

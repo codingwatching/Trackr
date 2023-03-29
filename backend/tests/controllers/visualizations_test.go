@@ -4,15 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
+	"trackr/src/forms/responses/visualizations"
+	"trackr/src/models"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
-	"trackr/src/models"
 	"trackr/tests"
 )
 
@@ -96,7 +96,7 @@ func TestAddVisualizationRoute(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, visualization)
 
-	response, _ = json.Marshal(responses.NewVisualization{
+	response, _ = json.Marshal(visualizations.NewVisualization{
 		ID: uint(2),
 	})
 	request, _ = json.Marshal(requests.AddVisualization{
@@ -184,8 +184,8 @@ func TestGetVisualizationsRoute(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, newVisualization.ID, visualizationId)
 
-	response, _ = json.Marshal(responses.VisualizationList{
-		Visualizations: []responses.Visualization{
+	response, _ = json.Marshal(visualizations.VisualizationList{
+		Visualizations: []visualizations.Visualization{
 			{
 				ID:        suite.Visualization.ID,
 				FieldID:   suite.Field.ID,
