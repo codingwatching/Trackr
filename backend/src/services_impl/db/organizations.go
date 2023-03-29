@@ -55,6 +55,7 @@ func (service *OrganizationService) AddOrganization(organization models.Organiza
 		return 0, result.Error
 	}
 
+	userOrganization.OrganizationID = organization.ID
 	if result := service.DB.Create(&userOrganization); result.Error != nil {
 		return 0, result.Error
 	}

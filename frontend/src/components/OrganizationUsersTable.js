@@ -15,11 +15,12 @@ import CenteredBox from "../components/CenteredBox";
 import Tooltip from "@mui/material/Tooltip";
 import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import Moment from "react-moment";
-import CreateProjectButton from "../components/CreateProjectButton";
-import ProjectMenuButton from "../components/ProjectMenuButton";
+import AddUserButton from "../components/AddUserButton";
 import SearchBar from "../components/SearchBar";
+import OrganizationProjectsMenuButton from "./OrganizationProjectsMenuButton";
 
-const ProjectsTable = () => {
+const OrganizationUsersTable = () => {
+  // WILL NEED TO CHANHE PROJECTS TO USERS AND CREATE A HOOK FOR USER CATCHING
   const projects = useProjects();
   const [search, setSearch] = useState("");
 
@@ -34,11 +35,11 @@ const ProjectsTable = () => {
           }}
         >
           <SearchBar
-            title="Projects"
+            title="Users"
             search={search}
             setSearch={setSearch}
             element={
-              <CreateProjectButton
+              <AddUserButton
                 icon
                 sx={{
                   fontSize: 13,
@@ -63,8 +64,8 @@ const ProjectsTable = () => {
             <TableHead sx={{ pb: 1 }}>
               <TableRow>
                 <TableCell align="left">Name</TableCell>
-                <TableCell align="left">Created</TableCell>
-                <TableCell align="left">Organizations</TableCell>
+                <TableCell align="left">Added</TableCell>
+                <TableCell align="left">Role</TableCell>
                 {/* <TableCell align="right"></TableCell> */}
               </TableRow>
             </TableHead>
@@ -105,7 +106,7 @@ const ProjectsTable = () => {
                         </Tooltip>
                       </TableCell>
                       <TableCell align="right">
-                        <ProjectMenuButton project={project} />
+                        <OrganizationProjectsMenuButton project={project} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -116,7 +117,7 @@ const ProjectsTable = () => {
           {projects.length === 0 && (
             <CenteredBox sx={{ py: 5 }}>
               <Typography variant="h7" sx={{ color: "gray" }}>
-                You currently have no projects.
+                You currently have no users.
               </Typography>
             </CenteredBox>
           )}
@@ -126,4 +127,4 @@ const ProjectsTable = () => {
   );
 };
 
-export default ProjectsTable;
+export default OrganizationUsersTable;
