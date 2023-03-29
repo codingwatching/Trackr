@@ -1,4 +1,3 @@
-
 frontend/frontend.iml
 backend/bin/trackr/go_build_main_go.exe
 backend/backend.iml
@@ -8,3 +7,5 @@ backend/backend.iml
 .idea/modules.xml
 backend/bin/go_build_main_go.exe
 backend/bin/test.db
+.idea
+*.iml
