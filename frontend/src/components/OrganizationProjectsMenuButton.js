@@ -1,5 +1,6 @@
-import { createElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+// import { createElement } from "react";
+// import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import MoreVert from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
@@ -11,15 +12,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteProjectDialog from "./DeleteProjectDialog";
+// import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+// import DeleteProjectDialog from "./DeleteProjectDialog";
 import GroupsIcon from "@mui/icons-material/Groups";
 
 const OrganizationProjectsMenuButton = ({ project, noSettings }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogElement, setDialogElement] = useState();
-  const navigate = useNavigate();
+  const [dialogElement] = useState();
+  // const [dialogElement, setDialogElement] = useState();
+  // const navigate = useNavigate();
 
   const openDropdownMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -84,7 +86,7 @@ const OrganizationProjectsMenuButton = ({ project, noSettings }) => {
             <GroupsIcon fontSize="small" color="error" />
           </ListItemIcon>
           <ListItemText>
-            <Typography color = "error">Remove user</Typography>
+            <Typography color="error">Remove user</Typography>
           </ListItemText>
         </MenuItem>
         <MenuItem>
@@ -105,6 +107,3 @@ const OrganizationProjectsMenuButton = ({ project, noSettings }) => {
 };
 
 export default OrganizationProjectsMenuButton;
-
-
-
