@@ -16,7 +16,7 @@ import (
 )
 
 func TestAddFieldRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/fields/"
 
 	//
@@ -110,7 +110,7 @@ func TestAddFieldRoute(t *testing.T) {
 }
 
 func TestGetFieldsRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/fields/"
 
 	//
@@ -185,7 +185,7 @@ func TestGetFieldsRoute(t *testing.T) {
 }
 
 func TestUpdateFieldRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "PUT", "/api/fields/"
 
 	//
@@ -283,7 +283,7 @@ func TestUpdateFieldRoute(t *testing.T) {
 }
 
 func TestDeleteFieldRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "DELETE", "/api/fields/"
 
 	//

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"testing"
 	"time"
 	"trackr/src/controllers"
 	"trackr/src/models"
@@ -153,7 +154,10 @@ func Startup() *Suite {
 	return &suite
 }
 
-func StartupWithRouter() *Suite {
+func StartupWithRouter(t *testing.T) *Suite {
+	t.Setenv("DOCKER_ADDRESS", "172.19.0.3")
+	t.Setenv("LOCAL_ADDRESS", "127.0.0.1")
+
 	gin.SetMode(gin.ReleaseMode)
 
 	suite := Startup()
