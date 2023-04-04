@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
-import CenteredBox from "./CenteredBox";
-import ErrorIcon from "@mui/icons-material/Error";
-import ErrorBoundary from "./ErrorBoundary";
-import LoadingBoundary from "./LoadingBoundary";
+// import CircularProgress from "@mui/material/CircularProgress";
+// import CenteredBox from "./CenteredBox";
+// import ErrorIcon from "@mui/icons-material/Error";
+// import ErrorBoundary from "./ErrorBoundary";
+// import LoadingBoundary from "./LoadingBoundary";
 import CreateOrganizationButton from "./CreateOrganizationButton";
-import SearchBar from "../components/SearchBar";
+// import SearchBar from "../components/SearchBar";
 
 import OrganizationsCardList from "./OrganizationsCardList";
 
@@ -47,7 +47,7 @@ const OrganizationsCardBox = () => {
           gap: "30px",
         }}
       >
-            <OrganizationsCardList />
+        <OrganizationsCardList />
       </Box>
     </Box>
   );

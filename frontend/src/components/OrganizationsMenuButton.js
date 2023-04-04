@@ -1,5 +1,5 @@
-import { createElement, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import MoreVert from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
@@ -13,14 +13,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Divider from "@mui/material/Divider";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+// import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 // import DeleteProjectDialog from "./DeleteProjectDialog";
 
 const OrganizationsMenuButton = ({ organization, noSettings }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogElement, setDialogElement] = useState();
-  const navigate = useNavigate();
+  const [dialogElement] = useState();
+  // const navigate = useNavigate();
 
   const openDropdownMenu = (event) => {
     setAnchorEl(event.currentTarget);
