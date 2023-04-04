@@ -27,7 +27,7 @@ func (service *LogService) AddLog(message string, user models.User, projectId *u
 	log := models.Log{
 		Message:   message,
 		User:      user,
-		// ProjectID: projectId,
+		ProjectID: projectId,
 	}
 
 	if result := service.DB.Create(&log); result.Error != nil {
