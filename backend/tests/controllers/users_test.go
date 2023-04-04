@@ -15,7 +15,7 @@ import (
 )
 
 func TestGetUserRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/users/"
 
 	//
@@ -58,7 +58,7 @@ func TestGetUserRoute(t *testing.T) {
 }
 
 func TestUpdateUserRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "PUT", "/api/users/"
 
 	//
@@ -304,7 +304,7 @@ func TestUpdateUserRoute(t *testing.T) {
 }
 
 func TestDeleteUserRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "DELETE", "/api/users/"
 
 	//

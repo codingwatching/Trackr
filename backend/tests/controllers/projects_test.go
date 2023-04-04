@@ -17,7 +17,7 @@ import (
 )
 
 func TestAddProjectRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/projects/"
 
 	//
@@ -68,7 +68,7 @@ func TestAddProjectRoute(t *testing.T) {
 }
 
 func TestGetProjectsRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/projects/"
 
 	//
@@ -127,7 +127,7 @@ func TestGetProjectsRoute(t *testing.T) {
 }
 
 func TestGetProjectRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/projects/"
 
 	//
@@ -197,7 +197,7 @@ func TestGetProjectRoute(t *testing.T) {
 }
 
 func TestDeleteProjectRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "DELETE", "/api/projects/"
 
 	//
@@ -277,7 +277,7 @@ func TestDeleteProjectRoute(t *testing.T) {
 }
 
 func TestUpdateProjectRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "PUT", "/api/projects/"
 
 	//
