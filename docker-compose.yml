@@ -17,6 +17,9 @@ services:
             interval: 5s
             timeout: 10s
             retries: 10
+        networks:
+            trackr:
+                ipv4_address: 172.18.0.4
 
     server:
         build: ./backend
@@ -31,6 +34,9 @@ services:
             database:
                 condition: service_healthy
         restart: always
+        networks:
+            trackr:
+                ipv4_address: 172.18.0.3
 
     app:
         build: ./frontend
@@ -40,7 +46,18 @@ services:
         volumes:
             - .:/usr/app
         restart: always
+        networks:
+            trackr:
+                ipv4_address: 172.18.0.2
 
 volumes:
     data:
         driver: local
+
+networks:
+    trackr:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.18.0.0/16
+                  gateway: 172.18.0.1
