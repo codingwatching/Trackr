@@ -17,7 +17,7 @@ import (
 )
 
 func TestIsLoggedInRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/auth/"
 
 	//
@@ -47,7 +47,7 @@ func TestIsLoggedInRoute(t *testing.T) {
 }
 
 func TestRegisterRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/auth/register"
 
 	//
@@ -214,7 +214,7 @@ func TestRegisterRoute(t *testing.T) {
 }
 
 func TestLogoutRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/auth/logout"
 
 	//
@@ -290,7 +290,7 @@ func TestLogoutRoute(t *testing.T) {
 }
 
 func TestLoginRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/auth/login"
 
 	//

@@ -18,7 +18,7 @@ import (
 )
 
 func TestGetValuesRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/values/"
 
 	//
@@ -197,7 +197,7 @@ func TestGetValuesRoute(t *testing.T) {
 }
 
 func TestDeleteValuesRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "DELETE", "/api/values/"
 
 	//
@@ -273,7 +273,7 @@ func TestDeleteValuesRoute(t *testing.T) {
 }
 
 func TestAddValueRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/values/"
 
 	//

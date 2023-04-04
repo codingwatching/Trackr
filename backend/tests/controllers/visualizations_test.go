@@ -17,7 +17,7 @@ import (
 )
 
 func TestAddVisualizationRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "POST", "/api/visualizations/"
 
 	//
@@ -123,7 +123,7 @@ func TestAddVisualizationRoute(t *testing.T) {
 }
 
 func TestGetVisualizationsRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "GET", "/api/visualizations/"
 
 	//
@@ -213,7 +213,7 @@ func TestGetVisualizationsRoute(t *testing.T) {
 }
 
 func TestUpdateVisualizationsRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "PUT", "/api/visualizations/"
 
 	//
@@ -347,7 +347,7 @@ func TestUpdateVisualizationsRoute(t *testing.T) {
 }
 
 func TestDeleteVisualizationRoute(t *testing.T) {
-	suite := tests.StartupWithRouter()
+	suite := tests.StartupWithRouter(t)
 	method, path := "DELETE", "/api/visualizations/"
 
 	//
