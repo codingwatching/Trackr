@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY package.json ./
 COPY package-lock.json ./
+COPY .env.production ./
 RUN npm install
 RUN npm install -g serve
 
