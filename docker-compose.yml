@@ -44,7 +44,7 @@ services:
         build: ./frontend
         container_name: trackr-frontend
         ports:
-            - 3000:3000
+            - "3000:3000"
         volumes:
             - .:/usr/app
         restart: always
