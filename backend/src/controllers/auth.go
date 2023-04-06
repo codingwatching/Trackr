@@ -95,7 +95,7 @@ func loginRoute(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie(sessionCookie, sessionId, math.MaxInt32, "/", "*", true, true)
+	c.SetCookie(sessionCookie, sessionId, math.MaxInt32, "/", "*", false, true)
 	c.JSON(http.StatusOK, responses.Empty{})
 }
 
