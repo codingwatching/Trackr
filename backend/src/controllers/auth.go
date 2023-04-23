@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"math"
@@ -175,7 +174,6 @@ func registerRoute(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(json.Email)
 	count, err := serviceProvider.GetUserService().GetNumberOfUsers(json.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to get user count."})
