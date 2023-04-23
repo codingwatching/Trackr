@@ -155,7 +155,7 @@ func Startup() *Suite {
 }
 
 func StartupWithRouter(t *testing.T) *Suite {
-	t.Setenv("DOCKER_ADDRESS", "172.19.0.3")
+	t.Setenv("DOCKER_ADDRESS", "172.18.0.2")
 	t.Setenv("LOCAL_ADDRESS", "127.0.0.1")
 
 	gin.SetMode(gin.ReleaseMode)
