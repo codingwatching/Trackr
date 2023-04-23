@@ -139,6 +139,8 @@ To run the tests:
 
 ## Architecture
 
+The following is the core Trackr architecture. When making use of Docker, Nginx also exists between the web application and the backend server(s) which distributes requests to multiple backend Trackr servers.
+
 ![image](https://user-images.githubusercontent.com/63835313/214208475-0d327caf-95e1-4ed3-88d4-df5f27dffdc8.png)
 
 ## Licensing
