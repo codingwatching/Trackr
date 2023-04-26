@@ -23,3 +23,4 @@
 - add more ways to send alerts (e.g. email, text, etc.)
 
 - **Make the Trackr send updates to the bot for the projects that have alerts set up. For now, bot gets the values from the projects that have alerts set up every second and then processes alerts -> creates a lot of get requests per second if there are a lot of alerts (therefore I limited it to one alert of each kind per project)**
+ 
