@@ -103,10 +103,6 @@ To run the tests:
 
 ![Architecture diagram showing a presentation layer, business layer and data layer](arch.svg)
 
-## Licensing
-
-For more information, see ...
-
 [raspberry pis]: https://www.raspberrypi.org/
 [arduinos]: https://www.arduino.cc/
 [nodejs]: https://nodejs.org/en/
