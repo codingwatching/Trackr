@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -16,6 +17,11 @@ import (
 
 func addFieldRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	var json requests.AddField
 	if err := c.ShouldBindJSON(&json); err != nil {
@@ -104,6 +110,11 @@ func getFieldsRoute(c *gin.Context) {
 func updateFieldRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
+
 	var json requests.UpdateField
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -140,6 +151,11 @@ func updateFieldRoute(c *gin.Context) {
 
 func deleteFieldRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	fieldId, err := strconv.Atoi(c.Param("fieldId"))
 	if err != nil {

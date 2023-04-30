@@ -6,6 +6,7 @@
 
 A platform for makers, hobbyists, students, and professionals to easily store and visualize data recorded from internet-connected devices like [Arduinos] and [Raspberry Pis].
 
+- [Try it out](#try-it-out)
 - [Motivation](#motivation)
 - [Features](#features)
 - [Building and Running](#building-and-running)
@@ -14,6 +15,11 @@ A platform for makers, hobbyists, students, and professionals to easily store an
 - [Tests](#tests)
 - [Architecture](#architecture)
 - [Licensing](#licensing)
+
+## Try it out
+You can try out trackr by navigating to [https://trackr.vldr.org](https://trackr.vldr.org).
+
+**Note:** The demostration website is running in read-only mode, meaning that you cannot any changes. 
 
 ## Motivation
 

@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -14,6 +16,11 @@ import (
 
 func addVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	var json requests.AddVisualization
 	if err := c.ShouldBindJSON(&json); err != nil {
@@ -96,6 +103,11 @@ func getVisualizationsRoute(c *gin.Context) {
 func updateVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
+
 	var json requests.UpdateVisualization
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
@@ -139,6 +151,11 @@ func updateVisualizationRoute(c *gin.Context) {
 
 func deleteVisualizationRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	visualizationId, err := strconv.Atoi(c.Param("visualizationId"))
 	if err != nil {

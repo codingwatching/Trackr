@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -21,6 +22,11 @@ const (
 
 func addProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	apiKey, err := generateAPIKey()
 	if err != nil {
@@ -118,6 +124,11 @@ func getProjectsRoute(c *gin.Context) {
 func deleteProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
+
 	projectId, err := strconv.Atoi(c.Param("projectId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :projectId parameter provided."})
@@ -147,6 +158,11 @@ func deleteProjectRoute(c *gin.Context) {
 
 func updateProjectRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	var json requests.UpdateProject
 	if err := c.ShouldBindJSON(&json); err != nil {

@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"time"
 
 	"trackr/src/forms/requests"
 	"trackr/src/forms/responses"
@@ -42,6 +44,11 @@ func getUserRoute(c *gin.Context) {
 
 func updateUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	var json requests.UpdateUser
 	if err := c.ShouldBindJSON(&json); err != nil {
@@ -95,6 +102,11 @@ func updateUserRoute(c *gin.Context) {
 
 func deleteUserRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
+
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
 
 	if err := serviceProvider.GetUserService().DeleteUser(*user); err != nil {
 		c.JSON(http.StatusInternalServerError, responses.Error{Error: "Failed to delete user."})

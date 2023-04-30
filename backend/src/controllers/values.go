@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -80,6 +81,11 @@ func getValuesRoute(c *gin.Context) {
 func deleteValuesRoute(c *gin.Context) {
 	user := getLoggedInUser(c)
 
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
+
 	fieldId, err := strconv.Atoi(c.Param("fieldId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid :fieldId parameter provided."})
@@ -112,6 +118,11 @@ func deleteValuesRoute(c *gin.Context) {
 }
 
 func addValueRoute(c *gin.Context) {
+	if os.Getenv("DISABLE_SIGN_UP") == "true" {
+		c.JSON(http.StatusForbidden, responses.Error{Error: "Cannot make any additions or edits while in demo mode."})
+		return
+	}
+
 	var form requests.AddValue
 	if err := c.ShouldBindWith(&form, binding.Form); err != nil {
 		c.JSON(http.StatusBadRequest, responses.Error{Error: "Invalid request parameters provided."})
