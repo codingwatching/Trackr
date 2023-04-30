@@ -16,9 +16,9 @@ A platform for makers, hobbyists, students, and professionals to easily store an
 - [Tests](#tests)
 
 ## Try it out
-You can try out trackr by navigating to [https://trackr.vldr.org](https://trackr.vldr.org).
+You can try out trackr by navigating to [https://trackr.vldr.org](https://trackr.vldr.org)
 
-**Note:** The demostration website is running in read-only mode, meaning that you cannot any changes. 
+**Note:** The above is running in read-only mode, meaning that you cannot make any additions or edits. 
 
 ## Motivation
 
