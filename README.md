@@ -9,12 +9,11 @@ A platform for makers, hobbyists, students, and professionals to easily store an
 - [Try it out](#try-it-out)
 - [Motivation](#motivation)
 - [Features](#features)
+- [Architecture](#architecture)
 - [Building and Running](#building-and-running)
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [Tests](#tests)
-- [Architecture](#architecture)
-- [Licensing](#licensing)
 
 ## Try it out
 You can try out trackr by navigating to [https://trackr.vldr.org](https://trackr.vldr.org).
