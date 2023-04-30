@@ -38,6 +38,10 @@ As such, trackr sets out to make it easier for these makers to store and visuali
 - Compatible with Raspberry Pis and Arduino devices.
 - Slick and responsive web-interface.
 
+## Architecture
+
+![Architecture diagram showing a presentation layer, business layer and data layer](arch.svg)
+
 ## Building and Running
 
 Currently, trackr consists of two components: the frontend and the backend.
@@ -98,10 +102,6 @@ To run the tests:
 
 1. From the root directory, navigate to the `backend/` directory.
 2. Type `make test`
-
-## Architecture
-
-![Architecture diagram showing a presentation layer, business layer and data layer](arch.svg)
 
 [raspberry pis]: https://www.raspberrypi.org/
 [arduinos]: https://www.arduino.cc/
