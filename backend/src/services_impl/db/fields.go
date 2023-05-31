@@ -14,7 +14,7 @@ type FieldService struct {
 func (service *FieldService) GetFields(project models.Project, user models.User) ([]models.Field, error) {
 	var fields []models.Field
 	if result := service.DB.Model(&models.Field{}).Joins(
-		"LEFT JOIN projects ON fields.project_id = projects.id",
+		"INNER JOIN projects ON fields.project_id = projects.id",
 	).Find(
 		&fields, "fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID,
 	); result.Error != nil {
@@ -28,7 +28,7 @@ func (service *FieldService) GetNumberOfFieldsByProject(project models.Project, 
 	var count int64
 
 	if result := service.DB.Model(&models.Field{}).Joins(
-		"LEFT JOIN projects ON fields.project_id = projects.id",
+		"INNER JOIN projects ON fields.project_id = projects.id",
 	).Where("fields.project_id = ? AND projects.user_id = ?", project.ID, user.ID).Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -40,7 +40,7 @@ func (service *FieldService) GetNumberOfFieldsByUser(user models.User) (int64, e
 	var count int64
 
 	if result := service.DB.Model(&models.Field{}).Joins(
-		"LEFT JOIN projects ON fields.project_id = projects.id",
+		"INNER JOIN projects ON fields.project_id = projects.id",
 	).Where("projects.user_id = ?", user.ID).Count(&count); result.Error != nil {
 		return 0, result.Error
 	}
@@ -51,7 +51,7 @@ func (service *FieldService) GetNumberOfFieldsByUser(user models.User) (int64, e
 func (service *FieldService) GetField(id uint, user models.User) (*models.Field, error) {
 	var field models.Field
 	if result := service.DB.Model(&models.Field{}).Joins(
-		"LEFT JOIN projects ON fields.project_id = projects.id",
+		"INNER JOIN projects ON fields.project_id = projects.id",
 	).First(
 		&field, "fields.id = ? AND projects.user_id = ?", id, user.ID,
 	); result.Error != nil {

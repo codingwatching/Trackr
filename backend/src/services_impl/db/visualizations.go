@@ -16,8 +16,8 @@ func (service *VisulizationService) GetVisualizations(project models.Project, us
 
 	result := service.DB.Model(&models.Visualization{})
 	result = result.Preload("Field")
-	result = result.Joins("LEFT JOIN fields ON `visualizations`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN fields ON `visualizations`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.Find(&visualizations, "`projects`.`id` = ? AND `projects`.`user_id` = ?", project.ID, user.ID)
 
 	if result.Error != nil {
@@ -31,8 +31,8 @@ func (service *VisulizationService) GetVisualization(id uint, user models.User) 
 	var visualization models.Visualization
 
 	result := service.DB.Model(&models.Visualization{})
-	result = result.Joins("LEFT JOIN fields ON `visualizations`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN fields ON `visualizations`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.First(&visualization, "`visualizations`.`id` = ? AND `projects`.`user_id` = ?", id, user.ID)
 
 	if result.Error != nil {

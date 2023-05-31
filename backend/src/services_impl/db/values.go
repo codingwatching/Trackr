@@ -15,8 +15,8 @@ func (service *ValueService) GetValues(field models.Field, user models.User, ord
 	var values []models.Value
 
 	result := service.DB.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 
 	if order == "asc" {
 		result = result.Order("`values`.`created_at` ASC")
@@ -48,9 +48,9 @@ func (service *ValueService) GetNumberOfValuesByUser(user models.User) (int64, e
 
 	result := service.DB.Model(&models.User{})
 	result = result.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
-	result = result.Joins("LEFT JOIN users ON `projects`.`user_id` = `users`.`id`")
+	result = result.Joins("INNER JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN users ON `projects`.`user_id` = `users`.`id`")
 	result = result.Where("`users`.`id` = ?", user.ID)
 	result = result.Count(&count)
 
@@ -66,7 +66,7 @@ func (service *ValueService) GetNumberOfValuesByField(field models.Field) (int64
 
 	result := service.DB.Model(&models.User{})
 	result = result.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN fields ON `values`.`field_id` = `fields`.`id`")
 	result = result.Where("`fields`.`id` = ?", field.ID)
 	result = result.Count(&count)
 
@@ -81,8 +81,8 @@ func (service *ValueService) GetLastAddedValue(user models.User) (*models.Value,
 	var value models.Value
 
 	result := service.DB.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.Order("`values`.`created_at` DESC")
 	result = result.First(&value, "`projects`.`user_id` = ?", user.ID)
 
@@ -97,8 +97,8 @@ func (service *ValueService) GetValue(id uint, user models.User) (*models.Value,
 	var value models.Value
 
 	result := service.DB.Model(&models.Value{})
-	result = result.Joins("LEFT JOIN fields ON `values`.`field_id` = `fields`.`id`")
-	result = result.Joins("LEFT JOIN projects ON `fields`.`project_id` = `projects`.`id`")
+	result = result.Joins("INNER JOIN fields ON `values`.`field_id` = `fields`.`id`")
+	result = result.Joins("INNER JOIN projects ON `fields`.`project_id` = `projects`.`id`")
 	result = result.First(&value, "`values`.`id` = ? AND `projects`.`user_id` = ?", id, user.ID)
 
 	if result.Error != nil {
