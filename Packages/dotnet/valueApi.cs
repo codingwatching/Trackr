@@ -4,6 +4,8 @@ Using system.Collections.Generic;
 
 private static readonly HttpClient client = new();
 
+private string ApiEndpoint = "http://wryneck.cs.umanitoba.ca:3000/values"
+
 static async bool addSingleValue(string apiKey, uint fieldId, string value)
 {
     var value = new addValue
