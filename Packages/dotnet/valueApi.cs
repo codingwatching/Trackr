@@ -38,7 +38,7 @@ static async bool addManyValues(string apiKey, uint fieldId, List<string> values
             return result;
         }
     }
-    return result;
+    return true;
 }
 
 static async bool getValues(string apiKey, uint fieldId, uint offset, int limit, string order)
@@ -70,5 +70,3 @@ static async bool getValues(string apiKey, uint fieldId, uint offset, int limit,
         return false;
     }
 }
-
-//TODO: add authWithApiKey - no documentation??
