@@ -73,27 +73,11 @@ namespace Trackr
                 return newResponse;
             }
 
-            var requestObject = new Dictionary<string, string>
-            {
-                { "apiKey", apiKey },
-                { "fieldId", fieldId.ToString() },
-                { "offset", offset.ToString() },
-                { "limit",limit.ToString() },
-                { "order", order}
-            };
+            UriBuilder uriBuilder = new UriBuilder(ApiEndpoint);
+            string parameters = "apiKey=" + apiKey + "&fieldId=" + fieldId.ToString() + "&offset=" + offset.ToString() + "&limit=" + limit.ToString() + "&order=" + order;
+            uriBuilder.Query = parameters;
 
-            FormUrlEncodedContent requestContent = new FormUrlEncodedContent(requestObject);
-
-            var httpRequest = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(ApiEndpoint),
-                Content = requestContent,
-            };
-
-            HttpResponseMessage response = await client.SendAsync(httpRequest);
-
-            return response;
+            return client.GetAsync(uriBuilder.Uri).Result;
         }
     }
 }
