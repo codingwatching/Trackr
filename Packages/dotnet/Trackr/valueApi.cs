@@ -63,7 +63,7 @@ namespace Trackr
         /// <param name="offset"></param>
         /// <param name="limit"></param>
         /// <param name="order"></param>
-        /// <returns>Returns an HttpResponseMessage with a statusCode and Content detailing the result of the operation. If the operation was successful, the content will contain "totalValues" which is a number and "values" which is a list of the values returned.</returns>
+        /// <returns>Returns an HttpResponseMessage with a statusCode and Content detailing the result of the operation. If the operation was successful, the content will contain "totalValues" which is a number and "values" which is a list of the values returned. Result can be read with 'response.Content.ReadAsStringAsync()' and then parsed.</returns>
         public static async Task<HttpResponseMessage> GetValues(string apiKey, uint fieldId, uint offset, int limit, string order)
         {
             if (!order.ToLower().Equals("asc") && !order.ToLower().Equals("desc"))
