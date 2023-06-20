@@ -1,72 +1,77 @@
-﻿using System.Net.Http;
-using Trackr.Models;
-using System.Collections;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-private static readonly HttpClient client = new();
-
-private string ApiEndpoint = "http://wryneck.cs.umanitoba.ca:3000/values"
-
-static async bothKinds addSingleValue(string apiKey, uint fieldId, string value)
+namespace Trackr
 {
-    var value = new addValue
+    class TrackrApi
     {
-        ApiKey = apiKey,
-        Value = value,
-        FieldId = fieldId
-    };
 
-    string content = FormUrlEncodedContent(value);
-    HttpResponseMessage response = await client.PostAsync(ApiEndpoint, content);
-    //return status code and message
-    if (response.IsSuccessStatusCode)
-    {
-        return (response.statusCode(), response.content);
-    }
-    else
-    {
-        return false;
-    }
-}
+        private static readonly HttpClient client = new HttpClient();
+        private static string ApiEndpoint = "http://wryneck.cs.umanitoba.ca:3000/values";
 
-static async bool addManyValues(string apiKey, uint fieldId, List<string> values)
-{
-    //look into rate limiting, figure out how to handle it
-    foreach (var value in values)
-    {
-        bool result = addSingleValue(apiKey, fieldId, value);
-        if(!result)
+        static async Task<HttpResponseMessage> AddSingleValue(string apiKey, uint fieldId, string value)
         {
-            return result;
+            var valueObject = new Dictionary<string, string>
+            {
+                { "ApiKey", apiKey },
+                { "Value", value },
+                { "FieldId", fieldId.ToString() }
+            };
+
+            FormUrlEncodedContent content = new FormUrlEncodedContent(valueObject);
+            HttpResponseMessage response = await client.PostAsync(ApiEndpoint, content);
+            return response;
         }
-    }
-    return true;
-}
 
-static async bool getValues(string apiKey, uint fieldId, uint offset, int limit, string order)
-{
-    if(!order.ToLowerCase().Equals("asc") && !order.ToLowerCase().Equals("desc"))
-    {
-        console.WriteLine("order must be 'asc' or 'desc'. Please try again.")
-        return false;
-    }
+        static async Task<HttpResponseMessage> AddManyValues(string apiKey, uint fieldId, List<string> values)
+        {
+            //look into rate limiting, figure out how to handle it
+            foreach (var value in values)
+            {
+                HttpResponseMessage result = await AddSingleValue(apiKey, fieldId, value);
+                if (!result.IsSuccessStatusCode)
+                {
+                    return result;
+                }
+                Thread.Sleep(1000);
+            }
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
 
-    var request = new getValues
-    {
-        ApiKey = apiKey, 
-        FieldId = fieldId, 
-        Offset = offset, 
-        Limit = limit, 
-        Order = order
-    }
+        static async Task<HttpResponseMessage> GetValues(string apiKey, uint fieldId, uint offset, int limit, string order)
+        {
+            if (!order.ToLower().Equals("asc") && !order.ToLower().Equals("desc"))
+            {
+                HttpResponseMessage newResponse = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                newResponse.Content = new StringContent("Invalid request parameters provided.");
+                return newResponse;
+            }
 
-    string content = FormUrlEncodedContent(value);
-    HttpResponseMessage response = await client.GetAsync(ApiEndpoint, content);
-    if (response.IsSuccessStatusCode)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
+            var requestObject = new Dictionary<string, string>
+            {
+                { "ApiKey", apiKey },
+                { "FieldId", fieldId.ToString() },
+                { "Offset", offset.ToString() },
+                { "Limit",limit.ToString() },
+                { "Order", order}
+            };
+
+            FormUrlEncodedContent requestContent = new FormUrlEncodedContent(requestObject);
+
+            var httpRequest = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(ApiEndpoint),
+                Content = requestContent,
+            };
+
+            HttpResponseMessage response = await client.SendAsync(httpRequest);
+
+            return response;
+        }
     }
 }
