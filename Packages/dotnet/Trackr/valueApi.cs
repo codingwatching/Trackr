@@ -1,12 +1,12 @@
 ﻿using System.Net.Http;
 using Trackr.Models;
-Using system.Collections.Generic;
+using System.Collections;
 
 private static readonly HttpClient client = new();
 
 private string ApiEndpoint = "http://wryneck.cs.umanitoba.ca:3000/values"
 
-static async bool addSingleValue(string apiKey, uint fieldId, string value)
+static async bothKinds addSingleValue(string apiKey, uint fieldId, string value)
 {
     var value = new addValue
     {
@@ -15,12 +15,12 @@ static async bool addSingleValue(string apiKey, uint fieldId, string value)
         FieldId = fieldId
     };
 
-    string jsonString = JsonConvert.SerializeObject(value);
-    StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+    string content = FormUrlEncodedContent(value);
     HttpResponseMessage response = await client.PostAsync(ApiEndpoint, content);
+    //return status code and message
     if (response.IsSuccessStatusCode)
     {
-        return true;
+        return (response.statusCode(), response.content);
     }
     else
     {
@@ -30,6 +30,7 @@ static async bool addSingleValue(string apiKey, uint fieldId, string value)
 
 static async bool addManyValues(string apiKey, uint fieldId, List<string> values)
 {
+    //look into rate limiting, figure out how to handle it
     foreach (var value in values)
     {
         bool result = addSingleValue(apiKey, fieldId, value);
@@ -38,7 +39,7 @@ static async bool addManyValues(string apiKey, uint fieldId, List<string> values
             return result;
         }
     }
-    return result;
+    return true;
 }
 
 static async bool getValues(string apiKey, uint fieldId, uint offset, int limit, string order)
@@ -58,8 +59,7 @@ static async bool getValues(string apiKey, uint fieldId, uint offset, int limit,
         Order = order
     }
 
-    string jsonString = JsonConvert.SerializeObject(request);
-    StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+    string content = FormUrlEncodedContent(value);
     HttpResponseMessage response = await client.GetAsync(ApiEndpoint, content);
     if (response.IsSuccessStatusCode)
     {
@@ -70,5 +70,3 @@ static async bool getValues(string apiKey, uint fieldId, uint offset, int limit,
         return false;
     }
 }
-
-//TODO: add authWithApiKey - no documentation??
