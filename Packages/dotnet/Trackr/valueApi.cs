@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Trackr
 {
-    class TrackrApi
+    public class TrackrApi
     {
 
         private static readonly HttpClient client = new HttpClient();
-        private static string ApiEndpoint = "http://wryneck.cs.umanitoba.ca:3000/values";
+        private static string ApiEndpoint = "http://wryneck.cs.umanitoba.ca/api/values";
 
         /// <summary>
         /// Add's a single value to the field of the project which has the apikey.
@@ -20,13 +20,13 @@ namespace Trackr
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns>Returns an HttpResponseMessage with a statusCode and Content detailing the result of the operation.</returns>
-        static async Task<HttpResponseMessage> AddSingleValue(string apiKey, uint fieldId, string value)
+        public static async Task<HttpResponseMessage> AddSingleValue(string apiKey, uint fieldId, string value)
         {
             var valueObject = new Dictionary<string, string>
             {
-                { "ApiKey", apiKey },
-                { "Value", value },
-                { "FieldId", fieldId.ToString() }
+                { "apiKey", apiKey },
+                { "value", value },
+                { "fieldId", fieldId.ToString() }
             };
 
             FormUrlEncodedContent content = new FormUrlEncodedContent(valueObject);
@@ -41,7 +41,7 @@ namespace Trackr
         /// <param name="fieldId"></param>
         /// <param name="values"></param>
         /// <returns>Returns an HttpResponseMessage with a statusCode and Content detailing the result of the operation.</returns>
-        static async Task<HttpResponseMessage> AddManyValues(string apiKey, uint fieldId, List<string> values)
+        public static async Task<HttpResponseMessage> AddManyValues(string apiKey, uint fieldId, List<string> values)
         {
             foreach (var value in values)
             {
@@ -64,7 +64,7 @@ namespace Trackr
         /// <param name="limit"></param>
         /// <param name="order"></param>
         /// <returns>Returns an HttpResponseMessage with a statusCode and Content detailing the result of the operation. If the operation was successful, the content will contain "totalValues" which is a number and "values" which is a list of the values returned.</returns>
-        static async Task<HttpResponseMessage> GetValues(string apiKey, uint fieldId, uint offset, int limit, string order)
+        public static async Task<HttpResponseMessage> GetValues(string apiKey, uint fieldId, uint offset, int limit, string order)
         {
             if (!order.ToLower().Equals("asc") && !order.ToLower().Equals("desc"))
             {
@@ -75,11 +75,11 @@ namespace Trackr
 
             var requestObject = new Dictionary<string, string>
             {
-                { "ApiKey", apiKey },
-                { "FieldId", fieldId.ToString() },
-                { "Offset", offset.ToString() },
-                { "Limit",limit.ToString() },
-                { "Order", order}
+                { "apiKey", apiKey },
+                { "fieldId", fieldId.ToString() },
+                { "offset", offset.ToString() },
+                { "limit",limit.ToString() },
+                { "order", order}
             };
 
             FormUrlEncodedContent requestContent = new FormUrlEncodedContent(requestObject);
