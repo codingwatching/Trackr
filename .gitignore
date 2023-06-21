@@ -31,3 +31,5 @@ backend/bin/test.db
 /.vs/VSWorkspaceState.json
 /Packages/dotnet/Trackr/.vs
 /Packages/dotnet/Trackr/obj
+/Packages/python/Main.py
+/Packages/python/__pycache__/valueApi.cpython-311.pyc
