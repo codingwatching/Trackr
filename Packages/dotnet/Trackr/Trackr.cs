@@ -7,11 +7,31 @@ using System.Threading.Tasks;
 
 namespace Trackr
 {
-    public class TrackrApi
+    public class Trackr
     {
-
         private static readonly HttpClient client = new HttpClient();
         private static string ApiEndpoint = "http://wryneck.cs.umanitoba.ca/api/values";
+
+        /// <summary>
+        /// Allows the user to see the currently set endpoint
+        /// </summary>
+        /// <returns>A string which is the current endpoint</returns>
+        public static string ShowEndpoint()
+        {
+            return ApiEndpoint;
+        }
+
+        /// <summary>
+        /// Updates the api endpoint to be used. This function is used when hosting a local version of Trackr and therefore needs a different endpoint than the one hosted at the University of Manitoba.
+        /// Usage:
+        /// valueApi.UpdateEndpoint('someAddress/api/values')
+        /// </summary>
+        /// <param name="url">The url where the locally hosted version of Trackr is found.</param>
+        /// <returns>None</returns>
+        public static void UpdateEndpoint(string url)
+        {
+            ApiEndpoint = url;
+        }
 
         /// <summary>
         /// Add's a single value to the field of the project which has the apikey.
